@@ -26,7 +26,7 @@
    <string>Log2Log</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
+   <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="logoLabel">
      <property name="maximumSize">
       <size>
@@ -45,7 +45,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="4" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -58,7 +58,7 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
+   <item row="4" column="1">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -71,7 +71,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0">
+   <item row="5" column="0">
     <layout class="QVBoxLayout" name="srcProtoLayout">
      <item>
       <widget class="QLabel" name="sourceLabel">
@@ -230,7 +230,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="1">
+   <item row="5" column="1">
     <layout class="QVBoxLayout" name="dstProtoLayout">
      <item>
       <widget class="QLabel" name="destinationLabel">
@@ -392,7 +392,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
+   <item row="6" column="0">
     <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -405,7 +405,7 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="1">
+   <item row="6" column="1">
     <spacer name="verticalSpacer_4">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -418,7 +418,7 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="0">
     <layout class="QVBoxLayout" name="srcLayout">
      <property name="spacing">
       <number>0</number>
@@ -535,7 +535,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="1">
+   <item row="7" column="1">
     <layout class="QVBoxLayout" name="dstLayout">
      <property name="spacing">
       <number>0</number>
@@ -652,7 +652,7 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
+   <item row="9" column="0">
     <spacer name="verticalSpacer_5">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -665,7 +665,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="1">
+   <item row="9" column="1">
     <spacer name="verticalSpacer_6">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -678,7 +678,7 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QPushButton" name="convertButton">
      <property name="minimumSize">
       <size>
@@ -702,6 +702,13 @@
      </property>
      <property name="default">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="testButton">
+     <property name="text">
+      <string>XML Test</string>
      </property>
     </widget>
    </item>

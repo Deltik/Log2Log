@@ -26,6 +26,8 @@ private slots:
     void updateDstFields(int index);
     void startConversion();
 
+    /* DEBUG */ void on_testButton_clicked();
+
 private:
     Ui::Log2Log *ui;
 };

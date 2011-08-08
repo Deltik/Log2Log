@@ -1,0 +1,216 @@
+<?xml version="1.0" ?>
+<formats>
+	<format id="adium">
+		<name>Adium</name>
+		<client>Adium</client>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>0</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>yes</timezone>
+			<status>true</status>
+			<system></system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo>Did you shoot Adiumy, the Adium duck?</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="deltikhuman">
+		<name>Deltik Standard Non-XML Chat Log Format</name>
+		<client>Deltik</client>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>-3</specificity>
+			<accuracy>true</accuracy>
+			<time>yes</time>
+			<timezone>yes</timezone>
+			<status>true</status>
+			<system>true</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo></frominfo>
+			<toinfo>This is a specialized format invented by Deltik to create readable yet detailed chat logs.</toinfo>
+		</support>
+	</format>
+	<format id="gchat">
+		<name>Gmail Chats (download)</name>
+		<client>Gmail</client>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<specificity>2</specificity>
+			<accuracy>false</accuracy>
+			<time>group</time>
+			<timezone>group</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo>Sign into Gmail</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="gv">
+		<name>Google Voice (download)</name>
+		<client>Google Voice</client>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<specificity>2</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>false</group>
+			<frominfo>Sign into Google Voice</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="json">
+		<name>Log2Log JSON</name>
+		<client>Log2Log</client>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>-3</specificity>
+			<accuracy>true</accuracy>
+			<time>yes</time>
+			<timezone>yes</timezone>
+			<status>true</status>
+			<system>true</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo></frominfo>
+			<toinfo>This dumps the converted chat logs into one Log2Log standard chat log.</toinfo>
+		</support>
+	</format>
+	<format id="meebo">
+		<name>Meebo (from files)</name>
+		<client>Meebo</client>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>2</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>false</group>
+			<frominfo>This requires raw Meebo chat log files.</frominfo>
+			<toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw Meebo chat logs.</toinfo>
+		</support>
+	</format>
+	<format id="meeboconnect">
+		<name>Meebo (download)</name>
+		<client>Meebo</client>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<specificity>2</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>false</group>
+			<frominfo>Enter your Meebo username and password.</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="pidgin">
+		<name>Pidgin HTML</name>
+		<client>Pidgin</client>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>0</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>group</timezone>
+			<status>true</status>
+			<system>true</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo>Pidgin poop?</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="skype">
+		<name>Skype</name>
+		<client>Skype</client>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<specificity>0</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>yes</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases></aliases>
+			<group>true</group>
+			<frominfo></frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+</formats>
+<!-- NOTE: <group> has yet to be designed in Log2Log Standard Chat Log Format. -->
+
+<!-- TEMPLATE:
+
+<?xml version="1.0" ?>
+<formats>
+	<format id="UNIXNAME"> Unique identifier for this format.
+		<name>DISPLAYNAME</name> The name that shows up in the frontend.
+		<client>CLIENTNAME</client> What the client that uses this format is called.
+		<support> Support information.
+			<from>BOOLEAN</from> Set to "true" if you can convert from this format.
+			<to>BOOLEAN</to> Set to "true" if you can convert to this format.
+			<specificity>INTEGER</specificity> See the Log2Log Timestamp Specificity Index guide below.
+			<accuracy>BOOLEAN</accuracy> Set to "true" if this format supports Log2Log Message Content Accuracy Index. Probably "false".
+			<time>STRING[yes|group|no]</time> Set to "yes" if time is stored for each message. Set to "group" if a group of messages is assigned to a time. Set to "no" if times are not stored.
+			<timezone>STRING[yes|group|no]</timezone> Set to "yes" if timezones are stored for each message. Set to "group" if a group of messages is assigned to a timezone. Set to "no" if timezones are not stored.
+			<status>BOOLEAN</status> Set to "true" if system notifications are stored inline with conversations.
+			<system>BOOLEAN</status> Set to "true" if system messages are logged.
+			<aliases>BOOLEAN</aliases> Set to "true" if screenname aliases are supported.
+			<group>BOOLEAN</group> Set to "true" if group chats are supported.
+			<frominfo></frominfo> Information for the frontend infobox of source conversion.
+			<toinfo></toinfo> Information for the frontend infobox of destination conversion.
+		</support>
+	</format>
+</formats>
+
+-->
+
+<!--
+
+Maximum Log2Log Timestamp Specificity Index
+ Legend:
+  null: No time information
+  -3: Nanoseconds
+  -2: Microseconds
+  -1: Milliseconds
+  0 : Seconds
+  1 : Ten Seconds
+  2 : Minutes
+  3 : Ten Minutes
+  4 : Hours
+  5 : Ten Hours
+  6 : Day
+  7 : Within a Week of a Date
+  8 : Within a Month of a Date
+  9 : Within a Year of a Date
+  10: Within a Decade of a Date
+  11: Within a Century of a Date
+  12: Within a Millenium of a Date
+
+-->

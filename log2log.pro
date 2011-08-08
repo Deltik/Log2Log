@@ -13,19 +13,25 @@ TEMPLATE = app
 SOURCES += main.cpp \
     log2log.cpp \
     helpers.cpp \
-    conversion.cpp
+    conversion.cpp \
+    xmltest.cpp
 
 HEADERS  += \
     log2log.h \
     helpers.h \
-    conversion.h
+    conversion.h \
+    xmltest.h
 
 FORMS    += \
     log2log.ui \
-    conversion.ui
+    conversion.ui \
+    xmltest.ui
 
 RESOURCES += \
     log2log.qrc
 
 TRANSLATIONS += en.ts \
     pt.ts
+
+OTHER_FILES += \
+    resources/formats.xml
