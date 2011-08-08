@@ -2,12 +2,16 @@
 #include "ui_xmltest.h"
 #include <QDialog>
 #include <QXmlStreamReader>
+#include <QFile>
+#include <QString>
+#include <QtDebug>
 #include <fstream>
 #include <iostream>
 #include <string>
 
 QXmlStreamReader *xml; // Test
 QWidget *mama;
+QFile *xmlsrc;
 
 using namespace std;
 
@@ -19,26 +23,21 @@ XmlTest::XmlTest(QWidget *parent) :
     mama = parent;
     this->setWindowTitle("XML Test - Log2Log");
     xml = new QXmlStreamReader;
+    QFile xmlsrc(":/resources/formats.xml");
 
     /***********\
     | EXECUTION |
     \***********/
-    ifstream fileHandle;
-    string data;
-    fileHandle.open("/resources/formats.xml");
-    if (fileHandle.is_open())
+    QString data;
+    if (!xmlsrc.open(QIODevice::ReadOnly | QIODevice::Text))
+        cout << "FAIL";
+    while (!xmlsrc.atEnd())
     {
-        while (!fileHandle.eof())
-        {
-            getline(fileHandle, data);
-            cout << data;
-        }
+        QByteArray line = xmlsrc.readLine();
+        data += line.data();
     }
-    else
-    {
-        cout << "Hmm...";
-    }
-    ui->textBrowser->setHtml("Everybody is looking for something...");
+    ui->textBrowser->setPlainText("Everybody is looking for something...");
+    ui->textBrowser->setPlainText(data);
 }
 
 XmlTest::~XmlTest()
