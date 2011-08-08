@@ -1,19 +1,20 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>images/etc/Arrow.png</file>
-    <file>images/etc/Deltik.png</file>
-    <file>images/etc/Log2Log.png</file>
-    <file>images/services/Adium.png</file>
-    <file>images/services/Digsby.png</file>
-    <file>images/services/Empathy.png</file>
-    <file>images/services/GChat.png</file>
-    <file>images/services/JSON.png</file>
-    <file>images/services/Kopete.png</file>
-    <file>images/services/Log2Log.png</file>
-    <file>images/services/Meebo.png</file>
-    <file>images/services/MeeboConnect.png</file>
-    <file>images/services/Pidgin.png</file>
-    <file>images/services/Skype.png</file>
-    <file>images/services/Trillian.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>images/etc/Arrow.png</file>
+        <file>images/etc/Deltik.png</file>
+        <file>images/etc/Log2Log.png</file>
+        <file>images/services/Adium.png</file>
+        <file>images/services/Digsby.png</file>
+        <file>images/services/Empathy.png</file>
+        <file>images/services/GChat.png</file>
+        <file>images/services/JSON.png</file>
+        <file>images/services/Kopete.png</file>
+        <file>images/services/Log2Log.png</file>
+        <file>images/services/Meebo.png</file>
+        <file>images/services/MeeboConnect.png</file>
+        <file>images/services/Pidgin.png</file>
+        <file>images/services/Skype.png</file>
+        <file>images/services/Trillian.png</file>
+        <file>resources/formats.xml</file>
+    </qresource>
 </RCC>
