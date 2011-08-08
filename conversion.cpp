@@ -3,12 +3,14 @@
 #include <QTimer>
 
 QTimer *timer; // Mock
+QWidget *p;
 
 Conversion::Conversion(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Conversion)
 {
     ui->setupUi(this);
+    p = parent;
     timer = new QTimer;
     timer->setInterval(50);
     connect(timer, SIGNAL(timeout()), this, SLOT(progressMock()));
@@ -22,10 +24,10 @@ Conversion::~Conversion()
 
 /**
  * Cancel Button
- * TODO
  */
 void Conversion::on_xButton_clicked()
 {
+    p->show();
     this->close();
 }
 

@@ -31,7 +31,7 @@ void Log2Log::on_dstProtoBox_currentIndexChanged(int index)
 
 void Log2Log::on_convertButton_clicked()
 {
-    Conversion *w = new Conversion;
+    Conversion *w = new Conversion(this);
     w->show();
     this->hide();
 }
