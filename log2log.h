@@ -29,6 +29,8 @@ private slots:
 
     void on_convertButton_clicked();
 
+    /* DEBUG */ void on_testButton_clicked();
+
 private:
     Ui::Log2Log *ui;
 };

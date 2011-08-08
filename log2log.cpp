@@ -7,6 +7,9 @@
 #include <QtGui/QPushButton>
 #include <QMessageBox>
 
+/* DEBUG */
+#include <xmltest.h>
+
 Log2Log::Log2Log(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Log2Log)
@@ -77,4 +80,12 @@ void Log2Log::updateVisibleFields(int arg1, int arg2)
     case 10: Helpers::hideWebItems(userL, passL); break;
     case 11: Helpers::hideWebItems(userL, passL); break;
     }
+}
+
+// DEBUG
+void Log2Log::on_testButton_clicked()
+{
+    XmlTest *d = new XmlTest(this);
+    d->show();
+    this->hide();
 }
