@@ -5,7 +5,7 @@
 QTimer *timer; // Mock
 QWidget *p;
 
-Conversion::Conversion(QWidget *parent) :
+Conversion::Conversion(QWidget *parent, QIcon *srcIcon, QIcon *dstIcon) :
     QDialog(parent),
     ui(new Ui::Conversion)
 {
@@ -15,6 +15,8 @@ Conversion::Conversion(QWidget *parent) :
     timer->setInterval(50);
     connect(timer, SIGNAL(timeout()), this, SLOT(progressMock()));
     timer->start();
+    ui->srcIconLabel->setPixmap(srcIcon->pixmap(64,64));
+    ui->dstIconLabel->setPixmap(dstIcon->pixmap(64,64));
 }
 
 Conversion::~Conversion()

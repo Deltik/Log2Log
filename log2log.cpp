@@ -31,7 +31,9 @@ void Log2Log::on_dstProtoBox_currentIndexChanged(int index)
 
 void Log2Log::on_convertButton_clicked()
 {
-    Conversion *w = new Conversion(this);
+    QIcon srcIcon = ui->srcProtoBox->itemIcon(ui->srcProtoBox->currentIndex());
+    QIcon dstIcon = ui->dstProtoBox->itemIcon(ui->dstProtoBox->currentIndex());
+    Conversion *w = new Conversion(this, &srcIcon, &dstIcon);
     w->show();
     this->hide();
 }
