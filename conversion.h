@@ -18,6 +18,7 @@ public:
     ~Conversion();
 
 protected slots:
+    void on_xButton_clicked();
     void progressMock();
 
 private:

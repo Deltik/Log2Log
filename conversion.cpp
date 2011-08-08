@@ -20,6 +20,15 @@ Conversion::~Conversion()
     delete ui;
 }
 
+/**
+ * Cancel Button
+ * TODO
+ */
+void Conversion::on_xButton_clicked()
+{
+    this->hide();
+}
+
 void Conversion::progressMock()
 {
     ui->progressBar->setValue(ui->progressBar->value()+1);
