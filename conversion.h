@@ -17,8 +17,8 @@ public:
     explicit Conversion(QWidget *parent = 0, QIcon *srcIcon = 0, QIcon *dstIcon = 0);
     ~Conversion();
 
-protected slots:
-    void on_xButton_clicked();
+private slots:
+    void goBack();
     void progressMock();
 
 private:
