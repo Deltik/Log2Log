@@ -12,6 +12,8 @@ Log2Log::Log2Log(QWidget *parent) :
     ui(new Ui::Log2Log)
 {
     ui->setupUi(this);
+    updateVisibleFields(ui->srcProtoBox->currentIndex(), 0);
+    updateVisibleFields(ui->dstProtoBox->currentIndex(), 1);
 }
 
 Log2Log::~Log2Log()
