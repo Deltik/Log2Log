@@ -26,7 +26,7 @@ Conversion::~Conversion()
  */
 void Conversion::on_xButton_clicked()
 {
-    delete ui;
+    this->close();
 }
 
 void Conversion::progressMock()
