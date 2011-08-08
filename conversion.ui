@@ -75,7 +75,7 @@
     </spacer>
    </item>
    <item row="5" column="1">
-    <widget class="QPushButton" name="xButton">
+    <widget class="QPushButton" name="backButton">
      <property name="text">
       <string>Cancel</string>
      </property>

@@ -3,18 +3,20 @@
 #include <QTimer>
 
 QTimer *timer; // Mock
-QWidget *p;
 
 Conversion::Conversion(QWidget *parent, QIcon *srcIcon, QIcon *dstIcon) :
     QDialog(parent),
     ui(new Ui::Conversion)
 {
     ui->setupUi(this);
-    p = parent;
+    connect(ui->backButton, SIGNAL(clicked()), this, SLOT(goBack()));
+
+    // Temporary timer mock
     timer = new QTimer;
     timer->setInterval(50);
     connect(timer, SIGNAL(timeout()), this, SLOT(progressMock()));
     timer->start();
+
     ui->srcIconLabel->setPixmap(srcIcon->pixmap(64,64));
     ui->dstIconLabel->setPixmap(dstIcon->pixmap(64,64));
 }
@@ -27,12 +29,14 @@ Conversion::~Conversion()
 /**
  * Cancel Button
  */
-void Conversion::on_xButton_clicked()
+void Conversion::goBack()
 {
-    p->show();
+    this->parentWidget()->show();
+    timer->stop();
     this->close();
 }
 
+// Temporary timer mock
 void Conversion::progressMock()
 {
     ui->progressBar->setValue(ui->progressBar->value()+1);

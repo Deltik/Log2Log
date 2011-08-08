@@ -12,6 +12,11 @@ Log2Log::Log2Log(QWidget *parent) :
     ui(new Ui::Log2Log)
 {
     ui->setupUi(this);
+
+    connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSrcFields(int)));
+    connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDstFields(int)));
+    connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
+
     updateVisibleFields(ui->srcProtoBox->currentIndex(), 0);
     updateVisibleFields(ui->dstProtoBox->currentIndex(), 1);
 }
@@ -21,17 +26,17 @@ Log2Log::~Log2Log()
     delete ui;
 }
 
-void Log2Log::on_srcProtoBox_currentIndexChanged(int index)
+void Log2Log::updateSrcFields(int index)
 {
     updateVisibleFields(index, 0);
 }
 
-void Log2Log::on_dstProtoBox_currentIndexChanged(int index)
+void Log2Log::updateDstFields(int index)
 {
     updateVisibleFields(index, 1);
 }
 
-void Log2Log::on_convertButton_clicked()
+void Log2Log::startConversion()
 {
     QIcon srcIcon = ui->srcProtoBox->itemIcon(ui->srcProtoBox->currentIndex());
     QIcon dstIcon = ui->dstProtoBox->itemIcon(ui->dstProtoBox->currentIndex());

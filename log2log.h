@@ -22,12 +22,9 @@ protected:
     void updateVisibleFields(int arg1, int arg2);
 
 private slots:
-
-    void on_srcProtoBox_currentIndexChanged(int index);
-
-    void on_dstProtoBox_currentIndexChanged(int index);
-
-    void on_convertButton_clicked();
+    void updateSrcFields(int index);
+    void updateDstFields(int index);
+    void startConversion();
 
 private:
     Ui::Log2Log *ui;
