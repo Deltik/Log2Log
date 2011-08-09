@@ -22,8 +22,11 @@ protected:
     void updateVisibleFields(int arg1, int arg2);
 
 private slots:
+    /* DEPRECATED -- START */
     void updateSrcFields(int index);
     void updateDstFields(int index);
+    /* DEPRECATED --  END  */
+    void updateFields();
     void setSrcPath();
     void setDstPath();
     void startConversion();

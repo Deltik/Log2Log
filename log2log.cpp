@@ -20,8 +20,12 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->setupUi(this);
 
     // Connect UI signals to local slots
-    connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSrcFields(int)));
-    connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDstFields(int)));
+    //connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSrcFields(int)));
+    //connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDstFields(int)));
+    /* NEW IMPLEMENTATION EXPERIMENTAL CODE - START */
+    connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
+    connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
+    /* NEW IMPLEMENTATION EXPERIMENTAL CODE -  END  */
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
@@ -74,6 +78,50 @@ void Log2Log::updateDstFields(int index)
     updateVisibleFields(index, 1);
 }
 
+/**
+ * Update Source and Destination Fields' Related Information
+ */
+void Log2Log::updateFields()
+{
+    // What is the current index of srcProtoBox?
+    int srcIndex = ui->srcProtoBox->currentIndex();
+    // What is the current index of dstProtoBox?
+    int dstIndex = ui->dstProtoBox->currentIndex();
+
+    // Load each indexs' profiles
+    FormatInfo* srcFI = new FormatInfo();
+    for (int i = 0; i <= srcIndex; i ++)
+        srcFI->pointerNext();
+    srcFI->pointerDig();
+    FormatInfo* dstFI = new FormatInfo();
+    for (int i = 0; i <= dstIndex; i ++)
+        dstFI->pointerNext();
+    dstFI->pointerDig();
+
+    // Show the proper configuration fields
+    if (srcFI->getName("display").indexOf("(download)") >= 0)
+    {
+        Helpers::showWebItems(ui->srcUserLayout, ui->srcPassLayout);
+        Helpers::hidePathItems(ui->srcPathLayout, ui->srcPathLabel);
+    }
+    else
+    {
+        Helpers::hideWebItems(ui->srcUserLayout, ui->srcPassLayout);
+        Helpers::showPathItems(ui->srcPathLayout, ui->srcPathLabel);
+    }
+
+    if (dstFI->getName("display").indexOf("(download)") >= 0)
+    {
+        Helpers::showWebItems(ui->dstUserLayout, ui->dstPassLayout);
+        Helpers::hidePathItems(ui->dstPathLayout, ui->dstPathLabel);
+    }
+    else
+    {
+        Helpers::hideWebItems(ui->dstUserLayout, ui->dstPassLayout);
+        Helpers::showPathItems(ui->dstPathLayout, ui->dstPathLabel);
+    }
+}
+
 // Shows a folder selection dialog and stores the selected path, for source
 void Log2Log::setSrcPath() {
     srcPath = QFileDialog::getExistingDirectory(this, tr("Source path"), QDir::currentPath());
@@ -98,7 +146,11 @@ void Log2Log::startConversion()
     this->hide();
 }
 
-// Shows/hides input boxes depending on the protocol
+/**
+ * Shows/hides input boxes depending on the protocol
+ * @deprecated Don't use this anymore. Deltik has made a better method,
+ *             Log2Log::updateFields().
+ */
 void Log2Log::updateVisibleFields(int arg1, int arg2)
 {
     QLayout *userL;
