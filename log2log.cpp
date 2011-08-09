@@ -366,13 +366,13 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     if (!srcFI->getFromInfo().isEmpty())
         html += "<p>The " +
                 srcFI->getName("display") +
-                " converter says: <code>" +
+                " source converter says: <code>" +
                 srcFI->getFromInfo() +
                 "</code></p>";
     if (!dstFI->getToInfo().isEmpty())
         html += "<p>The " +
                 dstFI->getName("display") +
-                " converter says: <code>" +
+                " destination converter says: <code>" +
                 dstFI->getToInfo() +
                 "</code></p>";
 
