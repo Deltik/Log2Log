@@ -115,7 +115,7 @@
 		</support>
 	</format>
 	<format id="meebo">
-		<name>Meebo (from files)</name>
+		<name>Meebo (files)</name>
 		<client>Meebo</client>
 		<icon>:/images/services/Meebo.png</icon>
 		<support>
