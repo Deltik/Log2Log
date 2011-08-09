@@ -14,20 +14,17 @@ SOURCES += main.cpp \
     log2log.cpp \
     helpers.cpp \
     conversion.cpp \
-    xmltest.cpp \
     formatinfo.cpp
 
 HEADERS  += \
     log2log.h \
     helpers.h \
     conversion.h \
-    xmltest.h \
     formatinfo.h
 
 FORMS    += \
     log2log.ui \
-    conversion.ui \
-    xmltest.ui
+    conversion.ui
 
 RESOURCES += \
     log2log.qrc

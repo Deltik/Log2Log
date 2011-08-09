@@ -10,7 +10,6 @@
 #include <formatinfo.h>
 
 /* DEBUG */
-#include <xmltest.h>
 #include <QDebug>
 
 Log2Log::Log2Log(QWidget *parent) :
@@ -20,20 +19,16 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->setupUi(this);
 
     // Connect UI signals to local slots
-    //connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSrcFields(int)));
-    //connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDstFields(int)));
-    /* NEW IMPLEMENTATION EXPERIMENTAL CODE - START */
     connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
     connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
-    /* NEW IMPLEMENTATION EXPERIMENTAL CODE -  END  */
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
 
-    updateVisibleFields(ui->srcProtoBox->currentIndex(), 0);
-    updateVisibleFields(ui->dstProtoBox->currentIndex(), 1);
+    updateFields();
+    this->setWindowIcon(QIcon(":/images/etc/favicon.ico"));
 
-    // Create "FormatInfo"
+    /* Create "FormatInfo" */
     FormatInfo* fi;
 
     // Clear Source Option Box
@@ -190,12 +185,4 @@ void Log2Log::updateVisibleFields(int arg1, int arg2)
     case 11: Helpers::hideWebItems(userL, passL); break;
     case 12: Helpers::hideWebItems(userL, passL); break;
     }
-}
-
-// DEBUG
-void Log2Log::on_testButton_clicked()
-{
-    XmlTest *d = new XmlTest(this);
-    d->show();
-    this->hide();
 }
