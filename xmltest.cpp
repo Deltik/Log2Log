@@ -39,8 +39,10 @@ XmlTest::XmlTest(QWidget *parent) :
         data += line.data();
     }
     QXmlStreamReader xml(data);
-    FormatInfo* fi = new FormatInfo("deltikhuman");
-    ui->textBrowser->setHtml("<h1>I'm a teapot</h1><p>This is the toinfo content of <b>" + fi->getName("display") + "</b>:</p><code>" + fi->getToInfo() + "</code><img src=\"" + fi->getIconPath() + "\" />");
+    FormatInfo* fi = new FormatInfo();
+    fi->pointerNext();
+    fi->pointerDig();
+    ui->textBrowser->setHtml("<img src=\"" + fi->getIconPath() + "\" style=\"float: right;\" /><h1>I'm a teapot</h1><p>This is the toinfo content of <b>" + fi->getName("display") + "</b>:</p><code>" + fi->getToInfo() + "</code>");
 }
 
 XmlTest::~XmlTest()

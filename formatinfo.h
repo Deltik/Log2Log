@@ -22,8 +22,14 @@ class FormatInfo
 {
 
 public:
+    FormatInfo();
     FormatInfo(char *unixname);
     ~FormatInfo();
+    /* Browser */
+    void pointerReset();
+    bool pointerNext();
+    bool pointerPrevious();
+    bool pointerDig();
     /* Getters (Setters N/A) */
     QString getName(QString type) { if (type == "display") return fName_display; else if (type == "client") return fName_client; else return fName_unix; }
     QIcon getIcon() { return fIcon; }
@@ -41,11 +47,13 @@ public:
     QString getFromInfo() { return fFromInfo; }
     QString getToInfo() { return fToInfo; }
 
+    QString xmlsrc;
+
 private slots:
     //internals();
 
 private:
-    void dig_the_information_out(QXmlStreamReader& reader);
+    bool dig_the_information_out(QXmlStreamReader& reader);
 
     /***********\
     | VARIABLES |
@@ -67,6 +75,9 @@ private:
     bool fGroup;
     QString fFromInfo;
     QString fToInfo;
+    // Since QXmlStreamReader is stupid, I need to keep track of the pointer
+    // by using a simple int that counts the number of readNext()s I run.
+    int num_of_readNexts;
 
 };
 

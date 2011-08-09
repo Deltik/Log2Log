@@ -7,25 +7,44 @@
 #include "formatinfo.h"
 
 /**
- * Constructor
- * @param QString unixname The format to look up
+ * Constructor: No Parameters
  */
-FormatInfo::FormatInfo(char *unixname)
+FormatInfo::FormatInfo()
 {
+    xmlsrc = ":/resources/formats.xml";
     // Open formats file
-    QFile* file = new QFile(":/resources/formats.xml");
+    QFile* file = new QFile(xmlsrc);
     if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         return;
     }
     // Create XML stream reader from file
     QXmlStreamReader xml(file);
+    num_of_readNexts = 0;
+}
+
+/**
+ * Constructor: With Format To Search For
+ * @param QString unixname The format to look up
+ */
+FormatInfo::FormatInfo(char *unixname)
+{
+    xmlsrc = ":/resources/formats.xml";
+    // Open formats file
+    QFile* file = new QFile(xmlsrc);
+    if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
+    // Create XML stream reader from file
+    QXmlStreamReader xml(file);
+    num_of_readNexts = 0;
 
     // Read the XML file
     while(!xml.atEnd())
     {
         // Read next item
-        QXmlStreamReader::TokenType token = xml.readNext();
+        QXmlStreamReader::TokenType token = xml.readNext(); num_of_readNexts ++;
 
         // Skip beginning of file
         if (token == QXmlStreamReader::StartDocument) continue;
@@ -37,6 +56,7 @@ FormatInfo::FormatInfo(char *unixname)
             if (xml.attributes().value("id").toString() == unixname)
             {
                 dig_the_information_out(xml);
+                break;
             }
         }
     }
@@ -50,15 +70,95 @@ FormatInfo::~FormatInfo()
 }
 
 /**
+ * Browser: Reset Pointer
+ */
+void FormatInfo::pointerReset()
+{
+    FormatInfo();
+}
+
+/**
+ * Browser: Point to Next Format
+ * @returns bool true if there is a next to point at
+ */
+bool FormatInfo::pointerNext()
+{
+    // Open formats file
+    QFile* file = new QFile(xmlsrc);
+    if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return false;
+    }
+    // Create XML stream reader from file
+    QXmlStreamReader xml(file);
+    QXmlStreamReader::TokenType token;
+    // Catch up
+    for (int i = 0; i < num_of_readNexts; i ++)
+    {
+        token = xml.readNext();
+    }
+    // Backup
+    int old_num_of_readNexts = num_of_readNexts;
+    // Dare to go on
+    token = xml.readNext(); num_of_readNexts ++;
+    // Repeat until <format> found or reached the end
+    while (!(token == QXmlStreamReader::StartElement && xml.name() == "format") || xml.atEnd())
+    {
+        token = xml.readNext(); num_of_readNexts ++;
+    }
+    if (token == QXmlStreamReader::StartElement && xml.name() == "format")
+    {
+        return true;
+    }
+    // Revert
+    num_of_readNexts = old_num_of_readNexts;
+    return false;
+}
+
+/**
+ * Browser: Point to Previous Format
+ * @returns bool true if there is a previous to point at
+ */
+bool FormatInfo::pointerPrevious()
+{
+    // TODO:
+    //  This is not a critical feature, so FormatInfo can work fine without it.
+    ; // <-- That's a semicolon. :)
+}
+
+/**
+ * Browser: Get Information from Current Pointer Location
+ * @returns bool true if successful
+ */
+bool FormatInfo::pointerDig()
+{
+    // Open formats file
+    QFile* file = new QFile(xmlsrc);
+    if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return false;
+    }
+    // Create XML stream reader from file
+    QXmlStreamReader xml(file);
+    QXmlStreamReader::TokenType token;
+    // Catch up
+    for (int i = 0; i < num_of_readNexts; i ++)
+    {
+        token = xml.readNext();
+    }
+    return dig_the_information_out(xml);
+}
+
+/**
  * Dig the Information Out
  * @precondition reader is currently pointing at a <format>
  * @param QXmlStreamReader reader The reader to pick up from
- * @returns void Nothing at all; it's saved into the class for getters
+ * @returns bool true if successful
  */
-void FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
+bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
 {
     // Check if reader is pointing at an opening <format> element
-    if(reader.tokenType() != QXmlStreamReader::StartElement && reader.name() == "format") return;
+    if(reader.tokenType() != QXmlStreamReader::StartElement && reader.name() == "format") return false;
 
     // Just one thing: Store the unixname
     fName_unix = reader.attributes().value("id").toString();
@@ -172,4 +272,8 @@ void FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
         // Next!
         reader.readNext();
     }
+    // Success or Failure
+    if (!fName_unix.isEmpty())
+        return true;
+    return false;
 }
