@@ -29,9 +29,7 @@ Conversion::~Conversion()
     delete ui;
 }
 
-/**
- * Cancel Button
- */
+// Go back / Cancel button
 void Conversion::goBack()
 {
     this->parentWidget()->show();

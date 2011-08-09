@@ -481,7 +481,7 @@
         <widget class="QLineEdit" name="srcPathEdit"/>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="srcPathButton">
          <property name="maximumSize">
           <size>
            <width>32</width>
@@ -598,7 +598,7 @@
         <widget class="QLineEdit" name="dstPathEdit"/>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="dstPathButton">
          <property name="maximumSize">
           <size>
            <width>32</width>
