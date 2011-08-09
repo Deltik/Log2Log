@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 TARGET = log2log
 TEMPLATE = app
@@ -14,13 +14,15 @@ SOURCES += main.cpp \
     log2log.cpp \
     helpers.cpp \
     conversion.cpp \
-    xmltest.cpp
+    xmltest.cpp \
+    formatinfo.cpp
 
 HEADERS  += \
     log2log.h \
     helpers.h \
     conversion.h \
-    xmltest.h
+    xmltest.h \
+    formatinfo.h
 
 FORMS    += \
     log2log.ui \

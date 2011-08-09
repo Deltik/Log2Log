@@ -2,6 +2,7 @@
 #include "ui_xmltest.h"
 #include <QDialog>
 #include <QXmlStreamReader>
+#include <QXmlSimpleReader>
 #include <QFile>
 #include <QString>
 #include <QtDebug>
@@ -22,7 +23,6 @@ XmlTest::XmlTest(QWidget *parent) :
     ui->setupUi(this);
     mama = parent;
     this->setWindowTitle("XML Test - Log2Log");
-    xml = new QXmlStreamReader;
     QFile xmlsrc(":/resources/formats.xml");
 
     /***********\
@@ -36,6 +36,7 @@ XmlTest::XmlTest(QWidget *parent) :
         QByteArray line = xmlsrc.readLine();
         data += line.data();
     }
+    QXmlStreamReader xml(data);
     ui->textBrowser->setPlainText("Everybody is looking for something...");
     ui->textBrowser->setPlainText(data);
 }
