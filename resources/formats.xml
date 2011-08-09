@@ -133,6 +133,25 @@
 			<toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw Meebo chat logs.</toinfo>
 		</support>
 	</format>
+	<format id="omegle">
+		<name>Omegle HTML</name>
+		<client>Omegle</client>
+		<icon>:/images/services/Omegle.png</icon>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity></specificity>
+			<accuracy>false</accuracy>
+			<time>no</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>false</aliases>
+			<group>false</group>
+			<frominfo>Talked to strangers?</frominfo>
+			<toinfo>You want to convert to fake Omegle conversations?</toinfo>
+		</support>
+	</format>
 	<format id="pidgin">
 		<name>Pidgin HTML</name>
 		<client>Pidgin</client>
@@ -162,7 +181,7 @@
 			<specificity>0</specificity>
 			<accuracy>false</accuracy>
 			<time>yes</time>
-			<timezone>yes</timezone>
+			<timezone>no</timezone>
 			<status>false</status>
 			<system>false</system>
 			<aliases></aliases>

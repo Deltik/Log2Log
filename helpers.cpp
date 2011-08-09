@@ -41,3 +41,46 @@ void Helpers::showPathItems(QLayout *ql, QWidget *qw)
     ql->itemAt(1)->widget()->show();
     qw->show();
 }
+
+/**
+ * Log2Log Timestamp Specificity Index Interpreter
+ * @author Deltik
+ */
+QString Helpers::whatSpecificity(int index)
+{
+    switch (index)
+    {
+    case -3: return "nanosecond";
+    case -2: return "microsecond";
+    case -1: return "millisecond";
+    case 0: return "second";
+    case 1: return "tenth second";
+    case 2: return "minute";
+    case 3: return "tenth minute";
+    case 4: return "hour";
+    case 5: return "tenth hour";
+    case 6: return "day";
+    case 7: return "week of a date";
+    case 8: return "month of a date";
+    case 9: return "year of a date";
+    case 10: return "decade of a date";
+    case 11: return "century of a date";
+    case 12: return "millenium of a date";
+    default: return "never. Time isn't supported by this";
+    }
+}
+
+/**
+ * Log2Log Trinary to String Converter
+ * @author Deltik
+ */
+QString Helpers::whatTrinary(int bit)
+{
+    switch (bit)
+    {
+    case 0: return "not stored at all";
+    case 1: return "stored in groups of messages";
+    case 2: return "stored with each message";
+    default: return "not stored at all";
+    }
+}
