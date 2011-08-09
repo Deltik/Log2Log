@@ -27,7 +27,7 @@ FormatInfo::FormatInfo()
  * Constructor: With Format To Search For
  * @param QString unixname The format to look up
  */
-FormatInfo::FormatInfo(char *unixname)
+FormatInfo::FormatInfo(QString unixname)
 {
     xmlsrc = ":/resources/formats.xml";
     // Open formats file

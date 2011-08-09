@@ -40,7 +40,7 @@ Log2Log::Log2Log(QWidget *parent) :
         fi->pointerDig();
         // If applicable "from"
         if (fi->getFrom())
-            ui->srcProtoBox->addItem(fi->getIcon(), fi->getName("display"));
+            ui->srcProtoBox->addItem(fi->getIcon(), fi->getName("display"), QVariant(fi->getName("unix")));
     }
 
     // Clear Destination Option Box
@@ -52,8 +52,11 @@ Log2Log::Log2Log(QWidget *parent) :
         fi->pointerDig();
         // If applicable "to"
         if (fi->getTo())
-            ui->dstProtoBox->addItem(fi->getIcon(), fi->getName("display"));
+            ui->dstProtoBox->addItem(fi->getIcon(), fi->getName("display"), QVariant(fi->getName("unix")));
     }
+
+    /* Find Out What's Wrong With The Current Selections */
+    whatsWrong();
 }
 
 Log2Log::~Log2Log()
@@ -61,13 +64,21 @@ Log2Log::~Log2Log()
     delete ui;
 }
 
-// Shows/hides "source" input boxes
+/**
+ * Shows/hides "source" input boxes
+ * @deprecated Don't use this anymore. Deltik has made a better method,
+ *             Log2Log::updateFields().
+ */
 void Log2Log::updateSrcFields(int index)
 {
     updateVisibleFields(index, 0);
 }
 
-// Shows/hides "destination" input boxes
+/**
+ * Shows/hides "destination" input boxes
+ * @deprecated Don't use this anymore. Deltik has made a better method,
+ *             Log2Log::updateFields().
+ */
 void Log2Log::updateDstFields(int index)
 {
     updateVisibleFields(index, 1);
@@ -84,13 +95,9 @@ void Log2Log::updateFields()
     int dstIndex = ui->dstProtoBox->currentIndex();
 
     // Load each indexs' profiles
-    FormatInfo* srcFI = new FormatInfo();
-    for (int i = 0; i <= srcIndex; i ++)
-        srcFI->pointerNext();
+    FormatInfo* srcFI = new FormatInfo(ui->srcProtoBox->itemData(srcIndex).toString());
     srcFI->pointerDig();
-    FormatInfo* dstFI = new FormatInfo();
-    for (int i = 0; i <= dstIndex; i ++)
-        dstFI->pointerNext();
+    FormatInfo* dstFI = new FormatInfo(ui->dstProtoBox->itemData(dstIndex).toString());
     dstFI->pointerDig();
 
     // Show the proper configuration fields
@@ -185,4 +192,24 @@ void Log2Log::updateVisibleFields(int arg1, int arg2)
     case 11: Helpers::hideWebItems(userL, passL); break;
     case 12: Helpers::hideWebItems(userL, passL); break;
     }
+}
+
+void Log2Log::whatsWrong(int srcIndex, int dstIndex)
+{
+    if (!srcIndex) srcIndex = ui->srcProtoBox->currentIndex();
+    if (!dstIndex) dstIndex = ui->dstProtoBox->currentIndex();
+
+    // Load each indexs' profiles
+    FormatInfo* srcFI = new FormatInfo(ui->srcProtoBox->itemData(srcIndex).toString());
+    srcFI->pointerDig();
+    FormatInfo* dstFI = new FormatInfo(ui->dstProtoBox->itemData(dstIndex).toString());
+    dstFI->pointerDig();
+
+    // Find out what's lost in this conversion:
+    QString html = "";
+    if (dstFI->getSpecificity() < srcFI->getSpecificity())
+    {
+        html += "<li>"+dstFI->getName("display")+" doesn't store times as accurately as "+srcFI->getName("display")+"</li>";
+    }
+    ui->whatsWrong->setHtml(html);
 }

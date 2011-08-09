@@ -30,8 +30,7 @@ private slots:
     void setSrcPath();
     void setDstPath();
     void startConversion();
-
-    /* DEBUG */ void on_testButton_clicked();
+    void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:
     Ui::Log2Log *ui;

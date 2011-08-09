@@ -23,7 +23,7 @@ class FormatInfo
 
 public:
     FormatInfo();
-    FormatInfo(char *unixname);
+    FormatInfo(QString unixname);
     ~FormatInfo();
     /* Browser */
     void pointerReset();
