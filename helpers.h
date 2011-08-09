@@ -1,5 +1,5 @@
 /** @author igordcard */
-
+/** This class is set for deprecation */
 #ifndef HELPERS_H
 #define HELPERS_H
 
