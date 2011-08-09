@@ -102,7 +102,7 @@ bool FormatInfo::pointerNext()
     // Dare to go on
     token = xml.readNext(); num_of_readNexts ++;
     // Repeat until <format> found or reached the end
-    while (!(token == QXmlStreamReader::StartElement && xml.name() == "format") || xml.atEnd())
+    while (!(token == QXmlStreamReader::StartElement && xml.name() == "format") && !xml.atEnd())
     {
         token = xml.readNext(); num_of_readNexts ++;
     }
@@ -111,7 +111,7 @@ bool FormatInfo::pointerNext()
         return true;
     }
     // Revert
-    num_of_readNexts = old_num_of_readNexts;
+    //num_of_readNexts = old_num_of_readNexts;
     return false;
 }
 

@@ -7,9 +7,11 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QMessageBox>
+#include <formatinfo.h>
 
 /* DEBUG */
 #include <xmltest.h>
+#include <QDebug>
 
 Log2Log::Log2Log(QWidget *parent) :
     QDialog(parent),
@@ -26,6 +28,33 @@ Log2Log::Log2Log(QWidget *parent) :
 
     updateVisibleFields(ui->srcProtoBox->currentIndex(), 0);
     updateVisibleFields(ui->dstProtoBox->currentIndex(), 1);
+
+    // Create "FormatInfo"
+    FormatInfo* fi;
+
+    // Clear Source Option Box
+    ui->srcProtoBox->clear();
+    // Fill Source Option Box
+    fi = new FormatInfo();
+    while (fi->pointerNext())
+    {
+        fi->pointerDig();
+        // If applicable "from"
+        if (fi->getFrom())
+            ui->srcProtoBox->addItem(fi->getIcon(), fi->getName("display"));
+    }
+
+    // Clear Destination Option Box
+    ui->dstProtoBox->clear();
+    // Fill Destination Option Box
+    fi = new FormatInfo();
+    while (fi->pointerNext())
+    {
+        fi->pointerDig();
+        // If applicable "to"
+        if (fi->getTo())
+            ui->dstProtoBox->addItem(fi->getIcon(), fi->getName("display"));
+    }
 }
 
 Log2Log::~Log2Log()
