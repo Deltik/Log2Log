@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "formatinfo.h"
 
 QXmlStreamReader *xml; // Test
 QWidget *mama;
@@ -37,8 +38,8 @@ XmlTest::XmlTest(QWidget *parent) :
         data += line.data();
     }
     QXmlStreamReader xml(data);
-    ui->textBrowser->setPlainText("Everybody is looking for something...");
-    ui->textBrowser->setPlainText(data);
+    FormatInfo* fi = new FormatInfo("deltikhuman");
+    ui->textBrowser->setHtml("<h1>I'm a teapot</h1><p>This is the toinfo contents of <b>Deltik Human</b>:</p><code>" + fi->getToInfo() + "</code>");
 }
 
 XmlTest::~XmlTest()
