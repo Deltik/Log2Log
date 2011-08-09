@@ -12,6 +12,7 @@
 
 #include <QString>
 #include <QFile>
+#include <QIcon>
 #include <QXmlStreamReader>
 #include <string>
 #include <stdio.h>
@@ -24,6 +25,9 @@ public:
     FormatInfo(char *unixname);
     ~FormatInfo();
     /* Getters (Setters N/A) */
+    QString getName(QString type) { if (type == "display") return fName_display; else if (type == "client") return fName_client; else return fName_unix; }
+    QIcon getIcon() { return fIcon; }
+    QString getIconPath() { return fIcon_path; }
     bool getTo() { return fTo; }
     bool getFrom() { return fFrom; }
     int getSpecificity() { return fSpecificity; }
@@ -46,6 +50,11 @@ private:
     /***********\
     | VARIABLES |
     \***********/
+    QString fName_unix;
+    QString fName_display;
+    QString fName_client;
+    QString fIcon_path;
+    QIcon fIcon;
     bool fTo;
     bool fFrom;
     int fSpecificity;

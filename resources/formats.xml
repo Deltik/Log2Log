@@ -3,6 +3,7 @@
 	<format id="adium">
 		<name>Adium</name>
 		<client>Adium</client>
+		<icon>:/images/services/Adium.png</icon>
 		<support>
 			<from>true</from>
 			<to>true</to>
@@ -21,6 +22,7 @@
 	<format id="deltikhuman">
 		<name>Deltik Standard Non-XML Chat Log Format</name>
 		<client>Deltik</client>
+		<icon>:/images/services/Deltik.png</icon>
 		<support>
 			<from>true</from>
 			<to>true</to>
@@ -39,6 +41,7 @@
 	<format id="gchat">
 		<name>Gmail Chats (download)</name>
 		<client>Gmail</client>
+		<icon>:/images/services/GChat.png</icon>
 		<support>
 			<from>true</from>
 			<to>false</to>
@@ -57,6 +60,7 @@
 	<format id="gv">
 		<name>Google Voice (download)</name>
 		<client>Google Voice</client>
+		<icon></icon>
 		<support>
 			<from>true</from>
 			<to>false</to>
@@ -75,6 +79,7 @@
 	<format id="json">
 		<name>Log2Log JSON</name>
 		<client>Log2Log</client>
+		<icon>:/images/services/JSON.png</icon>
 		<support>
 			<from>true</from>
 			<to>true</to>
@@ -93,6 +98,7 @@
 	<format id="meebo">
 		<name>Meebo (from files)</name>
 		<client>Meebo</client>
+		<icon>:/images/services/Meebo.png</icon>
 		<support>
 			<from>true</from>
 			<to>true</to>
@@ -111,6 +117,7 @@
 	<format id="meeboconnect">
 		<name>Meebo (download)</name>
 		<client>Meebo</client>
+		<icon>:/images/services/MeeboConnect.png</icon>
 		<support>
 			<from>true</from>
 			<to>false</to>
@@ -129,6 +136,7 @@
 	<format id="pidgin">
 		<name>Pidgin HTML</name>
 		<client>Pidgin</client>
+		<icon>:/images/services/Pidgin.png</icon>
 		<support>
 			<from>true</from>
 			<to>true</to>
@@ -147,6 +155,7 @@
 	<format id="skype">
 		<name>Skype</name>
 		<client>Skype</client>
+		<icon>:/images/services/Skype.png</icon>
 		<support>
 			<from>true</from>
 			<to>false</to>

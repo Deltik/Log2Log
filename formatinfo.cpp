@@ -60,6 +60,9 @@ void FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
     // Check if reader is pointing at an opening <format> element
     if(reader.tokenType() != QXmlStreamReader::StartElement && reader.name() == "format") return;
 
+    // Just one thing: Store the unixname
+    fName_unix = reader.attributes().value("id").toString();
+
     // Okay, it's a <format>. Let's move on
     reader.readNext();
 
@@ -78,6 +81,20 @@ void FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
             }
         }
 
+        if (currentElement == "name")
+        {
+            fName_display = reader.text().toString();
+        }
+        if (currentElement == "client")
+        {
+            fName_client = reader.text().toString();
+        }
+        if (currentElement == "icon")
+        {
+            fIcon_path = reader.text().toString();
+            QIcon fIconn(fIcon_path);
+            fIcon = fIconn;
+        }
         if (currentElement == "to")
         {
             if (reader.text() == "true")
