@@ -118,6 +118,16 @@
        </item>
        <item>
         <property name="text">
+         <string>Deltik</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/services/Deltik.png</normalon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Digsby</string>
         </property>
         <property name="icon">
@@ -257,7 +267,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>6</number>
+        <number>0</number>
        </property>
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
@@ -275,6 +285,16 @@
         <property name="icon">
          <iconset>
           <normalon>:/images/services/Adium.png</normalon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Deltik</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/services/Deltik.png</normalon>
          </iconset>
         </property>
        </item>

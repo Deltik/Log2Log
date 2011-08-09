@@ -75,15 +75,16 @@ void Log2Log::updateVisibleFields(int arg1, int arg2)
     case 0: Helpers::hideWebItems(userL, passL); break;
     case 1: Helpers::hideWebItems(userL, passL); break;
     case 2: Helpers::hideWebItems(userL, passL); break;
-    case 3: Helpers::hidePathItems(pathL, pathLb); break;
-    case 4: Helpers::hideWebItems(userL, passL); break;
+    case 3: Helpers::hideWebItems(userL, passL); break;
+    case 4: Helpers::hidePathItems(pathL, pathLb); break;
     case 5: Helpers::hideWebItems(userL, passL); break;
     case 6: Helpers::hideWebItems(userL, passL); break;
-    case 7: Helpers::hidePathItems(pathL, pathLb); break;
+    case 7: Helpers::hideWebItems(userL, passL); break;
     case 8: Helpers::hidePathItems(pathL, pathLb); break;
-    case 9: Helpers::hideWebItems(userL, passL); break;
+    case 9: Helpers::hidePathItems(pathL, pathLb); break;
     case 10: Helpers::hideWebItems(userL, passL); break;
     case 11: Helpers::hideWebItems(userL, passL); break;
+    case 12: Helpers::hideWebItems(userL, passL); break;
     }
 }
 
