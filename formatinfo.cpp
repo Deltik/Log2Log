@@ -97,8 +97,6 @@ bool FormatInfo::pointerNext()
     {
         token = xml.readNext();
     }
-    // Backup
-    int old_num_of_readNexts = num_of_readNexts;
     // Dare to go on
     token = xml.readNext(); num_of_readNexts ++;
     // Repeat until <format> found or reached the end
@@ -110,8 +108,7 @@ bool FormatInfo::pointerNext()
     {
         return true;
     }
-    // Revert
-    //num_of_readNexts = old_num_of_readNexts;
+    // No more
     return false;
 }
 
@@ -123,7 +120,7 @@ bool FormatInfo::pointerPrevious()
 {
     // TODO:
     //  This is not a critical feature, so FormatInfo can work fine without it.
-    ; // <-- That's a semicolon. :)
+    return false; // <-- That's a semicolon. :)
 }
 
 /**

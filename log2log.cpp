@@ -210,11 +210,10 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
 
     // Find out what's lost in this conversion:
     QString html = "<ul>";
-    QString hGo    = "<li style=\"color: green;\">";
+    QString hGo    = "<span style=\"color: green;\">";
     QString hWarn  = "<li style=\"color: gold;\">";
     QString hError = "<li style=\"color: darkred;\">";
     QString hEnd   = "</li>";
-    int     cGo    = 0;
     int     cWarn  = 0;
     int     cError = 0;
 
@@ -358,7 +357,7 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
                " completely supports " +
                srcFI->getName("display") +
                ". All data should be transferred." +
-               hEnd;
+               "</span>";
 
     // <frominfo> and <toinfo>
     if (!srcFI->getFromInfo().isEmpty() || !dstFI->getToInfo().isEmpty())
