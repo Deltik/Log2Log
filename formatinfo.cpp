@@ -2,6 +2,8 @@
  * Log2Log
  *  Classes
  *   Format Information
+ *
+ * @author Deltik
  */
 
 #include "formatinfo.h"

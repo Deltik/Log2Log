@@ -14,13 +14,15 @@ SOURCES += main.cpp \
     log2log.cpp \
     helpers.cpp \
     conversion.cpp \
-    formatinfo.cpp
+    formatinfo.cpp \
+    formats/stdformat.cpp
 
 HEADERS  += \
     log2log.h \
     helpers.h \
     conversion.h \
-    formatinfo.h
+    formatinfo.h \
+    formats/stdformat.h
 
 FORMS    += \
     log2log.ui \
