@@ -24,10 +24,60 @@
 #ifndef STDFORMAT_H
 #define STDFORMAT_H
 
+#include <QVariant>
+
 class StdFormat
 {
+/* FUNCTIONS */
 public:
     StdFormat();
+    ~StdFormat();
+    /* Browser */
+    int newEntry();
+    bool nextEntry();
+    bool previousEntry();
+    bool toggleLine();
+    int newLine();
+    bool nextLine();
+    bool previousLine();
+    bool switchLocalSystem(); // TODO: Implementation TBD
+    bool switchSystem(); // TODO: Implementation TBD
+    bool newSystem(); // TODO: Implementation TBD
+    bool nextSystem(); // TODO: Implementation TBD
+    bool previousSystem(); // TODO: Implementation TBD
+    /* Setters */
+    bool setClient(QString name);
+    bool setProtocol(QString name);
+    bool setSelf(QString username);
+    bool setSelfAlias(QString myname);
+    bool setWith(QString username);
+    bool setWithAlias(QString buddyname);
+    bool setTime(int time);
+    bool setTimezone(string timezone);
+    bool setSender(QString name);
+    bool setAlias(QString name);
+    bool setContent(QString data);
+    bool setCode(int code);
+    bool setSpecificity(int specificity);
+    bool setAccuracy(int accuracy);
+    bool setNice(int nice);
+
+/* VARIABLES */
+public:
+    // Final Construction
+    //  This is an unordered indexed array (QHash).
+    //  The slower, ordered indexed array (QMap) is not necessary.
+    //  The index is a string (QString).
+    //  The associated value can be one of many things (QVariant).
+    QHash<QString, QVariant> final;
+
+/* VARIABLES */
+private:
+    // Current Entry Index
+    int dexEntry;
+    // Current Chat Row
+    int dexLine;
+
 };
 
 #endif // STDFORMAT_H
