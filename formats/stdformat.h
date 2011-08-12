@@ -36,31 +36,34 @@ public:
     int newEntry();
     bool nextEntry();
     bool previousEntry();
+    bool gotoEntry(int index);
     bool toggleLine();
     int newLine();
     bool nextLine();
     bool previousLine();
+    bool gotoLine(int index);
     bool switchLocalSystem(); // TODO: Implementation TBD
     bool switchSystem(); // TODO: Implementation TBD
     bool newSystem(); // TODO: Implementation TBD
     bool nextSystem(); // TODO: Implementation TBD
     bool previousSystem(); // TODO: Implementation TBD
+    bool gotoSystem(); // TODO: Implementation TBD
     /* Setters */
     bool setClient(QString name);
-    bool setProtocol(QString name);
-    bool setSelf(QString username);
-    bool setSelfAlias(QString myname);
-    bool setWith(QString username);
-    bool setWithAlias(QString buddyname);
-    bool setTime(int time);
-    bool setTimezone(string timezone);
-    bool setSender(QString name);
-    bool setAlias(QString name);
-    bool setContent(QString data);
-    bool setCode(int code);
-    bool setSpecificity(int specificity);
-    bool setAccuracy(int accuracy);
-    bool setNice(int nice);
+    bool setProtocol(QString name); /*TODO*/
+    bool setSelf(QString username); /*TODO*/
+    bool setSelfAlias(QString myname); /*TODO*/
+    bool setWith(QString username); /*TODO*/
+    bool setWithAlias(QString buddyname); /*TODO*/
+    bool setTime(int time); /*TODO*/
+    bool setTimezone(QString timezone); /*TODO*/
+    bool setSender(QString name); /*TODO*/
+    bool setAlias(QString name); /*TODO*/
+    bool setContent(QString data); /*TODO*/
+    bool setCode(int code); /*TODO*/
+    bool setSpecificity(int specificity); /*TODO*/
+    bool setAccuracy(int accuracy); /*TODO*/
+    bool setNice(int nice); /*TODO*/
 
 /* VARIABLES */
 public:
@@ -77,6 +80,10 @@ private:
     int dexEntry;
     // Current Chat Row
     int dexLine;
+    // Whether in a Chat Row
+    bool inLine;
+    // Current System Log Row
+    int dexSystem; // TODO: Implementation TBD
 
 };
 
