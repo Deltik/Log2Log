@@ -241,4 +241,13 @@ Maximum Log2Log Timestamp Specificity Index
   11: Within a Century of a Date
   12: Within a Millenium of a Date
 
+
+Log2Log Message Content Accuracy Index
+ Legend:
+  0 : Exactly
+  1 : Approximately/Very Similar To
+  2 : Estimated/Similar To
+  3 : Extrapolated/Guessed
+  4 : Unconfirmed/Dramatized
+
 -->

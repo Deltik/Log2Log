@@ -50,20 +50,20 @@ public:
     bool gotoSystem(); // TODO: Implementation TBD
     /* Setters */
     bool setClient(QString name);
-    bool setProtocol(QString name); /*TODO*/
-    bool setSelf(QString username); /*TODO*/
-    bool setSelfAlias(QString myname); /*TODO*/
-    bool setWith(QString username); /*TODO*/
-    bool setWithAlias(QString buddyname); /*TODO*/
-    bool setTime(int time); /*TODO*/
-    bool setTimezone(QString timezone); /*TODO*/
-    bool setSender(QString name); /*TODO*/
-    bool setAlias(QString name); /*TODO*/
-    bool setContent(QString data); /*TODO*/
-    bool setCode(int code); /*TODO*/
-    bool setSpecificity(int specificity); /*TODO*/
-    bool setAccuracy(int accuracy); /*TODO*/
-    bool setNice(int nice); /*TODO*/
+    bool setProtocol(QString name);
+    bool setSelf(QString username);
+    bool setSelfAlias(QString myname);
+    bool setWith(QString username);
+    bool setWithAlias(QString buddyname);
+    bool setTime(int time);
+    bool setTimezone(QString timezone);
+    bool setSender(QString name);
+    bool setAlias(QString name);
+    bool setContent(QString content);
+    bool setCode(int code);
+    bool setSpecificity(int specificity);
+    bool setAccuracy(int accuracy);
+    bool setNice(int nice);
 
 /* VARIABLES */
 public:
@@ -84,6 +84,11 @@ private:
     bool inLine;
     // Current System Log Row
     int dexSystem; // TODO: Implementation TBD
+
+/* FUNCTIONS */
+private:
+    bool checkEntry(int entryIndex);
+    bool checkLine(int lineIndex);
 
 };
 
