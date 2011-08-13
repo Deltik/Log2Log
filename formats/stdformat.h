@@ -64,6 +64,22 @@ public:
     bool setSpecificity(int specificity);
     bool setAccuracy(int accuracy);
     bool setNice(int nice);
+    /* Getters */
+    bool getClient(QString name);
+    bool getProtocol(QString name);
+    bool getSelf(QString username);
+    bool getSelfAlias(QString myname);
+    bool getWith(QString username);
+    bool getWithAlias(QString buddyname);
+    bool getTime(int time);
+    bool getTimezone(QString timezone);
+    bool getSender(QString name);
+    bool getAlias(QString name);
+    bool getContent(QString content);
+    bool getCode(int code);
+    bool getSpecificity(int specificity);
+    bool getAccuracy(int accuracy);
+    bool getNice(int nice);
 
 /* VARIABLES */
 public:
@@ -84,11 +100,6 @@ private:
     bool inLine;
     // Current System Log Row
     int dexSystem; // TODO: Implementation TBD
-
-/* FUNCTIONS */
-private:
-    bool checkEntry(int entryIndex);
-    bool checkLine(int lineIndex);
 
 };
 
