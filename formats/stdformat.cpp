@@ -1096,7 +1096,7 @@ TODO: Redraw the structure to make it look better.
         "with" -> the primary other member of the chat; ex. "you@gmx.com"
         "with_alias" -> alias of the primary other member of a chat; ex. "Best Friend"
         (int)"time" -> the start UNIX epoch of the chat; ex. 1321009871
-        "timezone" -> the start time's timeznoe; ex. America/Chicago
+        "timezone" -> the start time's timezone; ex. America/Chicago
         (array)"chat" -> the meat, A.K.A. the conversation
             (int)"time" -> the UNIX epoch of the entry; ex. 1321009871
             (int)"timezone" -> timezone identifier for the given time; ex. America/Chicago
