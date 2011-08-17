@@ -73,6 +73,16 @@ bool StdFormat::setClient(QString name)
 }
 
 /**
+ * Getter: Get Client
+ * @returns QString The client name
+ */
+QString StdFormat::getClient()
+{
+    // Get the client name. Easy.
+    return final["client"].toString();
+}
+
+/**
  * Browser: New Entry
  * @returns int The entry number/index
  */
@@ -722,6 +732,353 @@ bool StdFormat::setNice(int nice)
     final["data"] = data;
 
     return true;
+}
+
+/**
+ * Getter: Get Protocol
+ * @returns QString The protocol name
+ */
+QString StdFormat::getProtocol()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    return entry["protocol"].toString();
+}
+
+/**
+ * Getter: Get Self
+ * @returns QString The account name of the primary person
+ */
+QString StdFormat::getSelf()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    return entry["self"].toString();
+}
+
+/**
+ * Getter: Get Self Alias
+ * @returns QString The self account display name to get
+ */
+QString StdFormat::getSelfAlias()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    return entry["self_alias"].toString();
+}
+
+/**
+ * Getter: Get With
+ * @returns QString The primary buddy account username to get
+ */
+QString StdFormat::getWith()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    return entry["with"].toString();
+}
+
+/**
+ * Getter: Get With Alias
+ * @returns QString The primary buddy account display name to get
+ */
+QString StdFormat::getWithAlias()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    return entry["with_alias"].toString();
+}
+
+/**
+ * Getter: Get Time
+ * @returns int UNIX epoch of the time to get
+ */
+int StdFormat::getTime()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // Default (entry) timezone or chat row timezone? inLine decides.
+    if (!inLine)
+    {
+        return entry["time"].toInt();
+    }
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get time
+    return chatRow["time"].toInt();
+}
+
+/**
+ * Getter: Get Timezone
+ * @returns QString Timezone identifier to accompany the UNIX time
+ */
+QString StdFormat::getTimezone()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // Default (entry) timezone or chat row timezone? inLine decides.
+    if (!inLine)
+    {
+        return entry["timezone"].toString();
+    }
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get timezone
+    return chatRow["timezone"].toString();
+}
+
+/**
+ * Getter: Get Sender
+ * @returns QString Username of the sender
+ */
+QString StdFormat::getSender()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get sender
+    return chatRow["sender"].toString();
+}
+
+/**
+ * Getter: Get Sender Alias
+ * @returns QString Alias of the sender
+ */
+QString StdFormat::getAlias()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get alias
+    return chatRow["alias"].toString();
+}
+
+/**
+ * Getter: Get Message Content
+ * @returns QString Content of the message
+ */
+QString StdFormat::getContent()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get content
+    return chatRow["content"].toString();
+}
+
+/**
+ * Getter: Get Log2Log Message Code
+ * @returns int Code ID
+ */
+int StdFormat::getCode()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get code
+    return chatRow["code"].toInt();
+}
+
+/**
+ * Getter: Get Log2Log Timestamp Specificity Index
+ * @returns int Log2Log Timestamp Specificity Index
+ */
+int StdFormat::getSpecificity()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get specificity
+    return chatRow["specificity"].toInt();
+}
+
+/**
+ * Getter: Set Log2Log Message Content Accuracy Index
+ * @returns int Log2Log Message Content Accuracy Index
+ */
+int StdFormat::getAccuracy()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get accuracy
+    return chatRow["accuracy"].toInt();
+}
+
+/**
+ * Getter: Get Log2Log Message Niceness
+ * @returns int Log2Log message nice value
+ */
+int StdFormat::getNice()
+{
+    QString curEntry;
+    QString curLine;
+    curEntry.setNum(dexEntry);
+    curLine.setNum(dexLine);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    // If selected entry doesn't exist...
+    if (data[curEntry].isNull())
+        return false;
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If the entry hasn't initialized any chat rows...
+    if (entry["chat"].isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    // If the set chat row doesn't exist...
+    if (chat[curLine].isNull())
+        return false;
+    QHash<QString, QVariant> chatRow = chat[curLine].toHash();
+    // Get nice
+    return chatRow["nice"].toInt();
 }
 
 /*

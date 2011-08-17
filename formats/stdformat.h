@@ -65,21 +65,21 @@ public:
     bool setAccuracy(int accuracy);
     bool setNice(int nice);
     /* Getters */
-    bool getClient(QString name);
-    bool getProtocol(QString name);
-    bool getSelf(QString username);
-    bool getSelfAlias(QString myname);
-    bool getWith(QString username);
-    bool getWithAlias(QString buddyname);
-    bool getTime(int time);
-    bool getTimezone(QString timezone);
-    bool getSender(QString name);
-    bool getAlias(QString name);
-    bool getContent(QString content);
-    bool getCode(int code);
-    bool getSpecificity(int specificity);
-    bool getAccuracy(int accuracy);
-    bool getNice(int nice);
+    QString getClient(); /*TODO*/
+    QString getProtocol(); /*TODO*/
+    QString getSelf(); /*TODO*/
+    QString getSelfAlias(); /*TODO*/
+    QString getWith(); /*TODO*/
+    QString getWithAlias(); /*TODO*/
+    int getTime(); /*TODO*/
+    QString getTimezone(); /*TODO*/
+    QString getSender(); /*TODO*/
+    QString getAlias(); /*TODO*/
+    QString getContent(); /*TODO*/
+    int getCode(); /*TODO*/
+    int getSpecificity(); /*TODO*/
+    int getAccuracy(); /*TODO*/
+    int getNice(); /*TODO*/
 
 /* VARIABLES */
 public:
