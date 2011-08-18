@@ -76,6 +76,25 @@
 			<toinfo></toinfo>
 		</support>
 	</format>
+	<format id="imo">
+		<name>imo.im (download)</name>
+		<client>imo instant messenger</client>
+		<icon>:/images/services/imo.png</icon>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<specificity>0</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo>Sign in using your imo username. (Load from linked accounts not supported yet by Log2Log.)</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
 	<format id="json">
 		<name>Log2Log JSON</name>
 		<client>Log2Log</client>

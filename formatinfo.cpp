@@ -165,6 +165,26 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
     // Okay, it's a <format>. Let's move on
     reader.readNext();
 
+    // Clean Variables
+    fName_unix = "";
+    fName_display = "";
+    fName_client = "";
+    fIcon_path = "";
+    QIcon fIconn(":/images/etc/blank.png");
+    fIcon = fIconn;
+    fTo = NULL;
+    fFrom = NULL;
+    fSpecificity = NULL;
+    fAccuracy = NULL;
+    fTime = NULL;
+    fTimezone = NULL;
+    fStatus = NULL;
+    fSystem = NULL;
+    fAliases = NULL;
+    fGroup = NULL;
+    fFromInfo = "";
+    fToInfo = "";
+
     // Keep going until </format>
     while(!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == "format"))
     {
