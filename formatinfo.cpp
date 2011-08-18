@@ -166,7 +166,6 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
     reader.readNext();
 
     // Clean Variables
-    fName_unix = "";
     fName_display = "";
     fName_client = "";
     fIcon_path = "";
