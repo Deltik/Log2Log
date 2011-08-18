@@ -26,7 +26,6 @@ Log2Log::Log2Log(QWidget *parent) :
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
 
     updateFields();
-    this->setWindowIcon(QIcon(":/images/etc/favicon.ico"));
 
     /* Create "FormatInfo" */
     FormatInfo* fi;

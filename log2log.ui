@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Log2Log Chat Log Converter</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="log2log.qrc">
+    <normaloff>:/images/etc/favicon.ico</normaloff>:/images/etc/favicon.ico</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="logoLabel">
