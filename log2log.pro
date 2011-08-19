@@ -15,14 +15,16 @@ SOURCES += main.cpp \
     helpers.cpp \
     conversion.cpp \
     formatinfo.cpp \
-    formats/stdformat.cpp
+    formats/stdformat.cpp \
+    formats/omegle.cpp
 
 HEADERS  += \
     log2log.h \
     helpers.h \
     conversion.h \
     formatinfo.h \
-    formats/stdformat.h
+    formats/stdformat.h \
+    formats/omegle.h
 
 FORMS    += \
     log2log.ui \
