@@ -1,15 +1,17 @@
-/** @author igordcard */
-/** This class is set for deprecation */
+/**
+ * @author igordcard
+ * @author Deltik
+ */
 #ifndef HELPERS_H
 #define HELPERS_H
 
 #include <QDialog>
 #include <QLayoutItem>
 
-class Helpers
+class Helper
 {
 public:
-    Helpers();
+    Helper();
 
 public:
     static void hideWebItems(QLayout *ql1, QLayout *ql2);

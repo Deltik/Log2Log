@@ -1,5 +1,5 @@
 #include "log2log.h"
-#include "helpers.h"
+#include "helper.h"
 #include "ui_log2log.h"
 #include "conversion.h"
 #include <QtGui/QLabel>
@@ -102,24 +102,24 @@ void Log2Log::updateFields()
     // Show the proper configuration fields
     if (srcFI->getName("display").indexOf("(download)") >= 0)
     {
-        Helpers::showWebItems(ui->srcUserLayout, ui->srcPassLayout);
-        Helpers::hidePathItems(ui->srcPathLayout, ui->srcPathLabel);
+        Helper::showWebItems(ui->srcUserLayout, ui->srcPassLayout);
+        Helper::hidePathItems(ui->srcPathLayout, ui->srcPathLabel);
     }
     else
     {
-        Helpers::hideWebItems(ui->srcUserLayout, ui->srcPassLayout);
-        Helpers::showPathItems(ui->srcPathLayout, ui->srcPathLabel);
+        Helper::hideWebItems(ui->srcUserLayout, ui->srcPassLayout);
+        Helper::showPathItems(ui->srcPathLayout, ui->srcPathLabel);
     }
 
     if (dstFI->getName("display").indexOf("(download)") >= 0)
     {
-        Helpers::showWebItems(ui->dstUserLayout, ui->dstPassLayout);
-        Helpers::hidePathItems(ui->dstPathLayout, ui->dstPathLabel);
+        Helper::showWebItems(ui->dstUserLayout, ui->dstPassLayout);
+        Helper::hidePathItems(ui->dstPathLayout, ui->dstPathLabel);
     }
     else
     {
-        Helpers::hideWebItems(ui->dstUserLayout, ui->dstPassLayout);
-        Helpers::showPathItems(ui->dstPathLayout, ui->dstPathLabel);
+        Helper::hideWebItems(ui->dstUserLayout, ui->dstPassLayout);
+        Helper::showPathItems(ui->dstPathLayout, ui->dstPathLabel);
     }
 
     /* Find Out What's Wrong With The Current Selections */
@@ -176,23 +176,23 @@ void Log2Log::updateVisibleFields(int arg1, int arg2)
     }
 
     // Shows everything before hiding something
-    Helpers::showWebItems(userL, passL);
-    Helpers::showPathItems(pathL, pathLb);
+    Helper::showWebItems(userL, passL);
+    Helper::showPathItems(pathL, pathLb);
 
     switch(arg1) {
-    case 0: Helpers::hideWebItems(userL, passL); break;
-    case 1: Helpers::hideWebItems(userL, passL); break;
-    case 2: Helpers::hideWebItems(userL, passL); break;
-    case 3: Helpers::hideWebItems(userL, passL); break;
-    case 4: Helpers::hidePathItems(pathL, pathLb); break;
-    case 5: Helpers::hideWebItems(userL, passL); break;
-    case 6: Helpers::hideWebItems(userL, passL); break;
-    case 7: Helpers::hideWebItems(userL, passL); break;
-    case 8: Helpers::hidePathItems(pathL, pathLb); break;
-    case 9: Helpers::hidePathItems(pathL, pathLb); break;
-    case 10: Helpers::hideWebItems(userL, passL); break;
-    case 11: Helpers::hideWebItems(userL, passL); break;
-    case 12: Helpers::hideWebItems(userL, passL); break;
+    case 0: Helper::hideWebItems(userL, passL); break;
+    case 1: Helper::hideWebItems(userL, passL); break;
+    case 2: Helper::hideWebItems(userL, passL); break;
+    case 3: Helper::hideWebItems(userL, passL); break;
+    case 4: Helper::hidePathItems(pathL, pathLb); break;
+    case 5: Helper::hideWebItems(userL, passL); break;
+    case 6: Helper::hideWebItems(userL, passL); break;
+    case 7: Helper::hideWebItems(userL, passL); break;
+    case 8: Helper::hidePathItems(pathL, pathLb); break;
+    case 9: Helper::hidePathItems(pathL, pathLb); break;
+    case 10: Helper::hideWebItems(userL, passL); break;
+    case 11: Helper::hideWebItems(userL, passL); break;
+    case 12: Helper::hideWebItems(userL, passL); break;
     }
 }
 
@@ -243,7 +243,7 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     // Specificity Index not as precise in destination
     if (srcFI->getTime() > 0 && dstFI->getTime() > 0 && srcFI->getSpecificity() < dstFI->getSpecificity())
     {
-        Helpers* helper = new Helpers();
+        Helper* helper = new Helper();
         QString srcSpecificityReadable = helper->whatSpecificity(srcFI->getSpecificity());
         QString dstSpecificityReadable = helper->whatSpecificity(dstFI->getSpecificity());
         html += hError +
@@ -262,7 +262,7 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     // Timezone handling
     if (dstFI->getTime() > 0 && dstFI->getTimezone() < srcFI->getTimezone())
     {
-        Helpers* helper = new Helpers();
+        Helper* helper = new Helper();
         if (dstFI->getTimezone() == 1)
         {
             html += hWarn;

@@ -1,15 +1,15 @@
-#include "helpers.h"
+#include "helper.h"
 #include <QtGui/QLayout>
 
 /* This class assumes and requires the existence
  * of log2log.ui which comes with Log2Log */
 
-Helpers::Helpers()
+Helper::Helper()
 {
 }
 
 // Hides input widgets related to web accounts data
-void Helpers::hideWebItems(QLayout *ql1, QLayout *ql2)
+void Helper::hideWebItems(QLayout *ql1, QLayout *ql2)
 {
     ql1->itemAt(0)->widget()->hide();
     ql1->itemAt(1)->widget()->hide();
@@ -18,7 +18,7 @@ void Helpers::hideWebItems(QLayout *ql1, QLayout *ql2)
 }
 
 // Hides input widgets related to the path of chatlogs
-void Helpers::hidePathItems(QLayout *ql, QWidget *qw)
+void Helper::hidePathItems(QLayout *ql, QWidget *qw)
 {
     ql->itemAt(0)->widget()->hide();
     ql->itemAt(1)->widget()->hide();
@@ -26,7 +26,7 @@ void Helpers::hidePathItems(QLayout *ql, QWidget *qw)
 }
 
 // Shows input widgets related to web accounts data
-void Helpers::showWebItems(QLayout *ql1, QLayout *ql2)
+void Helper::showWebItems(QLayout *ql1, QLayout *ql2)
 {
     ql1->itemAt(0)->widget()->show();
     ql1->itemAt(1)->widget()->show();
@@ -35,7 +35,7 @@ void Helpers::showWebItems(QLayout *ql1, QLayout *ql2)
 }
 
 // Shows input widgets related to the path of chatlogs
-void Helpers::showPathItems(QLayout *ql, QWidget *qw)
+void Helper::showPathItems(QLayout *ql, QWidget *qw)
 {
     ql->itemAt(0)->widget()->show();
     ql->itemAt(1)->widget()->show();
@@ -46,7 +46,7 @@ void Helpers::showPathItems(QLayout *ql, QWidget *qw)
  * Log2Log Timestamp Specificity Index Interpreter
  * @author Deltik
  */
-QString Helpers::whatSpecificity(int index)
+QString Helper::whatSpecificity(int index)
 {
     switch (index)
     {
@@ -74,7 +74,7 @@ QString Helpers::whatSpecificity(int index)
  * Log2Log Trinary to String Converter
  * @author Deltik
  */
-QString Helpers::whatTrinary(int bit)
+QString Helper::whatTrinary(int bit)
 {
     switch (bit)
     {

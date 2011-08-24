@@ -12,7 +12,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     log2log.cpp \
-    helpers.cpp \
+    helper.cpp \
     conversion.cpp \
     formatinfo.cpp \
     formats/stdformat.cpp \
@@ -20,7 +20,7 @@ SOURCES += main.cpp \
 
 HEADERS  += \
     log2log.h \
-    helpers.h \
+    helper.h \
     conversion.h \
     formatinfo.h \
     formats/stdformat.h \
