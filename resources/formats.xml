@@ -60,7 +60,7 @@
 	<format id="gv">
 		<name>Google Voice (download)</name>
 		<client>Google Voice</client>
-		<icon></icon>
+		<icon>:/images/services/GVoice.png</icon>
 		<support>
 			<from>true</from>
 			<to>false</to>
