@@ -3,6 +3,10 @@
 #include <QTimer>
 #include <math.h>
 
+/* INCLUDE FORMAT CONVERTER CLASSES */
+#include "formats/omegle.h"
+#include "formats/stdformat.h"
+
 QTimer *timer; // Mock
 
 Conversion::Conversion(QWidget *parent, QIcon *srcIcon, QIcon *dstIcon) :
