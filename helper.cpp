@@ -1,11 +1,50 @@
 #include "helper.h"
 #include <QtGui/QLayout>
+#include <QGridLayout>
 
 /* This class assumes and requires the existence
  * of log2log.ui which comes with Log2Log */
 
 Helper::Helper()
 {
+}
+
+/**
+ * Bed Intruder: Hide Yo Kids: QGridLayout Edition
+ */
+void Helper::hide(QGridLayout *ql)
+{
+    for (int i = 0; i < ql->count(); i ++)
+        ql->itemAt(i)->widget()->hide();
+}
+
+/**
+ * Bed Intruder: Hide Yo Kids: QVBoxLayout Edition, namely the "PathLayout"s
+ */
+void Helper::hide(QVBoxLayout *ql)
+{
+    ql->itemAt(0)->widget()->hide();
+    ql->itemAt(1)->layout()->itemAt(0)->widget()->hide();
+    ql->itemAt(1)->layout()->itemAt(1)->widget()->hide();
+}
+
+/**
+ * Show Items
+ */
+void Helper::show(QGridLayout *ql)
+{
+    for (int i = 0; i < ql->count(); i ++)
+        ql->itemAt(i)->widget()->show();
+}
+
+/**
+ * Show Items, namely the "PathLayout"s
+ */
+void Helper::show(QVBoxLayout *ql)
+{
+    ql->itemAt(0)->widget()->show();
+    ql->itemAt(1)->layout()->itemAt(0)->widget()->show();
+    ql->itemAt(1)->layout()->itemAt(1)->widget()->show();
 }
 
 // Hides input widgets related to web accounts data

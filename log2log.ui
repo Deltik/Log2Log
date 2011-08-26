@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Log2Log</class>
- <widget class="QDialog" name="Log2Log">
+ <widget class="QMainWindow" name="Log2Log">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,18 +10,6 @@
     <height>480</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>640</width>
-    <height>384</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Log2Log Chat Log Converter</string>
   </property>
@@ -29,640 +17,323 @@
    <iconset resource="log2log.qrc">
     <normaloff>:/images/etc/favicon.ico</normaloff>:/images/etc/favicon.ico</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="logoLabel">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>80</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="log2log.qrc">:/images/etc/Log2Log.png</pixmap>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <layout class="QVBoxLayout" name="srcProtoLayout">
-     <item>
-      <widget class="QLabel" name="sourceLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Source:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="srcProtoBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <item>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="logoLabel">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
         <property name="text">
-         <string>Adium</string>
+         <string/>
         </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Adium.png</normalon>
-         </iconset>
+        <property name="pixmap">
+         <pixmap resource="log2log.qrc">:/images/etc/Log2Log.png</pixmap>
         </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Deltik</string>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Deltik.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Digsby</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Digsby.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Empathy</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Empathy.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GChat</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/GChat.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>JSON</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/JSON.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Kopete</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Kopete.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Log2Log</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Log2Log.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Meebo</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Meebo.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MeeboConnect</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/MeeboConnect.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Pidgin</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Pidgin.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Skype</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Skype.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Trillian</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Trillian.png</normalon>
-         </iconset>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="1">
-    <layout class="QVBoxLayout" name="dstProtoLayout">
-     <item>
-      <widget class="QLabel" name="destinationLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Destination:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="dstProtoBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>Adium</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Adium.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Deltik</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Deltik.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Digsby</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Digsby.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Empathy</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Empathy.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GChat</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/GChat.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>JSON</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/JSON.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Kopete</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Kopete.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Log2Log</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Log2Log.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Meebo</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Meebo.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MeeboConnect</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/MeeboConnect.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Pidgin</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Pidgin.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Skype</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Skype.png</normalon>
-         </iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Trillian</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/services/Trillian.png</normalon>
-         </iconset>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0">
-    <layout class="QVBoxLayout" name="srcLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <layout class="QVBoxLayout" name="srcPathLLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="srcPathLabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Path:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="srcPathLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLineEdit" name="srcPathEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="srcPathButton">
-         <property name="maximumSize">
-          <size>
-           <width>32</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="srcUserLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="userButton">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Username:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="srcUserEdit"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="srcPassLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="passButton">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Password:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="srcPassEdit"/>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="1">
-    <layout class="QVBoxLayout" name="dstLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <layout class="QVBoxLayout" name="dstPathLLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="dstPathLabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Path:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="dstPathLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLineEdit" name="dstPathEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="dstPathButton">
-         <property name="maximumSize">
-          <size>
-           <width>32</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="dstUserLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="userButton_2">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Username:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="dstUserEdit"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="dstPassLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QLabel" name="passButton_2">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Password:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="dstPassEdit"/>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QTextBrowser" name="whatsWrong">
-     <property name="styleSheet">
-      <string notr="true">/*background: transparent;
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="1">
+         <widget class="QComboBox" name="dstProtoBox">
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>You compiled this program wrong.</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="srcLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QComboBox" name="srcProtoBox">
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>You compiled this program wrong.</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="dstLabel">
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="text">
+           <string>Destination</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QVBoxLayout" name="dstCollectLayout">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="dstPathLayout">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="dstPathLabel">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Path</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="dstPathEdit"/>
+              </item>
+              <item>
+               <widget class="QToolButton" name="dstPathButton">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="dstAuthLayout">
+            <property name="verticalSpacing">
+             <number>2</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLineEdit" name="dstUserEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLineEdit" name="dstPassEdit"/>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="dstUserLabel">
+              <property name="text">
+               <string>Username</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="dstPassLabel">
+              <property name="text">
+               <string>Password</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QVBoxLayout" name="srcCollectLayout">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="srcPathLayout">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="srcPathLabel">
+              <property name="text">
+               <string>Path</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="srcPathEdit"/>
+              </item>
+              <item>
+               <widget class="QToolButton" name="srcPathButton">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="srcAuthLayout">
+            <property name="verticalSpacing">
+             <number>2</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="srcUserLabel">
+              <property name="text">
+               <string>Username</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="srcPassLabel">
+              <property name="text">
+               <string>Password</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="srcUserEdit"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="srcPassEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QTextBrowser" name="whatsWrong">
+        <property name="styleSheet">
+         <string notr="true">/*background: transparent;
 border: none;*/</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QPushButton" name="convertButton">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>48</height>
-      </size>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normalon>:/images/etc/Arrow.png</normalon>
-      </iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>80</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-  </layout>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="convertButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/etc/Arrow.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>80</width>
+          <height>36</height>
+         </size>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>640</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Check for Updates...</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About Log2Log</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

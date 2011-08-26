@@ -2,6 +2,7 @@
 #include "helper.h"
 #include "ui_log2log.h"
 #include "conversion.h"
+#include "about.h"
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
@@ -9,11 +10,8 @@
 #include <QMessageBox>
 #include <formatinfo.h>
 
-/* DEBUG */
-#include <QDebug>
-
 Log2Log::Log2Log(QWidget *parent) :
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::Log2Log)
 {
     ui->setupUi(this);
@@ -24,6 +22,7 @@ Log2Log::Log2Log(QWidget *parent) :
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(menuAbout()));
 
     updateFields();
 
@@ -64,26 +63,6 @@ Log2Log::~Log2Log()
 }
 
 /**
- * Shows/hides "source" input boxes
- * @deprecated Don't use this anymore. Deltik has made a better method,
- *             Log2Log::updateFields().
- */
-void Log2Log::updateSrcFields(int index)
-{
-    updateVisibleFields(index, 0);
-}
-
-/**
- * Shows/hides "destination" input boxes
- * @deprecated Don't use this anymore. Deltik has made a better method,
- *             Log2Log::updateFields().
- */
-void Log2Log::updateDstFields(int index)
-{
-    updateVisibleFields(index, 1);
-}
-
-/**
  * Update Source and Destination Fields' Related Information
  */
 void Log2Log::updateFields()
@@ -102,100 +81,62 @@ void Log2Log::updateFields()
     // Show the proper configuration fields
     if (srcFI->getName("display").indexOf("(download)") >= 0)
     {
-        Helper::showWebItems(ui->srcUserLayout, ui->srcPassLayout);
-        Helper::hidePathItems(ui->srcPathLayout, ui->srcPathLabel);
+        Helper::hide(ui->srcPathLayout);
+        Helper::show(ui->srcAuthLayout);
     }
     else
     {
-        Helper::hideWebItems(ui->srcUserLayout, ui->srcPassLayout);
-        Helper::showPathItems(ui->srcPathLayout, ui->srcPathLabel);
+        Helper::show(ui->srcPathLayout);
+        Helper::hide(ui->srcAuthLayout);
     }
 
     if (dstFI->getName("display").indexOf("(download)") >= 0)
     {
-        Helper::showWebItems(ui->dstUserLayout, ui->dstPassLayout);
-        Helper::hidePathItems(ui->dstPathLayout, ui->dstPathLabel);
+        Helper::hide(ui->dstPathLayout);
+        Helper::show(ui->dstAuthLayout);
     }
     else
     {
-        Helper::hideWebItems(ui->dstUserLayout, ui->dstPassLayout);
-        Helper::showPathItems(ui->dstPathLayout, ui->dstPathLabel);
+        Helper::show(ui->dstPathLayout);
+        Helper::hide(ui->dstAuthLayout);
     }
 
     /* Find Out What's Wrong With The Current Selections */
     whatsWrong();
 }
 
-// Shows a folder selection dialog and stores the selected path, for source
+/**
+ * Folder Selection Dialog for Source
+ */
 void Log2Log::setSrcPath() {
     srcPath = QFileDialog::getExistingDirectory(this, tr("Source path"), QDir::currentPath());
     if(!srcPath.isNull())
         ui->srcPathEdit->setText(srcPath);
 }
 
-// Shows a folder selection dialog and stores the selected path, for destination
+/**
+ * Folder Selection Dialog for Destination
+ */
 void Log2Log::setDstPath() {
     dstPath = QFileDialog::getExistingDirectory(this, tr("Destination path"), QDir::currentPath());
     if(!dstPath.isNull())
         ui->dstPathEdit->setText(dstPath);
 }
 
-// Initiates the conversion and switches to the proper dialog
+/**
+ * Start Conversion Process
+ */
 void Log2Log::startConversion()
 {
     QIcon srcIcon = ui->srcProtoBox->itemIcon(ui->srcProtoBox->currentIndex());
     QIcon dstIcon = ui->dstProtoBox->itemIcon(ui->dstProtoBox->currentIndex());
     Conversion *w = new Conversion(this, &srcIcon, &dstIcon);
     w->show();
-    this->hide();
 }
 
 /**
- * Shows/hides input boxes depending on the protocol
- * @deprecated Don't use this anymore. Deltik has made a better method,
- *             Log2Log::updateFields().
+ * What's Lost in the Selected Conversion?
  */
-void Log2Log::updateVisibleFields(int arg1, int arg2)
-{
-    QLayout *userL;
-    QLayout *passL;
-    QLayout *pathL;
-    QLabel *pathLb;
-
-    if(arg2 == 0) {
-        userL = ui->srcUserLayout;
-        passL = ui->srcPassLayout;
-        pathL = ui->srcPathLayout;
-        pathLb = ui->srcPathLabel;
-    }
-    else {
-        userL = ui->dstUserLayout;
-        passL = ui->dstPassLayout;
-        pathL = ui->dstPathLayout;
-        pathLb = ui->dstPathLabel;
-    }
-
-    // Shows everything before hiding something
-    Helper::showWebItems(userL, passL);
-    Helper::showPathItems(pathL, pathLb);
-
-    switch(arg1) {
-    case 0: Helper::hideWebItems(userL, passL); break;
-    case 1: Helper::hideWebItems(userL, passL); break;
-    case 2: Helper::hideWebItems(userL, passL); break;
-    case 3: Helper::hideWebItems(userL, passL); break;
-    case 4: Helper::hidePathItems(pathL, pathLb); break;
-    case 5: Helper::hideWebItems(userL, passL); break;
-    case 6: Helper::hideWebItems(userL, passL); break;
-    case 7: Helper::hideWebItems(userL, passL); break;
-    case 8: Helper::hidePathItems(pathL, pathLb); break;
-    case 9: Helper::hidePathItems(pathL, pathLb); break;
-    case 10: Helper::hideWebItems(userL, passL); break;
-    case 11: Helper::hideWebItems(userL, passL); break;
-    case 12: Helper::hideWebItems(userL, passL); break;
-    }
-}
-
 void Log2Log::whatsWrong(int srcIndex, int dstIndex)
 {
     if (!srcIndex) srcIndex = ui->srcProtoBox->currentIndex();
@@ -376,4 +317,13 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
 
     // So tell me: what's wrong?
     ui->whatsWrong->setHtml(html);
+}
+
+/**
+ * About Log2Log Dialog Box
+ */
+void Log2Log::menuAbout()
+{
+    About *w = new About(this);
+    w->show();
 }

@@ -1,16 +1,21 @@
-/** @author igordcard */
+/**
+ * @author Deltik
+ * @author igordcard
+ */
 
 #ifndef LOG2LOG_H
 #define LOG2LOG_H
 
-#include <QDialog>
+#include <QMainWindow>
 #include <QLayoutItem>
+
+#define VERSION "1.0.0"
 
 namespace Ui {
     class Log2Log;
 }
 
-class Log2Log : public QDialog
+class Log2Log : public QMainWindow
 {
     Q_OBJECT
 
@@ -22,10 +27,7 @@ protected:
     void updateVisibleFields(int arg1, int arg2);
 
 private slots:
-    /* DEPRECATED -- START */
-    void updateSrcFields(int index);
-    void updateDstFields(int index);
-    /* DEPRECATED --  END  */
+    void menuAbout();
     void updateFields();
     void setSrcPath();
     void setDstPath();
