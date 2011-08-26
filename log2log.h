@@ -27,6 +27,7 @@ protected:
     void updateVisibleFields(int arg1, int arg2);
 
 private slots:
+    void quit();
     void menuAbout();
     void updateFields();
     void setSrcPath();

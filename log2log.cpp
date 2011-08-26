@@ -23,6 +23,12 @@ Log2Log::Log2Log(QWidget *parent) :
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(menuAbout()));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(quit()));
+
+    // Set Menu Icons
+    ui->actionAbout->setIcon(QIcon::fromTheme("help-about"));
+    ui->actionExit->setIcon(QIcon::fromTheme("application-exit"));
+    ui->actionUpdates->setIcon(QIcon::fromTheme("system-software-update"));
 
     updateFields();
 
@@ -60,6 +66,11 @@ Log2Log::Log2Log(QWidget *parent) :
 Log2Log::~Log2Log()
 {
     delete ui;
+}
+
+void Log2Log::quit()
+{
+    this->close();
 }
 
 /**
