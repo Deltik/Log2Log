@@ -8,6 +8,8 @@
 
 #include <QMainWindow>
 #include <QLayoutItem>
+#include <QProgressBar>
+#include <QLabel>
 
 #define VERSION "1.0.0"
 
@@ -32,13 +34,20 @@ private slots:
     void updateFields();
     void setSrcPath();
     void setDstPath();
+    void toggleConversion();
     void startConversion();
+    void stopConversion();
+    /*DEBUG*/ void progressMock();
     void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:
     Ui::Log2Log *ui;
     QString srcPath;
     QString dstPath;
+    // Variables: Conversion UI
+    bool convertMode;
+    QProgressBar progress;
+    QLabel proginfo;
 };
 
 #endif // WIZARD_H

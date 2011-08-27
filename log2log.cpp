@@ -7,6 +7,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
+#include <QTimer>
 #include <QMessageBox>
 #include <formatinfo.h>
 
@@ -21,7 +22,7 @@ Log2Log::Log2Log(QWidget *parent) :
     connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
-    connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(startConversion()));
+    connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(toggleConversion()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(menuAbout()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(quit()));
 
@@ -29,6 +30,22 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->actionAbout->setIcon(QIcon::fromTheme("help-about"));
     ui->actionExit->setIcon(QIcon::fromTheme("application-exit"));
     ui->actionUpdates->setIcon(QIcon::fromTheme("system-software-update"));
+    ui->convertButton->setIcon(QIcon::fromTheme("process-start", QIcon(":/images/etc/Arrow.png")));
+
+    // Configure Conversion UI
+    progress.setObjectName("progressBar");
+    progress.setFixedSize(200, 16);
+    progress.setValue(0);
+    proginfo.setObjectName("progressInfo");
+    proginfo.setStyleSheet("font-size: 12px;");
+
+    // Place Progress UI
+    ui->statusBar->addWidget(&progress);
+    ui->statusBar->addWidget(&proginfo);
+
+    // Save Progress UI for later
+    progress.hide();
+    proginfo.hide();
 
     updateFields();
 
@@ -135,14 +152,69 @@ void Log2Log::setDstPath() {
 }
 
 /**
+ * Toggle Conversion UI
+ */
+void Log2Log::toggleConversion()
+{
+    if (convertMode == false)
+        startConversion();
+    else
+        stopConversion();
+}
+
+/**
  * Start Conversion Process
  */
 void Log2Log::startConversion()
 {
+    // Set Mode
+    convertMode = true;
+
+    // Hide Main UI
+    Helper::convertMode(ui);
+
+    // Show Progress UI
+    progress.reset();
+    progress.show();
+    proginfo.setText("Starting...");
+    proginfo.show();
+
+    // Mock Progress Bar
+    QTimer* timer = new QTimer;
+    timer->setInterval(50);
+    connect(timer, SIGNAL(timeout()), this, SLOT(progressMock()));
+    timer->start();
+
+    // DEPRECATED BELOW
+    /*
     QIcon srcIcon = ui->srcProtoBox->itemIcon(ui->srcProtoBox->currentIndex());
     QIcon dstIcon = ui->dstProtoBox->itemIcon(ui->dstProtoBox->currentIndex());
     Conversion *w = new Conversion(this, &srcIcon, &dstIcon);
     w->show();
+    */
+}
+/**
+ * DEBUG: EXPERIMENTAL: Progress Mocker
+ */
+void Log2Log::progressMock()
+{
+    progress.setValue(progress.value()+1);
+}
+
+/**
+ * Stop Conversion Process
+ */
+void Log2Log::stopConversion()
+{
+    // Set Mode
+    convertMode = false;
+
+    // Show Main UI
+    Helper::mainMode(ui);
+
+    // Hide Progress UI
+    progress.hide();
+    proginfo.hide();
 }
 
 /**

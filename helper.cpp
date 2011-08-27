@@ -1,6 +1,8 @@
 #include "helper.h"
 #include <QtGui/QLayout>
 #include <QGridLayout>
+#include "log2log.h"
+#include "ui_log2log.h"
 
 /* This class assumes and requires the existence
  * of log2log.ui which comes with Log2Log */
@@ -47,38 +49,45 @@ void Helper::show(QVBoxLayout *ql)
     ql->itemAt(1)->layout()->itemAt(1)->widget()->show();
 }
 
-// Hides input widgets related to web accounts data
-void Helper::hideWebItems(QLayout *ql1, QLayout *ql2)
+/**
+ * Switch to Convert Mode
+ * @param QWidget parent The MainWindow to edit
+ */
+void Helper::convertMode(Ui::Log2Log *parent)
 {
-    ql1->itemAt(0)->widget()->hide();
-    ql1->itemAt(1)->widget()->hide();
-    ql2->itemAt(0)->widget()->hide();
-    ql2->itemAt(1)->widget()->hide();
+    parent->srcProtoBox->setEnabled(false);
+    parent->dstProtoBox->setEnabled(false);
+    parent->srcPathEdit->setEnabled(false);
+    parent->dstPathEdit->setEnabled(false);
+    parent->srcPathButton->setEnabled(false);
+    parent->dstPathButton->setEnabled(false);
+    parent->srcUserEdit->setEnabled(false);
+    parent->dstUserEdit->setEnabled(false);
+    parent->srcPassEdit->setEnabled(false);
+    parent->dstPassEdit->setEnabled(false);
+
+    parent->convertButton->setIcon(QIcon());
+    parent->convertButton->setIcon(QIcon::fromTheme("process-stop"));
 }
 
-// Hides input widgets related to the path of chatlogs
-void Helper::hidePathItems(QLayout *ql, QWidget *qw)
+/**
+ * Switch to Main Mode
+ * @param QWidget parent The MainWindow to edit
+ */
+void Helper::mainMode(Ui::Log2Log *parent)
 {
-    ql->itemAt(0)->widget()->hide();
-    ql->itemAt(1)->widget()->hide();
-    qw->hide();
-}
+    parent->srcProtoBox->setEnabled(true);
+    parent->dstProtoBox->setEnabled(true);
+    parent->srcPathEdit->setEnabled(true);
+    parent->dstPathEdit->setEnabled(true);
+    parent->srcPathButton->setEnabled(true);
+    parent->dstPathButton->setEnabled(true);
+    parent->srcUserEdit->setEnabled(true);
+    parent->dstUserEdit->setEnabled(true);
+    parent->srcPassEdit->setEnabled(true);
+    parent->dstPassEdit->setEnabled(true);
 
-// Shows input widgets related to web accounts data
-void Helper::showWebItems(QLayout *ql1, QLayout *ql2)
-{
-    ql1->itemAt(0)->widget()->show();
-    ql1->itemAt(1)->widget()->show();
-    ql2->itemAt(0)->widget()->show();
-    ql2->itemAt(1)->widget()->show();
-}
-
-// Shows input widgets related to the path of chatlogs
-void Helper::showPathItems(QLayout *ql, QWidget *qw)
-{
-    ql->itemAt(0)->widget()->show();
-    ql->itemAt(1)->widget()->show();
-    qw->show();
+    parent->convertButton->setIcon(QIcon::fromTheme("process-start", QIcon(":/images/etc/Arrow.png")));
 }
 
 /**
