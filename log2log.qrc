@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>images/etc/Arrow.png</file>
+        <file>images/etc/cancel.png</file>
         <file>images/etc/Deltik.png</file>
         <file>images/etc/Log2Log.png</file>
         <file>images/etc/favicon.ico</file>

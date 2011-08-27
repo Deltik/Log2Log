@@ -67,7 +67,7 @@ void Helper::convertMode(Ui::Log2Log *parent)
     parent->dstPassEdit->setEnabled(false);
 
     parent->convertButton->setIcon(QIcon());
-    parent->convertButton->setIcon(QIcon::fromTheme("process-stop"));
+    parent->convertButton->setIcon(QIcon::fromTheme("process-stop", QIcon(":/images/etc/cancel.png")));
 }
 
 /**
