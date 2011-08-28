@@ -118,7 +118,7 @@ void Log2Log::updateFields()
         Helper::hide(ui->srcAuthLayout);
     }
 
-    if (dstFI->getName("display").indexOf("(download)") >= 0)
+    if (dstFI->getName("display").indexOf("(upload)") >= 0)
     {
         Helper::hide(ui->dstPathLayout);
         Helper::show(ui->dstAuthLayout);
