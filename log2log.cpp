@@ -1,15 +1,15 @@
 #include "log2log.h"
 #include "helper.h"
 #include "ui_log2log.h"
-#include "conversion.h"
 #include "about.h"
+#include "formatinfo.h"
+#include "conversion.h"
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QTimer>
 #include <QMessageBox>
-#include <formatinfo.h>
 
 Log2Log::Log2Log(QWidget *parent) :
     QMainWindow(parent),
