@@ -152,7 +152,11 @@
              <widget class="QLineEdit" name="dstUserEdit"/>
             </item>
             <item row="1" column="0">
-             <widget class="QLineEdit" name="dstPassEdit"/>
+             <widget class="QLineEdit" name="dstPassEdit">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
             </item>
             <item row="0" column="1">
              <widget class="QLabel" name="dstUserLabel">
@@ -244,7 +248,11 @@
              <widget class="QLineEdit" name="srcUserEdit"/>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="srcPassEdit"/>
+             <widget class="QLineEdit" name="srcPassEdit">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

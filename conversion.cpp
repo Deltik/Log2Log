@@ -30,6 +30,14 @@ Conversion::Conversion(Ui::Log2Log *ui)
     progress.show();
     proginfo.setText("Starting...");
     proginfo.show();
+
+    // Data Collection
+    from["path"]     = ui->srcPassEdit->text();
+    from["username"] = ui->srcUserEdit->text();
+    from["password"] = ui->srcPassEdit->text();
+    to  ["path"]     = ui->dstPassEdit->text();
+    to  ["username"] = ui->dstUserEdit->text();
+    to  ["password"] = ui->dstPassEdit->text();
 }
 
 /**

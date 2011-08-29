@@ -4,6 +4,7 @@
 #include "ui_log2log.h"
 #include <QProgressBar>
 #include <QLabel>
+#include <QHash>
 
 class Conversion
 {
@@ -13,9 +14,12 @@ public:
     ~Conversion();
 
 private:
-    // Variables Conversion UI
+    // Variables: Conversion UI
     QProgressBar progress;
     QLabel proginfo;
+    // Variables: Data Collection
+    QHash<QString, QVariant> from;
+    QHash<QString, QVariant> to;
 };
 
 #endif // CONVERSION_H
