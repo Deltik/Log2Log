@@ -31,7 +31,7 @@ public:
     bool pointerPrevious();
     bool pointerDig();
     /* Getters (Setters N/A) */
-    QString getName(QString type = "") { if (type == "display") return fName_display; else if (type == "client") return fName_client; else return fName_unix; }
+    QString getName(QString type = "") { if (type == "display") return fName_display; else if (type == "client") return fName_client; else if (type == "class") return fName_class; else return fName_unix; }
     QIcon getIcon() { return fIcon; }
     QString getIconPath() { return fIcon_path; }
     bool getTo() { return fTo; }
@@ -61,6 +61,7 @@ private:
     QString fName_unix;
     QString fName_display;
     QString fName_client;
+    QString fName_class;
     QString fIcon_path;
     QIcon fIcon;
     bool fTo;

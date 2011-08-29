@@ -168,6 +168,7 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
     // Clean Variables
     fName_display = "";
     fName_client = "";
+    fName_class = "";
     fIcon_path = "";
     QIcon fIconn(":/images/etc/blank.png");
     fIcon = fIconn;
@@ -206,6 +207,10 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
         if (currentElement == "client")
         {
             fName_client = reader.text().toString();
+        }
+        if (currentElement == "class")
+        {
+            fName_class = reader.text().toString();
         }
         if (currentElement == "icon")
         {

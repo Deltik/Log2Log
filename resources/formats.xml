@@ -3,6 +3,7 @@
 	<format id="adium">
 		<name>Adium</name>
 		<client>Adium</client>
+		<class>Adium</class>
 		<icon>:/images/services/Adium.png</icon>
 		<support>
 			<from>true</from>
@@ -22,6 +23,7 @@
 	<format id="deltikhuman">
 		<name>Deltik Standard Non-XML Chat Log Format</name>
 		<client>Deltik</client>
+		<class>Deltik</class>
 		<icon>:/images/services/Deltik.png</icon>
 		<support>
 			<from>true</from>
@@ -41,6 +43,7 @@
 	<format id="gchat">
 		<name>Gmail Chats (download)</name>
 		<client>Gmail</client>
+		<class>Gmail</class>
 		<icon>:/images/services/GChat.png</icon>
 		<support>
 			<from>true</from>
@@ -60,6 +63,7 @@
 	<format id="gv">
 		<name>Google Voice (download)</name>
 		<client>Google Voice</client>
+		<class>GV</class>
 		<icon>:/images/services/GVoice.png</icon>
 		<support>
 			<from>true</from>
@@ -79,6 +83,7 @@
 	<format id="imo">
 		<name>imo.im (download)</name>
 		<client>imo instant messenger</client>
+		<class>IMO</class>
 		<icon>:/images/services/imo.png</icon>
 		<support>
 			<from>true</from>
@@ -98,6 +103,7 @@
 	<format id="json">
 		<name>Log2Log JSON</name>
 		<client>Log2Log</client>
+		<class>JSON</class>
 		<icon>:/images/services/JSON.png</icon>
 		<support>
 			<from>true</from>
@@ -117,6 +123,7 @@
 	<format id="meeboconnect">
 		<name>Meebo (download)</name>
 		<client>Meebo</client>
+		<class>MeeboConnect</class>
 		<icon>:/images/services/MeeboConnect.png</icon>
 		<support>
 			<from>true</from>
@@ -136,6 +143,7 @@
 	<format id="meebo">
 		<name>Meebo (files)</name>
 		<client>Meebo</client>
+		<class>Meebo</class>
 		<icon>:/images/services/Meebo.png</icon>
 		<support>
 			<from>true</from>
@@ -155,6 +163,7 @@
 	<format id="omegle">
 		<name>Omegle HTML</name>
 		<client>Omegle</client>
+		<class>Omegle</class>
 		<icon>:/images/services/Omegle.png</icon>
 		<support>
 			<from>true</from>
@@ -174,6 +183,7 @@
 	<format id="pidgin">
 		<name>Pidgin HTML</name>
 		<client>Pidgin</client>
+		<class>Pidgin</class>
 		<icon>:/images/services/Pidgin.png</icon>
 		<support>
 			<from>true</from>
@@ -193,6 +203,7 @@
 	<format id="skype">
 		<name>Skype</name>
 		<client>Skype</client>
+		<class>Skype</class>
 		<icon>:/images/services/Skype.png</icon>
 		<support>
 			<from>true</from>
