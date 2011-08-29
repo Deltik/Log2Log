@@ -24,9 +24,11 @@
 #ifndef OMEGLE_H
 #define OMEGLE_H
 
+#include "formats/stdformat.h"
+#include "formats/stdconverter.h"
 #include <QVariant>
 
-class Omegle
+class Omegle : public StdConverter
 {
 /* FUNCTIONS */
 public:
@@ -38,8 +40,8 @@ public:
     void deleteLog() { this->unset(); }
     void remove() { this->unset(); }
     void destroy() { this->unset(); }
-    QVariant from();
-    QVariant to();
+    StdFormat from();
+    StdFormat to();
 };
 
 #endif // OMEGLE_H

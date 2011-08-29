@@ -55,13 +55,16 @@ Conversion::Conversion(Ui::Log2Log *ui)
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
     if (from_name == "Omegle")
-        Omegle* $FROM = new Omegle();
+        $FROM = new Omegle();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
     if (to_name == "Omegle")
-        Omegle* $TO = new Omegle();
+        $TO = new Omegle();
+
+    // Go!
+    $FROM->from(from);
 }
 
 /**

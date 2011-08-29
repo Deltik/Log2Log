@@ -2,6 +2,8 @@
 #define CONVERSION_H
 
 #include "ui_log2log.h"
+#include "formats/stdformat.h"
+#include "formats/stdconverter.h"
 #include <QProgressBar>
 #include <QLabel>
 #include <QHash>
@@ -22,6 +24,11 @@ private:
     QString to_name;
     QHash<QString, QVariant> from;
     QHash<QString, QVariant> to;
+    // Variables: Format Converter Objects
+    StdConverter* $FROM;
+    StdConverter* $TO;
+    // Variables: Chat Log
+    StdFormat final;
 };
 
 #endif // CONVERSION_H
