@@ -10,6 +10,7 @@
 #include <QLayoutItem>
 #include <QProgressBar>
 #include <QLabel>
+#include "conversion.h"
 
 #define VERSION "1.0.0"
 
@@ -37,7 +38,6 @@ private slots:
     void toggleConversion();
     void startConversion();
     void stopConversion();
-    /*DEBUG*/ void progressMock();
     void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:
@@ -46,8 +46,8 @@ private:
     QString dstPath;
     // Variables: Conversion UI
     bool convertMode;
-    QProgressBar progress;
-    QLabel proginfo;
+    // Variables:: Conversion
+    Conversion *cvHandler;
 };
 
 #endif // WIZARD_H

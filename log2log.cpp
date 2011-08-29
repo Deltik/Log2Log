@@ -32,21 +32,6 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->actionUpdates->setIcon(QIcon::fromTheme("system-software-update"));
     ui->convertButton->setIcon(QIcon::fromTheme("process-start", QIcon(":/images/etc/Arrow.png")));
 
-    // Configure Conversion UI
-    progress.setObjectName("progressBar");
-    progress.setFixedSize(200, 16);
-    progress.setValue(0);
-    proginfo.setObjectName("progressInfo");
-    proginfo.setStyleSheet("font-size: 12px;");
-
-    // Place Progress UI
-    ui->statusBar->addWidget(&progress);
-    ui->statusBar->addWidget(&proginfo);
-
-    // Save Progress UI for later
-    progress.hide();
-    proginfo.hide();
-
     updateFields();
 
     /* Create "FormatInfo" */
@@ -173,32 +158,8 @@ void Log2Log::startConversion()
     // Hide Main UI
     Helper::convertMode(ui);
 
-    // Show Progress UI
-    progress.reset();
-    progress.show();
-    proginfo.setText("Starting...");
-    proginfo.show();
-
-    // Mock Progress Bar
-    QTimer* timer = new QTimer;
-    timer->setInterval(50);
-    connect(timer, SIGNAL(timeout()), this, SLOT(progressMock()));
-    timer->start();
-
-    // DEPRECATED BELOW
-    /*
-    QIcon srcIcon = ui->srcProtoBox->itemIcon(ui->srcProtoBox->currentIndex());
-    QIcon dstIcon = ui->dstProtoBox->itemIcon(ui->dstProtoBox->currentIndex());
-    Conversion *w = new Conversion(this, &srcIcon, &dstIcon);
-    w->show();
-    */
-}
-/**
- * DEBUG: EXPERIMENTAL: Progress Mocker
- */
-void Log2Log::progressMock()
-{
-    progress.setValue(progress.value()+1);
+    /* ### GO!!! ### */
+    cvHandler = new Conversion(ui);
 }
 
 /**
@@ -212,9 +173,8 @@ void Log2Log::stopConversion()
     // Show Main UI
     Helper::mainMode(ui);
 
-    // Hide Progress UI
-    progress.hide();
-    proginfo.hide();
+    /* STOP */
+    cvHandler->~Conversion();
 }
 
 /**
