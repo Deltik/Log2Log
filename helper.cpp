@@ -166,7 +166,7 @@ QMap<QString, QVariant> Helper::files_get_contents(QString directory_path)
             fileContents += line;
         }
         list[directory_walker.filePath()] = fileContents;
-    }qDebug()<<list;
+    }
 
     // Return the list that this method made. :D
     return list;
