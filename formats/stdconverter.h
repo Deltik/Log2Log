@@ -10,16 +10,16 @@ public:
     /* FUNCTIONS */
     StdConverter();
     ~StdConverter();
-    QVariant load();
-    QVariant generate();
-    void unset();
+    virtual void load();
+    virtual void generate();
+    virtual void unset();
     void deleteLog() { this->unset(); }
     void remove() { this->unset(); }
     void destroy() { this->unset(); }
-    StdFormat from(QHash<QString, QVariant> data);
-    void to();
+    virtual StdFormat* from(QHash<QString, QVariant> data);
+    virtual void to();
     /* VARIABLES */
-    StdFormat final;
+    StdFormat* final;
 };
 
 #endif // STDCONVERTER_H

@@ -26,7 +26,14 @@ StdConverter::~StdConverter()
 /**
  * Load a Chat Log
  */
-QVariant StdConverter::load()
+void StdConverter::load()
+{
+}
+
+/**
+ * Generate Log from Standardized Log
+ */
+void StdConverter::generate()
 {
 }
 
@@ -35,14 +42,13 @@ QVariant StdConverter::load()
  */
 void StdConverter::unset()
 {
-    StdFormat proto;
-    final = proto;
+    final = new StdFormat();
 }
 
 /**
  * Process "From" Request
  */
-StdFormat StdConverter::from(QHash<QString, QVariant> data)
+StdFormat* StdConverter::from(QHash<QString, QVariant> data)
 {
     return final;
 }

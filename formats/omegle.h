@@ -33,11 +33,11 @@ class Omegle : public StdConverter
 /* FUNCTIONS */
 public:
     Omegle();
-    ~Omegle();
-    QVariant load();
-    QVariant generate();
-    StdFormat from(QHash<QString, QVariant> data);
-    void to();
+    virtual ~Omegle();
+    virtual void load();
+    virtual void generate();
+    virtual StdFormat* from(QHash<QString, QVariant> data);
+    virtual void to();
 };
 
 #endif // OMEGLE_H
