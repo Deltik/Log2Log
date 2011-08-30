@@ -36,7 +36,7 @@ public:
     ~Omegle();
     QVariant load();
     QVariant generate();
-    StdFormat from();
+    StdFormat from(QHash<QString, QVariant> data);
     void to();
 };
 

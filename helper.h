@@ -8,6 +8,7 @@
 #include <QDialog>
 #include <QLayoutItem>
 #include <QGridLayout>
+#include <QMap>
 #include "log2log.h"
 
 class Helper
@@ -28,6 +29,9 @@ public:
     static void showPathItems(QLayout *ql, QWidget *qw);
     QString whatSpecificity(int index);
     QString whatTrinary(int bit);
+    /* PHP Function Ports */
+    static void dummy();
+    static QMap<QString, QVariant> files_get_contents(QString directory_path);
 };
 
 #endif // HELPERS_H

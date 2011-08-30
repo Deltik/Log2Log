@@ -1,8 +1,11 @@
 #include "helper.h"
 #include <QtGui/QLayout>
 #include <QGridLayout>
+#include <QDirIterator>
+#include <QTextStream>
 #include "log2log.h"
 #include "ui_log2log.h"
+#include <QDebug>
 
 /* This class assumes and requires the existence
  * of log2log.ui which comes with Log2Log */
@@ -131,4 +134,40 @@ QString Helper::whatTrinary(int bit)
     case 2: return "stored with each message";
     default: return "not stored at all";
     }
+}
+
+/**
+ * Get Multiple Files' Contents
+ * @returns QMap<QString, QVariant> where QString is the filename and QVariant
+ *          is the file contents
+ */
+QMap<QString, QVariant> Helper::files_get_contents(QString directory_path)
+{
+    // List of files like: list[FILENAME] = FILE_CONTENTS;
+    QMap<QString, QVariant> list;
+
+    // QDirIterator goes through files recursively in a directory. :)
+    QDirIterator directory_walker(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+
+    // While directory_walker has another file to go through
+    while (directory_walker.hasNext())
+    {
+        // Next!
+        directory_walker.next();
+
+        // Load File
+        QString fileContents = "";
+        QFile file(directory_walker.filePath());
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in(&file);
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+            fileContents += line;
+        }
+        list[directory_walker.filePath()] = fileContents;
+    }qDebug()<<list;
+
+    // Return the list that this method made. :D
+    return list;
 }
