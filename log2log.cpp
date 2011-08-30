@@ -32,6 +32,9 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->actionUpdates->setIcon(QIcon::fromTheme("system-software-update"));
     ui->convertButton->setIcon(QIcon::fromTheme("process-start", QIcon(":/images/etc/Arrow.png")));
 
+    // Setup Convert UI
+    convertMode = false;
+
     updateFields();
 
     /* Create "FormatInfo" */
@@ -67,11 +70,13 @@ Log2Log::Log2Log(QWidget *parent) :
 
 Log2Log::~Log2Log()
 {
-    delete ui;
+    this->quit();
 }
 
 void Log2Log::quit()
 {
+    if (convertMode)
+        toggleConversion();
     this->close();
 }
 

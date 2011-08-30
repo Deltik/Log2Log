@@ -44,22 +44,24 @@ Conversion::Conversion(Ui::Log2Log *ui)
     dstFI->pointerDig();
     to_name = dstFI->getName("class");
     //  Load form information
-    from["path"]     = ui->srcPassEdit->text();
+    from["path"]     = ui->srcPathEdit->text();
     from["username"] = ui->srcUserEdit->text();
     from["password"] = ui->srcPassEdit->text();
-    to  ["path"]     = ui->dstPassEdit->text();
+    to  ["path"]     = ui->dstPathEdit->text();
     to  ["username"] = ui->dstUserEdit->text();
     to  ["password"] = ui->dstPassEdit->text();
 
     // Load "From" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
+    $FROM = new StdConverter();
     if (from_name == "Omegle")
         $FROM = new Omegle();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
+    $TO = new StdConverter();
     if (to_name == "Omegle")
         $TO = new Omegle();
 

@@ -19,7 +19,7 @@ public:
     StdFormat from(QHash<QString, QVariant> data);
     void to();
     /* VARIABLES */
-    StdFormat *final;
+    StdFormat final;
 };
 
 #endif // STDCONVERTER_H

@@ -36,12 +36,8 @@ public:
     ~Omegle();
     QVariant load();
     QVariant generate();
-    void unset();
-    void deleteLog() { this->unset(); }
-    void remove() { this->unset(); }
-    void destroy() { this->unset(); }
     StdFormat from();
-    StdFormat to();
+    void to();
 };
 
 #endif // OMEGLE_H

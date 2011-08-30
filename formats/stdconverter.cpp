@@ -35,7 +35,8 @@ QVariant StdConverter::load()
  */
 void StdConverter::unset()
 {
-    delete final;
+    StdFormat proto;
+    final = proto;
 }
 
 /**
@@ -43,6 +44,7 @@ void StdConverter::unset()
  */
 StdFormat StdConverter::from(QHash<QString, QVariant> data)
 {
+    return final;
 }
 
 /**
