@@ -34,6 +34,18 @@ Log2Log::Log2Log(QWidget *parent) :
 
     // Setup Convert UI
     convertMode = false;
+    // Configure Conversion UI
+    progress.setObjectName("progressBar");
+    progress.setFixedSize(200, 16);
+    progress.setValue(0);
+    proginfo.setObjectName("progressInfo");
+    proginfo.setStyleSheet("font-size: 12px;");
+    // Place Progress UI
+    ui->statusBar->addWidget(&progress);
+    ui->statusBar->addWidget(&proginfo);
+    // Hide Progress UI
+    progress.hide();
+    proginfo.hide();
 
     updateFields();
 
@@ -163,8 +175,17 @@ void Log2Log::startConversion()
     // Hide Main UI
     Helper::convertMode(ui);
 
+    // Show Progress UI
+    progress.reset();
+    progress.show();
+    proginfo.setText("Starting...");
+    proginfo.show();
+
     /* ### GO!!! ### */
     cvHandler = new Conversion(ui);
+    connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
+
+    cvHandler->start();
 }
 
 /**
@@ -178,8 +199,21 @@ void Log2Log::stopConversion()
     // Show Main UI
     Helper::mainMode(ui);
 
+    // Hide Progress UI
+    progress.hide();
+    proginfo.hide();
+
     /* STOP */
     cvHandler->~Conversion();
+}
+
+/**
+ * Set Progress UI
+ */
+void Log2Log::setProgress(int meter, QString description)
+{
+    progress.setValue(meter);
+    proginfo.setText(description);
 }
 
 /**

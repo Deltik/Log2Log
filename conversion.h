@@ -4,21 +4,27 @@
 #include "ui_log2log.h"
 #include "formats/stdformat.h"
 #include "formats/stdconverter.h"
-#include <QProgressBar>
-#include <QLabel>
-#include <QHash>
+#include <QtCore>
 
-class Conversion
+class Conversion : public QThread
 {
+    Q_OBJECT
+
 public:
     Conversion();
     Conversion(Ui::Log2Log *ui);
     ~Conversion();
 
+protected:
+    void run();
+
+public slots:
+    void collectData();
+    void doDummyWork();
+
 private:
-    // Variables: Conversion UI
-    QProgressBar progress;
-    QLabel proginfo;
+    // Variables: Main UI
+    Ui::Log2Log *ui;
     // Variables: Data Collection
     QString from_name;
     QString to_name;
@@ -29,6 +35,12 @@ private:
     StdConverter* $TO;
     // Variables: Chat Log
     StdFormat final;
+    // Functions
+    QMap<QString, QVariant> files_get_contents(QString directory_path);
+
+signals:
+    void done();
+    void updateProgress(int meter, QString description);
 };
 
 #endif // CONVERSION_H

@@ -38,6 +38,7 @@ private slots:
     void toggleConversion();
     void startConversion();
     void stopConversion();
+    void setProgress(int meter, QString description);
     void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:
@@ -46,6 +47,8 @@ private:
     QString dstPath;
     // Variables: Conversion UI
     bool convertMode;
+    QProgressBar progress;
+    QLabel proginfo;
     // Variables:: Conversion
     Conversion *cvHandler;
 };

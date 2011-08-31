@@ -10,6 +10,9 @@
 #include "helper.h"
 #include <QMap>
 
+// QDebug
+#include <QDebug>
+
 /**
  * Constructor
  */
@@ -45,12 +48,18 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
 {
     // Step 1/3: Fetch the data.
     QMap<QString, QVariant> list = Helper::files_get_contents(data["path"].toString());
+    QMap<QString, QVariant>::const_iterator i = list.constBegin();
 
     // Step 2/3: Process the data.
     /*foreach ($raw as $raw_item)
       {
       $this->load($raw_item);
       }*/
+    while (i != list.constEnd())
+    {
+        qDebug()<<i.key();
+        i ++;
+    }
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     //return $this->log;

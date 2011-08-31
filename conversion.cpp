@@ -13,27 +13,29 @@ Conversion::Conversion()
 {
 }
 
-Conversion::Conversion(Ui::Log2Log *ui)
+Conversion::Conversion(Ui::Log2Log *parentUi)
 {
-    // Configure Conversion UI
-    progress.setObjectName("progressBar");
-    progress.setFixedSize(200, 16);
-    progress.setValue(0);
-    proginfo.setObjectName("progressInfo");
-    proginfo.setStyleSheet("font-size: 12px;");
+    ui = parentUi;
+    moveToThread(this);
+}
 
-    // Place Progress UI
-    ui->statusBar->addWidget(&progress);
-    ui->statusBar->addWidget(&proginfo);
+/**
+ * Thread Runner
+ */
+void Conversion::run()
+{
+    QTimer::singleShot(0, this, SLOT(collectData()));
 
-    // Show Progress UI
-    progress.reset();
-    progress.show();
-    proginfo.setText("Starting...");
-    proginfo.show();
+    exec();
+}
 
+/**
+ * Data Collection
+ */
+void Conversion::collectData()
+{
     // Data Collection
-    proginfo.setText("Collecting Data...");
+    emit updateProgress(0, "Reading Form Data...");
     int srcIndex = ui->srcProtoBox->currentIndex();
     int dstIndex = ui->dstProtoBox->currentIndex();
     //  Load each indexs' profiles
@@ -54,6 +56,7 @@ Conversion::Conversion(Ui::Log2Log *ui)
     // Load "From" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
+    emit updateProgress(0, "Loading Source Converter...");
     $FROM = new StdConverter();
     if (from_name == "Omegle")
         $FROM = new Omegle();
@@ -61,12 +64,31 @@ Conversion::Conversion(Ui::Log2Log *ui)
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
+    emit updateProgress(0, "Loading Destination Converter...");
     $TO = new StdConverter();
     if (to_name == "Omegle")
         $TO = new Omegle();
 
+    // Generously (and prettily) run files_get_contents, if applicable
+    if (!from["path"].toString().isEmpty())
+    {
+        files_get_contents(from["path"].toString());
+    }
+
     // Go!
     $FROM->from(from);
+
+    emit done();
+}
+
+/**
+ * DEBUG: Do Dummy Work
+ */
+void Conversion::doDummyWork()
+{
+    sleep(3);
+    qDebug()<<"Dummy work done.";
+    emit finished();
 }
 
 /**
@@ -74,7 +96,43 @@ Conversion::Conversion(Ui::Log2Log *ui)
  */
 Conversion::~Conversion()
 {
-    // Hide Progress UI
-    progress.hide();
-    proginfo.hide();
+}
+
+/**
+ * Get Multiple Files' Contents
+ * @returns QMap<QString, QVariant> where QString is the filename and QVariant
+ *          is the file contents
+ */
+QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
+{
+    // List of files like: list[FILENAME] = FILE_CONTENTS;
+    QMap<QString, QVariant> list;
+
+    // QDirIterator goes through files recursively in a directory. :)
+    QDirIterator directory_walker(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+
+    // While directory_walker has another file to go through
+    int n = 0;
+    while (directory_walker.hasNext())
+    {
+        // Next!
+        directory_walker.next();
+        n ++;
+
+        // Load File
+        QString fileContents = "";
+        QFile file(directory_walker.filePath());
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in(&file);
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+            fileContents += line;
+        }
+        list[directory_walker.filePath()] = fileContents;
+        emit updateProgress(0, "Loaded " + QVariant(n).toString() + " files...");
+    }
+
+    // Return the list that this method made. :D
+    return list;
 }
