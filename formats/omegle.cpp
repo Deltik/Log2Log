@@ -47,7 +47,11 @@ void Omegle::generate()
 StdFormat* Omegle::from(QHash<QString, QVariant> data)
 {
     // Step 1/3: Fetch the data.
-    QMap<QString, QVariant> list = Helper::files_get_contents(data["path"].toString());
+    QMap<QString, QVariant> list;
+    if (data["files"].isNull())
+        list = Helper::files_get_contents(data["path"].toString());
+    else
+        list = data["files"].toMap();
     QMap<QString, QVariant>::const_iterator i = list.constBegin();
 
     // Step 2/3: Process the data.

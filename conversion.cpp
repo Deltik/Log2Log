@@ -72,7 +72,7 @@ void Conversion::collectData()
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())
     {
-        files_get_contents(from["path"].toString());
+        from["files"] = files_get_contents(from["path"].toString());
     }
 
     // Go!
@@ -108,6 +108,11 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
     // List of files like: list[FILENAME] = FILE_CONTENTS;
     QMap<QString, QVariant> list;
 
+    QDirIterator directory_counter(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+    int t = 0;
+    emit updateProgress(0, "Counting files...");
+    while (directory_counter.hasNext()) { directory_counter.next(); t ++; }
+
     // QDirIterator goes through files recursively in a directory. :)
     QDirIterator directory_walker(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
 
@@ -130,7 +135,7 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
             fileContents += line;
         }
         list[directory_walker.filePath()] = fileContents;
-        emit updateProgress(0, "Loaded " + QVariant(n).toString() + " files...");
+        emit updateProgress((10 * n / t), "Loaded " + QVariant(n).toString() + "/" + QVariant(t).toString() + " files...");
     }
 
     // Return the list that this method made. :D
