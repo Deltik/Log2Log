@@ -34,12 +34,16 @@ public:
     ~StdFormat();
     /* Browser */
     int newEntry();
+    bool hasNextEntry();
     bool nextEntry();
+    bool hasPreviousEntry();
     bool previousEntry();
     bool gotoEntry(int index);
     bool toggleLine();
     int newLine();
+    bool hasNextLine();
     bool nextLine();
+    bool hasPreviousLine();
     bool previousLine();
     bool gotoLine(int index);
     bool switchLocalSystem(); // TODO: Implementation TBD

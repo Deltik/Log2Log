@@ -106,6 +106,19 @@ int StdFormat::newEntry()
 }
 
 /**
+ * Browser: Does the Next Entry Exist?
+ * @returns bool true if there is an entry after this one
+ */
+bool StdFormat::hasNextEntry()
+{
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    if (data.size() - 1 >= dexEntry)
+        return false;
+    return true;
+}
+
+/**
  * Browser: Next Entry
  * @returns bool false if could not point to next entry
  */
@@ -116,6 +129,17 @@ bool StdFormat::nextEntry()
     if (data.size() - 1 >= dexEntry)
         return false;
     dexEntry ++;
+    return true;
+}
+
+/**
+ * Browser: Does the Previous Entry Exist?
+ * @returns bool true if there is an entry before this one
+ */
+bool StdFormat::hasPreviousEntry()
+{
+    if (dexEntry == 0)
+        return false;
     return true;
 }
 
@@ -220,6 +244,28 @@ int StdFormat::newLine()
 }
 
 /**
+ * Browser: Does the Next Chat Row Exist?
+ * @returns bool true if there is a chat row after this one
+ */
+bool StdFormat::hasNextLine()
+{
+    QString curEntry;
+    curEntry.setNum(dexEntry);
+    // Extract
+    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> entry = data[curEntry].toHash();
+    // If chat rows don't exist in this entry...
+    if (entry.value("chat").isNull())
+        return false;
+    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    if (chat.size() - 1 >= dexLine)
+        return false;
+    // Now pointing in chat rows
+    inLine = true;
+    return true;
+}
+
+/**
  * Browser: Next Chat Row
  * @returns bool false if could not point to next chat row/index
  */
@@ -237,6 +283,19 @@ bool StdFormat::nextLine()
     if (chat.size() - 1 >= dexLine)
         return false;
     dexLine ++;
+    // Now pointing in chat rows
+    inLine = true;
+    return true;
+}
+
+/**
+ * Browser: Does the Previous Chat Row Exist?
+ * @returns bool true if there is a chat row before this one
+ */
+bool StdFormat::hasPreviousLine()
+{
+    if (dexLine == 0)
+        return false;
     // Now pointing in chat rows
     inLine = true;
     return true;

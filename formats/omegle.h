@@ -37,7 +37,7 @@ public:
     Omegle();
     virtual ~Omegle();
     virtual void load(QVariant $log_raw);
-    virtual void generate();
+    virtual void generate(StdFormat* $log);
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);

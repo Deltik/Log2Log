@@ -228,8 +228,19 @@ void Omegle::load(QVariant $log_raw)
 /**
  * Generate Log from Standardized Log
  */
-void Omegle::generate()
+void Omegle::generate(StdFormat *$log)
 {
+    // Counter
+    int $i = 1;
+
+    // If no entries, quit.
+    if ($log->gotoEntry(0) == false)
+        return;
+
+    while ($log->hasNextEntry())
+    {
+        ;
+    }
 }
 
 /**
@@ -263,9 +274,7 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
     }
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
-    //return $this->log;
-    StdFormat* dummy = new StdFormat();
-    return dummy;
+    return this->final;
 }
 
 /**
