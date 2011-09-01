@@ -189,9 +189,12 @@ int StdFormat::newLine()
     if (entry.value("chat").isNull())
     {
         QMap<QString, QVariant> empty;
-        QVariant chat_empty(empty);
         dexLine = 0; curLine = "0";
         // Edit
+        QHash<QString, QVariant> emptyHash;
+        QVariant chatRow_empty(emptyHash);
+        empty.insert(curLine, chatRow_empty);
+        QVariant chat_empty(empty);
         entry.insert("chat", chat_empty);
     }
     else
