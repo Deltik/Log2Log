@@ -12,7 +12,7 @@ public:
     /* FUNCTIONS */
     StdConverter();
     ~StdConverter();
-    virtual void load();
+    virtual void load(QVariant $log_raw);
     virtual void generate();
     virtual void unset();
     void deleteLog() { this->unset(); }

@@ -27,7 +27,7 @@ StdConverter::~StdConverter()
 /**
  * Load a Chat Log
  */
-void StdConverter::load()
+void StdConverter::load(QVariant $log_raw)
 {
 }
 

@@ -36,7 +36,7 @@ class Omegle : public StdConverter
 public:
     Omegle();
     virtual ~Omegle();
-    virtual void load();
+    virtual void load(QVariant $log_raw);
     virtual void generate();
 
 public slots:
