@@ -299,7 +299,7 @@ bool StdFormat::setProtocol(QString name)
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     entry["protocol"] = name;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -322,7 +322,7 @@ bool StdFormat::setSelf(QString username)
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     entry["self"] = username;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -345,7 +345,7 @@ bool StdFormat::setSelfAlias(QString myname)
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     entry["self_alias"] = myname;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -368,7 +368,7 @@ bool StdFormat::setWith(QString username)
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     entry["with"] = username;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -391,7 +391,7 @@ bool StdFormat::setWithAlias(QString buddyname)
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     entry["with_alias"] = buddyname;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -435,7 +435,7 @@ bool StdFormat::setTime(int time)
         entry["chat"] = chat;
     }
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -479,7 +479,7 @@ bool StdFormat::setTimezone(QString timezone)
         entry["chat"] = chat;
     }
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -515,7 +515,7 @@ bool StdFormat::setSender(QString name)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -551,7 +551,7 @@ bool StdFormat::setAlias(QString name)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -587,7 +587,7 @@ bool StdFormat::setContent(QString content)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -623,7 +623,7 @@ bool StdFormat::setCode(int code)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -659,7 +659,7 @@ bool StdFormat::setSpecificity(int specificity)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -695,7 +695,7 @@ bool StdFormat::setAccuracy(int accuracy)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
@@ -731,7 +731,7 @@ bool StdFormat::setNice(int nice)
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     return true;
