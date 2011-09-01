@@ -76,7 +76,10 @@ void Conversion::collectData()
     }
 
     // Go!
-    $FROM->from(from);
+    connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
+    $FROM->setMode("from");
+    $FROM->setInput(QVariant(from));
+    $FROM->start();
 
     emit done();
 }
@@ -96,6 +99,7 @@ void Conversion::doDummyWork()
  */
 Conversion::~Conversion()
 {
+    $FROM->quit();
 }
 
 /**
@@ -108,6 +112,7 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
     // List of files like: list[FILENAME] = FILE_CONTENTS;
     QMap<QString, QVariant> list;
 
+    // Pre-count the files so the user knows how many to expect
     QDirIterator directory_counter(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
     int t = 0;
     emit updateProgress(0, "Counting files...");
@@ -140,4 +145,12 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
 
     // Return the list that this method made. :D
     return list;
+}
+
+/**
+ * Pass Progress UI
+ */
+void Conversion::setProgressProto(int meter, QString description)
+{
+    emit updateProgress(meter, description);
 }

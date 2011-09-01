@@ -14,6 +14,7 @@
  */
 StdConverter::StdConverter()
 {
+    moveToThread(this);
 }
 
 /**
@@ -46,6 +47,22 @@ void StdConverter::unset()
 }
 
 /**
+ * Set "From/To" Mode
+ */
+void StdConverter::setMode(QString input)
+{
+    mode = input;
+}
+
+/**
+ * Set Input Data
+ */
+void StdConverter::setInput(QVariant input)
+{
+    data = input;
+}
+
+/**
  * Process "From" Request
  */
 StdFormat* StdConverter::from(QHash<QString, QVariant> data)
@@ -58,4 +75,17 @@ StdFormat* StdConverter::from(QHash<QString, QVariant> data)
  */
 void StdConverter::to()
 {
+}
+
+/**
+ * Thread Runner
+ */
+void StdConverter::run()
+{
+    if (mode == "from")
+        from(data.toHash());
+    else if (mode == "to")
+        to(/*data*/);
+
+    exec();
 }

@@ -30,12 +30,16 @@
 
 class Omegle : public StdConverter
 {
+    Q_OBJECT
+
 /* FUNCTIONS */
 public:
     Omegle();
     virtual ~Omegle();
     virtual void load();
     virtual void generate();
+
+public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void to();
 };

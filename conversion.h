@@ -21,6 +21,7 @@ protected:
 public slots:
     void collectData();
     void doDummyWork();
+    void setProgressProto(int meter, QString description);
 
 private:
     // Variables: Main UI

@@ -2,10 +2,12 @@
 #define STDCONVERTER_H
 
 #include "formats/stdformat.h"
-#include <QVariant>
+#include <QtCore>
 
-class StdConverter
+class StdConverter : public QThread
 {
+    Q_OBJECT
+
 public:
     /* FUNCTIONS */
     StdConverter();
@@ -16,10 +18,21 @@ public:
     void deleteLog() { this->unset(); }
     void remove() { this->unset(); }
     void destroy() { this->unset(); }
-    virtual StdFormat* from(QHash<QString, QVariant> data);
-    virtual void to();
+    virtual void setMode(QString input);
+    virtual void setInput(QVariant input);
+    virtual void run();
     /* VARIABLES */
     StdFormat* final;
+    QString mode;
+    QVariant data;
+
+public slots:
+    /* FUNCTIONS */
+    virtual StdFormat* from(QHash<QString, QVariant> data);
+    virtual void to();
+
+signals:
+    void updateProgress(int meter, QString description);
 };
 
 #endif // STDCONVERTER_H

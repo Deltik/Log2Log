@@ -8,7 +8,7 @@
 
 #include "omegle.h"
 #include "helper.h"
-#include <QMap>
+#include <QtCore>
 
 // QDebug
 #include <QDebug>
@@ -59,9 +59,13 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
       {
       $this->load($raw_item);
       }*/
+    int c = 0;
     while (i != list.constEnd())
     {
         qDebug()<<i.key();
+        c++;
+        msleep(1);
+        updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
     }
 
