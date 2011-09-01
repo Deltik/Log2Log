@@ -399,10 +399,10 @@ bool StdFormat::setWithAlias(QString buddyname)
 
 /**
  * Setter: Set Time
- * @param int time UNIX epoch of the time to set
+ * @param qint64 time UNIX epoch of the time to set
  * @returns bool true on success
  */
-bool StdFormat::setTime(int time)
+bool StdFormat::setTime(qint64 time)
 {
     QString curEntry;
     QString curLine;
@@ -826,7 +826,7 @@ QString StdFormat::getWithAlias()
  * Getter: Get Time
  * @returns int UNIX epoch of the time to get
  */
-int StdFormat::getTime()
+qint64 StdFormat::getTime()
 {
     QString curEntry;
     QString curLine;
@@ -852,7 +852,7 @@ int StdFormat::getTime()
         return false;
     QHash<QString, QVariant> chatRow = chat[curLine].toHash();
     // Get time
-    return chatRow["time"].toInt();
+    return chatRow["time"].toLongLong();
 }
 
 /**

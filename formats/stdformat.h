@@ -55,7 +55,7 @@ public:
     bool setSelfAlias(QString myname);
     bool setWith(QString username);
     bool setWithAlias(QString buddyname);
-    bool setTime(int time);
+    bool setTime(qint64 time);
     bool setTimezone(QString timezone);
     bool setSender(QString name);
     bool setAlias(QString name);
@@ -71,7 +71,7 @@ public:
     QString getSelfAlias(); /*TODO*/
     QString getWith(); /*TODO*/
     QString getWithAlias(); /*TODO*/
-    int getTime(); /*TODO*/
+    qint64 getTime(); /*TODO*/
     QString getTimezone(); /*TODO*/
     QString getSender(); /*TODO*/
     QString getAlias(); /*TODO*/
