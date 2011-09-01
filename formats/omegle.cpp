@@ -82,7 +82,7 @@ void Omegle::load(QVariant $log_raw)
                 final->setTime($time_base);
             }
 
-            // If token is a status log (_evt)
+            // If element is a status log (_evt)
             if (xml.attributes().value("class").toString() == "statuslog")
             {
                 xml.readNext();
@@ -110,19 +110,33 @@ void Omegle::load(QVariant $log_raw)
                     final->setSpecificity(6);
                 }
 
-                // If conversation closed (_evt_close) by _with
-                if ($_evt == "Your conversational partner has disconnected.")
+                // If conversation closed (_evt_close)
+                if ($_evt.indexOf("disconnected") != -1)
                 {
                     final->newLine();
                     final->setCode(1);
                     final->setSender("_evt_close");
-                    final->setContent("_with");
+                    // If _evt_close by _with
+                    if ($_evt == "Your conversational partner has disconnected.")
+                        final->setContent("_with");
+                    // If _evt_close by _self
+                    else if ($_evt == "You have disconnected.")
+                        final->setContent("_self");
+                    // If _evt_close by _group
+                    else if ($_evt.indexOf(" has disconnected") != -1)
+                    {
+                        $_evt.chop(17);
+                        final->setContent("_group_byalias " + $_evt);
+                    }
+                    // Otherwise? O_o
+                    else
+                        final->setContent("_unknown");
                     final->setTime($time_base);
                     final->setSpecificity(6);
                 }
             }
 
-            // If the token is an Omegle Question (_evt)
+            // If the element is an Omegle Question (_evt)
             if (xml.attributes().value("class").toString() == "questionText")
             {
                 xml.readNext();
@@ -132,6 +146,78 @@ void Omegle::load(QVariant $log_raw)
                 final->setContent("Question to discuss: " + xml.text().toString());
                 final->setTime($time_base);
                 final->setSpecificity(6);
+            }
+
+            // If the element is a chat line (_msg)
+            if (xml.attributes().value("class").toString() == "logitem")
+            {
+                xml.readNext();
+                // If the element was sent by _self (_msg_self) {There is an exception.}
+                if (xml.attributes().value("class").toString() == "youmsg")
+                {
+                    // Entering StartElement for <strong class="msgsource">
+                    xml.readNext();
+                    // Entering message source
+                    xml.readNext();
+
+                    final->newLine();
+                    final->setCode(0);
+                    QString $_alias = xml.text().toString();
+                    $_alias.chop(1);
+                    // Exception: If element was actually being sent by Stranger 1
+                    if (xml.text().toString() == "Stranger 1:")
+                    {
+                        final->setSender("stranger1@omegle.com");
+                        final->setAlias($_alias);
+                    }
+                    else
+                    {
+                        final->setSender("_self");
+                        final->setAlias($_alias);
+                    }
+
+                    // Entering EndElement for </strong>
+                    xml.readNext();
+                    // Entering message contents
+                    xml.readNext();
+
+                    final->setContent(xml.text().toString());
+                    final->setTime($time_base);
+                    final->setSpecificity(6);
+                }
+                // If the element was sent by _with (_msg_with) {There is an exception.}
+                if (xml.attributes().value("class").toString() == "strangermsg")
+                {
+                    // Entering StartElement for <strong class="msgsource">
+                    xml.readNext();
+                    // Entering message source
+                    xml.readNext();
+
+                    final->newLine();
+                    final->setCode(0);
+                    QString $_alias = xml.text().toString();
+                    $_alias.chop(1);
+                    // Exception: If element was actually being sent by Stranger 2
+                    if (xml.text().toString() == "Stranger 2:")
+                    {
+                        final->setSender("stranger2@omegle.com");
+                        final->setAlias($_alias);
+                    }
+                    else
+                    {
+                        final->setSender("_with");
+                        final->setAlias($_alias);
+                    }
+
+                    // Entering EndElement for </strong>
+                    xml.readNext();
+                    // Entering message contents
+                    xml.readNext();
+
+                    final->setContent(xml.text().toString());
+                    final->setTime($time_base);
+                    final->setSpecificity(6);
+                }
             }
         }
     }
