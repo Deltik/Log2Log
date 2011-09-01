@@ -92,7 +92,7 @@ int StdFormat::newEntry()
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
     int count = data.size();
-    dexEntry = count - 1;
+    dexEntry = count;
     curEntry.setNum(dexEntry);
     QHash<QString, QVariant> empty;
     QVariant entry_empty(empty);
