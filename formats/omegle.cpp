@@ -121,8 +121,22 @@ void Omegle::load(QVariant $log_raw)
                     final->setSpecificity(6);
                 }
             }
+
+            // If the token is an Omegle Question (_evt)
+            if (xml.attributes().value("class").toString() == "questionText")
+            {
+                xml.readNext();
+                final->newLine();
+                final->setCode(1);
+                final->setSender("_evt");
+                final->setContent("Question to discuss: " + xml.text().toString());
+                final->setTime($time_base);
+                final->setSpecificity(6);
+            }
         }
-    }qDebug()<<final->final;
+    }
+    /*DEBUG*/
+    qDebug()<<final->final;
 }
 
 /**
