@@ -67,7 +67,7 @@ void Omegle::load(QVariant $log_raw)
         QXmlStreamReader::TokenType token = xml.readNext();
 
         // Just some items that might be used in this scope
-        qint64 $time_base = 0;
+        qint64 $time_base;
 
         // Looking at element beginnings...
         if (token == QXmlStreamReader::StartElement)
@@ -78,9 +78,8 @@ void Omegle::load(QVariant $log_raw)
                 xml.readNext();
                 QString $date_cur = xml.text().toString();
                 QDateTime $date_proc = QDateTime::fromString($date_cur, Qt::ISODate);
-                qint64 $time_cur = $date_proc.toMSecsSinceEpoch();
-                final->setTime($time_cur);
-                $time_base = $time_cur;
+                $time_base = $date_proc.toMSecsSinceEpoch();
+                final->setTime($time_base);
             }
 
             // If token is a status log (_evt)
