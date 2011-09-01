@@ -212,7 +212,7 @@ int StdFormat::newLine()
     // Now pointing in chat rows
     inLine = true;
     // Reinsert
-    data["entry"] = entry;
+    data[curEntry] = entry;
     final["data"] = data;
 
     // Return current entry number
