@@ -34,7 +34,7 @@ void StdConverter::load(QVariant $log_raw)
 /**
  * Generate Log from Standardized Log
  */
-void StdConverter::generate(StdFormat *$log)
+QVariant StdConverter::generate(StdFormat *$log)
 {
 }
 

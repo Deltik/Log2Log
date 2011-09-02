@@ -97,9 +97,11 @@ void Conversion::doDummyWork()
 /**
  * Destructor
  */
-Conversion::~Conversion()
+void Conversion::terminate_all()
 {
-    $FROM->quit();
+    $FROM->terminate();
+    $TO->terminate();
+    this->terminate();
 }
 
 /**

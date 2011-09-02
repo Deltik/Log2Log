@@ -204,7 +204,7 @@ void Log2Log::stopConversion()
     proginfo.hide();
 
     /* STOP */
-    cvHandler->~Conversion();
+    cvHandler->terminate_all();
 }
 
 /**

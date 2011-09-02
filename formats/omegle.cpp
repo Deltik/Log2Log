@@ -228,19 +228,30 @@ void Omegle::load(QVariant $log_raw)
 /**
  * Generate Log from Standardized Log
  */
-void Omegle::generate(StdFormat *$log)
+QVariant Omegle::generate(StdFormat *$log)
 {
+    // Generated Log Container
+    QVariant $log_generated;
     // Counter
     int $i = 1;
 
     // If no entries, quit.
     if ($log->gotoEntry(0) == false)
-        return;
+        return false;
 
-    while ($log->hasNextEntry())
+    do
     {
-        ;
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qint64  $time_base     = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
     }
+    while ($log->hasNextEntry());
+
+    return $log_generated;
 }
 
 /**

@@ -13,7 +13,7 @@ class Conversion : public QThread
 public:
     Conversion();
     Conversion(Ui::Log2Log *ui);
-    ~Conversion();
+    void terminate_all();
 
 protected:
     void run();

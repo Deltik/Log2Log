@@ -13,7 +13,7 @@ public:
     StdConverter();
     ~StdConverter();
     virtual void load(QVariant $log_raw);
-    virtual void generate(StdFormat* $log);
+    virtual QVariant generate(StdFormat* $log);
     virtual void unset();
     void deleteLog() { this->unset(); }
     void remove() { this->unset(); }
