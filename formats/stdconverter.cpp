@@ -61,6 +61,22 @@ void StdConverter::setInput(QVariant input)
 {
     data = input;
 }
+void StdConverter::setInput(StdFormat *input)
+{
+    final = input;
+}
+
+/**
+ * Get Output Data
+ */
+QVariant StdConverter::getData(QVariant)
+{
+    return data;
+}
+StdFormat* StdConverter::getData(StdFormat*)
+{
+    return final;
+}
 
 /**
  * Process "From" Request
@@ -73,7 +89,7 @@ StdFormat* StdConverter::from(QHash<QString, QVariant> data)
 /**
  * Process "To" Request
  */
-void StdConverter::to()
+void StdConverter::to(StdFormat* $log)
 {
 }
 
@@ -85,7 +101,7 @@ void StdConverter::run()
     if (mode == "from")
         from(data.toHash());
     else if (mode == "to")
-        to(/*data*/);
+        to(final);
 
     exec();
 }

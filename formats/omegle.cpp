@@ -285,6 +285,7 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
     }
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
+    emit finished();
     return this->final;
 }
 

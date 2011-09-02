@@ -20,6 +20,9 @@ public:
     void destroy() { this->unset(); }
     virtual void setMode(QString input);
     virtual void setInput(QVariant input);
+    virtual void setInput(StdFormat* input);
+    virtual QVariant getData(QVariant);
+    virtual StdFormat* getData(StdFormat*);
     virtual void run();
     /* VARIABLES */
     StdFormat* final;
@@ -29,10 +32,11 @@ public:
 public slots:
     /* FUNCTIONS */
     virtual StdFormat* from(QHash<QString, QVariant> data);
-    virtual void to();
+    virtual void to(StdFormat* $log);
 
 signals:
     void updateProgress(int meter, QString description);
+    void finished();
 };
 
 #endif // STDCONVERTER_H

@@ -20,6 +20,8 @@ protected:
 
 public slots:
     void collectData();
+    void convertFrom();
+    void convertTo();
     void doDummyWork();
     void setProgressProto(int meter, QString description);
 
@@ -35,7 +37,7 @@ private:
     StdConverter* $FROM;
     StdConverter* $TO;
     // Variables: Chat Log
-    StdFormat final;
+    StdFormat* final;
     // Functions
     QMap<QString, QVariant> files_get_contents(QString directory_path);
 
