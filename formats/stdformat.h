@@ -60,7 +60,7 @@ public:
     bool setSelfAlias(QString myname);
     bool setWith(QString username);
     bool setWithAlias(QString buddyname);
-    bool setTime(qint64 time);
+    bool setTime(qlonglong time);
     bool setTimezone(QString timezone);
     bool setSender(QString name);
     bool setAlias(QString name);
@@ -70,21 +70,21 @@ public:
     bool setAccuracy(int accuracy);
     bool setNice(int nice);
     /* Getters */
-    QString getClient(); /*TODO*/
-    QString getProtocol(); /*TODO*/
-    QString getSelf(); /*TODO*/
-    QString getSelfAlias(); /*TODO*/
-    QString getWith(); /*TODO*/
-    QString getWithAlias(); /*TODO*/
-    qint64 getTime(); /*TODO*/
-    QString getTimezone(); /*TODO*/
-    QString getSender(); /*TODO*/
-    QString getAlias(); /*TODO*/
-    QString getContent(); /*TODO*/
-    int getCode(); /*TODO*/
-    int getSpecificity(); /*TODO*/
-    int getAccuracy(); /*TODO*/
-    int getNice(); /*TODO*/
+    QString getClient();
+    QString getProtocol();
+    QString getSelf();
+    QString getSelfAlias();
+    QString getWith();
+    QString getWithAlias();
+    qlonglong getTime();
+    QString getTimezone();
+    QString getSender();
+    QString getAlias();
+    QString getContent();
+    int getCode();
+    int getSpecificity();
+    int getAccuracy();
+    int getNice();
 
 /* VARIABLES */
 public:

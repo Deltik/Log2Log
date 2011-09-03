@@ -474,7 +474,7 @@ bool StdFormat::setWithAlias(QString buddyname)
  * @param qint64 time UNIX epoch of the time to set
  * @returns bool true on success
  */
-bool StdFormat::setTime(qint64 time)
+bool StdFormat::setTime(qlonglong time)
 {
     QString curEntry;
     QString curLine;
@@ -898,7 +898,7 @@ QString StdFormat::getWithAlias()
  * Getter: Get Time
  * @returns int UNIX epoch of the time to get
  */
-qint64 StdFormat::getTime()
+qlonglong StdFormat::getTime()
 {
     QString curEntry;
     QString curLine;
@@ -913,7 +913,7 @@ qint64 StdFormat::getTime()
     // Default (entry) timezone or chat row timezone? inLine decides.
     if (!inLine)
     {
-        return entry["time"].toInt();
+        return entry["time"].toLongLong();
     }
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())

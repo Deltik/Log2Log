@@ -67,7 +67,7 @@ void Omegle::load(QVariant $log_raw)
         QXmlStreamReader::TokenType token = xml.readNext();
 
         // Just some items that might be used in this scope
-        qint64 $time_base;
+        qlonglong $time_base;
 
         // Looking at element beginnings...
         if (token == QXmlStreamReader::StartElement)
@@ -182,7 +182,7 @@ void Omegle::load(QVariant $log_raw)
                 // Entering message contents
                 xml.readNext();
 
-                final->setContent(xml.text().toString());
+                final->setContent(xml.text().toString().mid(1));
                 final->setTime($time_base);
                 final->setSpecificity(6);
             }
@@ -215,7 +215,7 @@ void Omegle::load(QVariant $log_raw)
                 // Entering message contents
                 xml.readNext();
 
-                final->setContent(xml.text().toString());
+                final->setContent(xml.text().toString().mid(1));
                 final->setTime($time_base);
                 final->setSpecificity(6);
             }
@@ -247,9 +247,10 @@ QVariant Omegle::generate(StdFormat *$log)
         // Put the longer variables into something more readily accessible.
         QString $protocol      = $log->getProtocol();
         QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
         QString $with          = $log->getWith();
         QString $with_alias    = $log->getWithAlias();
-        qint64  $time_base     = $log->getTime();
+        qlonglong $time_base   = $log->getTime();
         QString $timezone_base = $log->getTimezone();
 
         // Chat log skeleton
@@ -262,13 +263,15 @@ QVariant Omegle::generate(StdFormat *$log)
         // Base time (goes between $HEADER and $INNER)
         QDateTime $time_base_proc;
         $time_base_proc.setMSecsSinceEpoch($time_base);
-        $DATER = $time_base_proc.toString("YYYY-MM-DD");
+        qDebug() << $time_base_proc.toTime_t();
+        qDebug() << $time_base;
+        $DATER = $time_base_proc.toString("yyyy-MM-dd");
 
         // Go through each chat line.
         while ($log->hasNextLine())
         {
             // Make array items more readily accessible.
-            qint64  $time_cur    = $log->getTime();
+            qlonglong $time_cur  = $log->getTime();
             int     $code        = $log->getCode();
             QString $sender      = $log->getSender();
             QString $alias       = $log->getAlias();
@@ -311,7 +314,24 @@ QVariant Omegle::generate(StdFormat *$log)
             // Otherwise, it's a normal message...
             else
             {
-                $LOGGER = $LOGGER + " ["+$sender+":"+$message+"] ";
+                // Common Replacements
+                if ($sender == "_with")
+                    $sender = $with;
+                if ($sender == "_self")
+                    $sender = $account;
+                if ($alias == "_with")
+                    $alias = $with_alias;
+                if ($alias == "_self")
+                    $alias = $self_alias;
+
+                // Determine the message sender indicator
+                QString $sender_color;
+                if ($sender == $account)
+                    $sender_color = "youmsg";
+                else
+                    $sender_color = "strangermsg";
+
+                $LOGGER = $LOGGER + "<div class=\"logitem\"><p class=\"" + $sender_color + "\"><strong class=\"msgsource\">" + $alias + ":</strong> " + $message + "</p></div>";
             }
 
             // Next!
