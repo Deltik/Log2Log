@@ -125,7 +125,7 @@ bool StdFormat::hasNextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (data.size() - 1 >= dexEntry)
+    if (dexEntry >= data.size() - 1)
         return false;
     return true;
 }
@@ -138,7 +138,7 @@ bool StdFormat::nextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (data.size() - 1 >= dexEntry)
+    if (dexEntry >= data.size() - 1)
         return false;
     dexEntry ++;
     return true;
