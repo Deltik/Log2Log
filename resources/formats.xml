@@ -215,7 +215,7 @@
 		<client>Skype</client>
 		<class>Skype</class>
 		<icon>:/images/services/Skype.png</icon>
-		<default>~/.Skype/YOUR_SKYPE_USERNAME</default>
+                <default>~/.Skype/YOUR_SKYPE_USERNAME</default>
 		<support>
 			<from>true</from>
 			<to>false</to>

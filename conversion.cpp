@@ -1,5 +1,6 @@
 #include "conversion.h"
 #include "formatinfo.h"
+#include <utime.h>
 
 /* INCLUDE FORMAT CONVERTER CLASSES */
 #include "formats/stdformat.h"
@@ -117,7 +118,66 @@ void Conversion::convertTo()
  */
 void Conversion::save()
 {
-    qDebug() << "Save triggered!";
+    updateProgress(90, "Saving...");
+
+    QVariant log_raw = $TO->getData(QVariant());
+    QMap<QString, QVariant> log = log_raw.toMap();
+
+    QMap<QString, QVariant>::const_iterator i = log.constBegin();
+    int c = 0;
+
+    while (i != log.constEnd())
+    {
+        // Extract
+        QString key = ui->dstPathEdit->text() + "/" + i.key();
+        QVariant value = i.value();
+        QHash<QString, QVariant> info = value.toHash();
+        // Assume that info["content"] has the file contents
+        QVariant content = info["content"];
+        // Compatibility: If info["data"] actually has the file contents
+        if (content.isNull())
+            content = info["data"];
+        // Compatibility: If just QVariant value is the file contents
+        if (content.isNull())
+            content = value;
+
+        // Ensure that the directory will be available to write to.
+        QStringList key_proc = key.split("/");
+        key_proc.pop_back();
+        QString dir_path = key_proc.join("/");
+        QDir* dir = new QDir();
+        dir->mkpath(dir_path);
+
+        // Create file handler
+        QFile file(key);
+        // Open the file
+        file.open(QIODevice::WriteOnly);
+        // ### SAVE! ###
+        file.write(content.toByteArray());
+        // Close the file
+        file.close();
+
+        // If the format wants to set the file access and/or modification time
+        // (Tested to work on Linux)
+        if (!info["modtime"].isNull() || !info["actime"].isNull())
+        {
+            struct utimbuf qtimebuf;
+            QDateTime time;
+            qtimebuf.modtime = time.currentDateTime().toTime_t();
+            qtimebuf.actime = time.currentDateTime().toTime_t();
+            if (!info["modtime"].isNull())
+                qtimebuf.modtime = info["modtime"].toUInt();
+            if (!info["actime"].isNull())
+                qtimebuf.actime = info["modtime"].toUInt();
+            utime(key.toStdString().c_str(), &qtimebuf);
+        }
+
+        c++; i++;
+        updateProgress((10 * c / log.count()) + 90, "Saved "+QVariant(c).toString()+"/"+QVariant(log.count()).toString()+" files...");
+    }
+
+    // ### DONE! ###
+    updateProgress(100, "Conversion complete!");
 }
 
 /**
@@ -154,7 +214,7 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
     QDirIterator directory_counter(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
     int t = 0;
     emit updateProgress(0, "Counting files...");
-    while (directory_counter.hasNext()) { directory_counter.next(); t ++; }
+    while (directory_counter.hasNext()) { directory_counter.next(); t ++; emit updateProgress(0, "Counting files... ("+QVariant(t).toString()+" found so far)"); }
 
     // QDirIterator goes through files recursively in a directory. :)
     QDirIterator directory_walker(directory_path, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);

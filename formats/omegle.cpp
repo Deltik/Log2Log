@@ -12,6 +12,9 @@
 #include <QtXml>
 #include <QDateTime>
 
+/*DEBUG*/
+#include <QDebug>
+
 /**
  * Constructor
  */
@@ -335,13 +338,19 @@ QVariant Omegle::generate(StdFormat *$log)
             $appender.setNum($i);
             $appender = " " + $appender;
         }
-        $log_new["Omegle conversation log"+$appender+".html"] = $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
+        QHash<QString, QVariant> $info;
+        $info["content"] = $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
+        $info["modtime"] = $time_base / 1000;
+        $log_new["Omegle conversation log"+$appender+".html"] = $info;
 
         // Increment the entry key.
         $log->nextEntry();
+        // Update the progress bar.
+        updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
     }
     while ($log->hasNextEntry());
 
+    $log_generated = $log_new;
     return $log_generated;
 }
 
@@ -369,7 +378,6 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
         QVariant $raw_item = (i.value());
         this->load($raw_item);
         c++;
-        msleep(1);
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
     }
@@ -384,6 +392,22 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
  */
 void Omegle::to(StdFormat* $log)
 {
+    // Count Log Entries
+    updateProgress(50, "Counting Log Entries...");
+    $log->resetPointer();
+    total = 0;
+    if ($log->gotoEntry(0) == false)
+        total = 0;
+    else
+    {
+        do
+        {
+            total ++;
+            updateProgress(50, "Counting Log Entries... ("+QVariant(total).toString()+" found so far)");
+        }
+        while ($log->nextEntry());
+    }
+
     data = this->generate($log);
     emit finished();
 }
