@@ -143,7 +143,10 @@ void Log2Log::updateFields()
  * Folder Selection Dialog for Source
  */
 void Log2Log::setSrcPath() {
-    srcPath = QFileDialog::getExistingDirectory(this, tr("Source path"), QDir::currentPath());
+    QString initPath = ui->srcPathEdit->text();
+    if (initPath.isEmpty())
+        initPath = QDir::homePath();
+    srcPath = QFileDialog::getExistingDirectory(this, tr("Source path"), initPath);
     if(!srcPath.isNull())
         ui->srcPathEdit->setText(srcPath);
 }
@@ -152,7 +155,10 @@ void Log2Log::setSrcPath() {
  * Folder Selection Dialog for Destination
  */
 void Log2Log::setDstPath() {
-    dstPath = QFileDialog::getExistingDirectory(this, tr("Destination path"), QDir::currentPath());
+    QString initPath = ui->dstPathEdit->text();
+    if (initPath.isEmpty())
+        initPath = QDir::homePath();
+    dstPath = QFileDialog::getExistingDirectory(this, tr("Destination path"), initPath);
     if(!dstPath.isNull())
         ui->dstPathEdit->setText(dstPath);
 }
