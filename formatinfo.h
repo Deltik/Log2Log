@@ -10,8 +10,7 @@
 #ifndef FORMATINFO_H
 #define FORMATINFO_H
 
-#include <QString>
-#include <QFile>
+#include <QtCore>
 #include <QIcon>
 #include <QXmlStreamReader>
 #include <string>

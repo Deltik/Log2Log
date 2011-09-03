@@ -220,7 +220,9 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
         }
         if (currentElement == "default")
         {
-            fDefaultPath = reader.text().toString();
+            QString path_proc = reader.text().toString();
+            QString path_home = QDir::homePath();
+            fDefaultPath = QDir::toNativeSeparators(path_proc.replace("~", path_home));
         }
         if (currentElement == "to")
         {
