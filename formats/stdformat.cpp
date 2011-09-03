@@ -271,7 +271,7 @@ bool StdFormat::hasNextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (dexLine >= chat.size())
+    if (dexLine >= chat.size() - 1)
         return false;
     // Now pointing in chat rows
     inLine = true;
@@ -293,7 +293,7 @@ bool StdFormat::nextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (dexLine >= chat.size())
+    if (dexLine >= chat.size() - 1)
         return false;
     dexLine ++;
     // Now pointing in chat rows

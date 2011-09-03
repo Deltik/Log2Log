@@ -345,6 +345,7 @@ QVariant Omegle::generate(StdFormat *$log)
 
         // Increment the entry key.
         $log->nextEntry();
+        $i ++;
         // Update the progress bar.
         updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
     }
