@@ -257,6 +257,7 @@ QVariant Omegle::generate(StdFormat *$log)
         $DATER = $time_base_proc.toString("yyyy-MM-dd");
 
         // Go through each chat line.
+        $log->gotoLine(0);
         while ($log->hasNextLine())
         {
             // Make array items more readily accessible.
