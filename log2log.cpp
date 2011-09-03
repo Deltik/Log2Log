@@ -108,6 +108,10 @@ void Log2Log::updateFields()
     FormatInfo* dstFI = new FormatInfo(ui->dstProtoBox->itemData(dstIndex).toString());
     dstFI->pointerDig();
 
+    // Set default path, if applicable
+    ui->srcPathEdit->setText(srcFI->getDefaultPath());
+    ui->dstPathEdit->setText(dstFI->getDefaultPath());
+
     // Show the proper configuration fields
     if (srcFI->getName("display").indexOf("(download)") >= 0)
     {

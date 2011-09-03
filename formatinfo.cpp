@@ -218,6 +218,10 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
             QIcon fIconn(fIcon_path);
             fIcon = fIconn;
         }
+        if (currentElement == "default")
+        {
+            fDefaultPath = reader.text().toString();
+        }
         if (currentElement == "to")
         {
             if (reader.text() == "true")

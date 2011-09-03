@@ -34,6 +34,7 @@ public:
     QString getName(QString type = "") { if (type == "display") return fName_display; else if (type == "client") return fName_client; else if (type == "class") return fName_class; else return fName_unix; }
     QIcon getIcon() { return fIcon; }
     QString getIconPath() { return fIcon_path; }
+    QString getDefaultPath() { return fDefaultPath; }
     bool getTo() { return fTo; }
     bool getFrom() { return fFrom; }
     int getSpecificity() { return fSpecificity; }
@@ -64,6 +65,7 @@ private:
     QString fName_class;
     QString fIcon_path;
     QIcon fIcon;
+    QString fDefaultPath;
     bool fTo;
     bool fFrom;
     int fSpecificity;
