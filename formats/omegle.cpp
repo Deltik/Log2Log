@@ -233,7 +233,7 @@ QVariant Omegle::generate(StdFormat *$log)
     // Browser
     $log->resetPointer();
 
-    while ($log->nextEntry())
+    while ($log->hasNextEntry())
     {
         // Put the longer variables into something more readily accessible.
         QString $protocol      = $log->getProtocol();
@@ -341,6 +341,7 @@ QVariant Omegle::generate(StdFormat *$log)
         $log_new["Omegle conversation log"+$appender+".html"] = $info;
 
         // Increment the entry key.
+        $log->nextEntry();
         $i ++;
         // Update the progress bar.
         updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
