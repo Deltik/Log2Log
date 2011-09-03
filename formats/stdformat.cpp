@@ -88,10 +88,10 @@ QString StdFormat::getClient()
  */
 void StdFormat::resetPointer()
 {
-    dexEntry  = NULL;
-    dexLine   = NULL;
-    inLine    = NULL;
-    dexSystem = NULL;
+    dexEntry  = 0;
+    dexLine   = 0;
+    inLine    = 0;
+    dexSystem = 0;
 }
 
 /**
@@ -125,7 +125,7 @@ bool StdFormat::hasNextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (dexEntry >= data.size() - 1)
+    if (dexEntry >= data.size())
         return false;
     return true;
 }
@@ -138,7 +138,7 @@ bool StdFormat::nextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (dexEntry >= data.size() - 1)
+    if (dexEntry >= data.size())
         return false;
     dexEntry ++;
     return true;
