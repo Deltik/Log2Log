@@ -399,4 +399,5 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
 void Omegle::to(StdFormat* $log)
 {
     data = this->generate($log);
+    emit finished();
 }

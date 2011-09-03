@@ -20,6 +20,8 @@ Log2Log::Log2Log(QWidget *parent) :
     // Connect UI signals to local slots
     connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
     connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
+    connect(ui->srcPathEdit, SIGNAL(textEdited(QString)), this, SLOT(determineSrcDefault(QString)));
+    connect(ui->dstPathEdit, SIGNAL(textEdited(QString)), this, SLOT(determineDstDefault(QString)));
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(toggleConversion()));
@@ -109,8 +111,10 @@ void Log2Log::updateFields()
     dstFI->pointerDig();
 
     // Set default path, if applicable
-    ui->srcPathEdit->setText(srcFI->getDefaultPath());
-    ui->dstPathEdit->setText(dstFI->getDefaultPath());
+    if (!dontDefaultSrcPath)
+        ui->srcPathEdit->setText(srcFI->getDefaultPath());
+    if (!dontDefaultDstPath)
+        ui->dstPathEdit->setText(dstFI->getDefaultPath());
 
     // Show the proper configuration fields
     if (srcFI->getName("display").indexOf("(download)") >= 0)
@@ -140,6 +144,26 @@ void Log2Log::updateFields()
 }
 
 /**
+ * Determine Whether srcPathEdit Should Be Defaulted
+ */
+void Log2Log::determineSrcDefault(QString newValue)
+{
+    dontDefaultSrcPath = true;
+    if (newValue.isEmpty())
+        dontDefaultSrcPath = false;
+}
+
+/**
+ * Determine Whether dstPathEdit Should Be Defaulted
+ */
+void Log2Log::determineDstDefault(QString newValue)
+{
+    dontDefaultDstPath = true;
+    if (newValue.isEmpty())
+        dontDefaultDstPath = false;
+}
+
+/**
  * Folder Selection Dialog for Source
  */
 void Log2Log::setSrcPath() {
@@ -148,7 +172,10 @@ void Log2Log::setSrcPath() {
         initPath = QDir::homePath();
     srcPath = QFileDialog::getExistingDirectory(this, tr("Source path"), initPath);
     if(!srcPath.isNull())
+    {
         ui->srcPathEdit->setText(srcPath);
+        dontDefaultSrcPath = true;
+    }
 }
 
 /**
@@ -160,7 +187,10 @@ void Log2Log::setDstPath() {
         initPath = QDir::homePath();
     dstPath = QFileDialog::getExistingDirectory(this, tr("Destination path"), initPath);
     if(!dstPath.isNull())
+    {
         ui->dstPathEdit->setText(dstPath);
+        dontDefaultDstPath = true;
+    }
 }
 
 /**

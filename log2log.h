@@ -33,6 +33,8 @@ private slots:
     void quit();
     void menuAbout();
     void updateFields();
+    void determineSrcDefault(QString newValue);
+    void determineDstDefault(QString newValue);
     void setSrcPath();
     void setDstPath();
     void toggleConversion();
@@ -43,6 +45,8 @@ private slots:
 
 private:
     Ui::Log2Log *ui;
+    bool dontDefaultSrcPath;
+    bool dontDefaultDstPath;
     QString srcPath;
     QString dstPath;
     // Variables: Conversion UI

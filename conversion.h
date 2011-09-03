@@ -22,6 +22,7 @@ public slots:
     void collectData();
     void convertFrom();
     void convertTo();
+    void save();
     void doDummyWork();
     void setProgressProto(int meter, QString description);
 

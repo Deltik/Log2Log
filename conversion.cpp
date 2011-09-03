@@ -106,6 +106,18 @@ void Conversion::convertTo()
     $TO->setMode("to");
     $TO->setInput(final);
     $TO->start();
+
+    connect($FROM, SIGNAL(finished()), this, SLOT(save()), Qt::QueuedConnection);
+
+    emit done();
+}
+
+/**
+ * Save Converted Data
+ */
+void Conversion::save()
+{
+    qDebug() << "Save triggered!";
 }
 
 /**
