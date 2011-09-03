@@ -83,6 +83,18 @@ QString StdFormat::getClient()
 }
 
 /**
+ * Browser: Reset Pointer/Browser
+ * @returns void
+ */
+void StdFormat::resetPointer()
+{
+    dexEntry  = NULL;
+    dexLine   = NULL;
+    inLine    = NULL;
+    dexSystem = NULL;
+}
+
+/**
  * Browser: New Entry
  * @returns int The entry number/index
  */
@@ -168,6 +180,7 @@ bool StdFormat::gotoEntry(int index)
     if (data[indexStr].isNull())
         return false;
     dexEntry = index;
+    dexLine = 0;
     return true;
 }
 
@@ -258,7 +271,7 @@ bool StdFormat::hasNextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (chat.size() - 1 >= dexLine)
+    if (dexLine >= chat.size())
         return false;
     // Now pointing in chat rows
     inLine = true;
@@ -280,7 +293,7 @@ bool StdFormat::nextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (chat.size() - 1 >= dexLine)
+    if (dexLine >= chat.size())
         return false;
     dexLine ++;
     // Now pointing in chat rows

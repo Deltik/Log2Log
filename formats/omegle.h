@@ -41,7 +41,7 @@ public:
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
-    virtual void to();
+    virtual void to(StdFormat* $log);
 };
 
 #endif // OMEGLE_H

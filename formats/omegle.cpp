@@ -82,12 +82,17 @@ void Omegle::load(QVariant $log_raw)
                 final->setTime($time_base);
             }
 
+            // If entering a log item (_line)
+            if (xml.attributes().value("class").toString() == "logitem")
+            {
+                xml.readNext();
+            }
+
             // If element is a status log (_evt)
             if (xml.attributes().value("class").toString() == "statuslog")
             {
                 xml.readNext();
                 QString $_evt = xml.text().toString();
-                qDebug() << "_evt: " + $_evt;
                 // If conversation initialized (_evt_open)
                 if ($_evt == "You're now chatting with a random stranger. Say hi!")
                 {
@@ -148,76 +153,71 @@ void Omegle::load(QVariant $log_raw)
                 final->setSpecificity(6);
             }
 
-            // If the element is a chat line (_msg)
-            if (xml.attributes().value("class").toString() == "logitem")
+            // If the element was sent by _self (_msg_self) {There is an exception.}
+            if (xml.attributes().value("class").toString() == "youmsg")
             {
+                // Entering StartElement for <strong class="msgsource">
                 xml.readNext();
-                // If the element was sent by _self (_msg_self) {There is an exception.}
-                if (xml.attributes().value("class").toString() == "youmsg")
+                // Entering message source
+                xml.readNext();
+
+                final->newLine();
+                final->setCode(0);
+                QString $_alias = xml.text().toString();
+                $_alias.chop(1);
+                // Exception: If element was actually being sent by Stranger 1
+                if (xml.text().toString() == "Stranger 1:")
                 {
-                    // Entering StartElement for <strong class="msgsource">
-                    xml.readNext();
-                    // Entering message source
-                    xml.readNext();
-
-                    final->newLine();
-                    final->setCode(0);
-                    QString $_alias = xml.text().toString();
-                    $_alias.chop(1);
-                    // Exception: If element was actually being sent by Stranger 1
-                    if (xml.text().toString() == "Stranger 1:")
-                    {
-                        final->setSender("stranger1@omegle.com");
-                        final->setAlias($_alias);
-                    }
-                    else
-                    {
-                        final->setSender("_self");
-                        final->setAlias($_alias);
-                    }
-
-                    // Entering EndElement for </strong>
-                    xml.readNext();
-                    // Entering message contents
-                    xml.readNext();
-
-                    final->setContent(xml.text().toString());
-                    final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setSender("stranger1@omegle.com");
+                    final->setAlias($_alias);
                 }
-                // If the element was sent by _with (_msg_with) {There is an exception.}
-                if (xml.attributes().value("class").toString() == "strangermsg")
+                else
                 {
-                    // Entering StartElement for <strong class="msgsource">
-                    xml.readNext();
-                    // Entering message source
-                    xml.readNext();
-
-                    final->newLine();
-                    final->setCode(0);
-                    QString $_alias = xml.text().toString();
-                    $_alias.chop(1);
-                    // Exception: If element was actually being sent by Stranger 2
-                    if (xml.text().toString() == "Stranger 2:")
-                    {
-                        final->setSender("stranger2@omegle.com");
-                        final->setAlias($_alias);
-                    }
-                    else
-                    {
-                        final->setSender("_with");
-                        final->setAlias($_alias);
-                    }
-
-                    // Entering EndElement for </strong>
-                    xml.readNext();
-                    // Entering message contents
-                    xml.readNext();
-
-                    final->setContent(xml.text().toString());
-                    final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setSender("_self");
+                    final->setAlias($_alias);
                 }
+
+                // Entering EndElement for </strong>
+                xml.readNext();
+                // Entering message contents
+                xml.readNext();
+
+                final->setContent(xml.text().toString());
+                final->setTime($time_base);
+                final->setSpecificity(6);
+            }
+            // If the element was sent by _with (_msg_with) {There is an exception.}
+            if (xml.attributes().value("class").toString() == "strangermsg")
+            {
+                // Entering StartElement for <strong class="msgsource">
+                xml.readNext();
+                // Entering message source
+                xml.readNext();
+
+                final->newLine();
+                final->setCode(0);
+                QString $_alias = xml.text().toString();
+                $_alias.chop(1);
+                // Exception: If element was actually being sent by Stranger 2
+                if (xml.text().toString() == "Stranger 2:")
+                {
+                    final->setSender("stranger2@omegle.com");
+                    final->setAlias($_alias);
+                }
+                else
+                {
+                    final->setSender("_with");
+                    final->setAlias($_alias);
+                }
+
+                // Entering EndElement for </strong>
+                xml.readNext();
+                // Entering message contents
+                xml.readNext();
+
+                final->setContent(xml.text().toString());
+                final->setTime($time_base);
+                final->setSpecificity(6);
             }
         }
     }
@@ -232,8 +232,11 @@ QVariant Omegle::generate(StdFormat *$log)
 {
     // Generated Log Container
     QVariant $log_generated;
+    QMap<QString, QVariant> $log_new;
     // Counter
     int $i = 1;
+    // Browser
+    $log->resetPointer();
 
     // If no entries, quit.
     if ($log->gotoEntry(0) == false)
@@ -248,6 +251,87 @@ QVariant Omegle::generate(StdFormat *$log)
         QString $with_alias    = $log->getWithAlias();
         qint64  $time_base     = $log->getTime();
         QString $timezone_base = $log->getTimezone();
+
+        // Chat log skeleton
+        QString $HEADER = "\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n    <head>\n        <title>Omegle conversation log</title>\n        <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n        <style type=\"text/css\">\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: sans-serif;\n        }\n        #header {\n            background: #EEE;\n            border-bottom: 1px solid #DDD;\n            padding: 1em;\n        }\n        h1 {\n            display: inline;\n            margin: 0;\n            padding: 0;\n            font-weight: normal;\n            font-size: 2em;\n            color: #000;\n        }\n        h2 {\n            display: inline;\n            font-size: 1.25em;\n            margin-left: .5em;\n            font-weight: bold;\n            color: #555;\n            letter-spacing: 0.05em;\n        }\n        #header a {\n            color: #3F9FFF;\n            font-weight: bold;\n            text-decoration: none;\n        }\n        #header a:hover {\n            text-decoration: underline;\n        }\n        #log {\n            padding: 1em;\n        }\n        .youmsg, .strangermsg {\n            margin: 0;\n            padding: 0;\n        }\n        .youmsg .msgsource {\n            color: blue;\n            font-weight: bold;\n        }\n        .strangermsg .msgsource {\n            color: red;\n            font-weight: bold;\n        }\n        .statuslog {\n            color: #555;\n            font-size: 0.9em;\n            font-weight: bold;\n            margin: 0;\n            padding: 0;\n        }\n        .logitem {\n            padding-bottom: 0.5em;\n        }\n        </style>\n    </head>\n    <body>\n        <div id=\"header\">\n            <h1><a href=\"http://omegle.com/\">Omegle</a> conversation log</h1>\n            <h2>";
+        QString $DATER  = "";
+        QString $INNER  = "</h2>\n        </div>\n        <div id=\"log\">\n            ";
+        QString $LOGGER = "";
+        QString $FOOTER = "\n        </div>\n    </body>\n</html>\n        ";
+
+        // Base time (goes between $HEADER and $INNER)
+        QDateTime $time_base_proc;
+        $time_base_proc.setMSecsSinceEpoch($time_base);
+        $DATER = $time_base_proc.toString("YYYY-MM-DD");
+
+        // Go through each chat line.
+        while ($log->hasNextLine())
+        {
+            // Make array items more readily accessible.
+            qint64  $time_cur    = $log->getTime();
+            int     $code        = $log->getCode();
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+            QString $message     = $log->getContent();
+            int     $specificity = $log->getSpecificity();
+            int     $accuracy    = $log->getAccuracy();
+            int     $nice        = $log->getNice();
+
+            // If we're looking at a system message...
+            if ($code >= 1)
+            {
+                // Exception: Omegle Spy Mode Indicator
+                if ($message.startsWith("Question to discuss: "))
+                {
+                    $LOGGER = $LOGGER + "<div class=\"logitem\"><div class=\"question\"><div class=\"questionHeading\">Question to discuss:</div><div class=\"questionText\">" + $message.mid(21) + "</div></div></div>";
+                }
+                // System messages, whoo!
+                else if ($sender.startsWith("_evt"))
+                {
+                    // Conversation open (_evt_open)
+                    if ($sender == "_evt_open")
+                    {
+                        $message = "You're now chatting with a random stranger. Say hi!";
+                    }
+                    // Conversation closed (_evt_close)
+                    if ($sender == "_evt_close")
+                    {
+                        QString $message_proto = "Conversation has disconnected";
+                        if ($message == "_with")
+                            $message_proto = "Your conversational partner has disconnected.";
+                        else if ($message == "_self")
+                            $message_proto = "You have disconnected.";
+                        else if ($message.startsWith("_group"))
+                            $message_proto = $message.split(" ").value(1) + " has disconnected";
+                        $message = $message_proto;
+                    }
+                    $LOGGER = $LOGGER + "<div class=\"logitem\"><p class=\"statuslog\">" + $message + "</p></div>";
+                }
+            }
+            // Otherwise, it's a normal message...
+            else
+            {
+                $LOGGER = $LOGGER + " ["+$sender+":"+$message+"] ";
+            }
+
+            // Next!
+            $log->nextLine();
+        }
+
+        // Add to the generated log.
+        QString $appender = "";
+        if ($i > 1)
+        {
+            $appender.setNum($i);
+            $appender = " " + $appender;
+        }
+        $log_new["Omegle conversation log"+$appender+".html"] = $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
+
+        /*DEBUG*/
+        qDebug() << "DEBUG TO: " + $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
+
+        // Increment the entry key.
+        $log->nextEntry();
     }
     while ($log->hasNextEntry());
 
@@ -292,6 +376,7 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
 /**
  * Process "To" Request
  */
-void Omegle::to()
+void Omegle::to(StdFormat* $log)
 {
+    data = this->generate($log);
 }

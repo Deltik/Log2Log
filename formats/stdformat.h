@@ -33,6 +33,7 @@ public:
     StdFormat();
     ~StdFormat();
     /* Browser */
+    void resetPointer();
     int newEntry();
     bool hasNextEntry();
     bool nextEntry();
