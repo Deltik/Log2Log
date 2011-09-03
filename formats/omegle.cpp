@@ -12,9 +12,6 @@
 #include <QtXml>
 #include <QDateTime>
 
-// QDebug
-#include <QDebug>
-
 /**
  * Constructor
  */
@@ -36,12 +33,9 @@ Omegle::~Omegle()
  */
 void Omegle::load(QVariant $log_raw)
 {
-    qDebug() << "Omegle::load() triggered!";
-
     // If File Not Omegle Chat Log
     if ($log_raw.toString().indexOf("<h1><a href=\"http://omegle.com/\">Omegle</a> conversation log</h1>") == -1)
     {
-        qDebug() << "Not Omegle Chat Log";
         return;
     }
 
@@ -221,8 +215,6 @@ void Omegle::load(QVariant $log_raw)
             }
         }
     }
-    /*DEBUG*/
-    qDebug()<<final->final;
 }
 
 /**
@@ -263,8 +255,6 @@ QVariant Omegle::generate(StdFormat *$log)
         // Base time (goes between $HEADER and $INNER)
         QDateTime $time_base_proc;
         $time_base_proc.setMSecsSinceEpoch($time_base);
-        qDebug() << $time_base_proc.toTime_t();
-        qDebug() << $time_base;
         $DATER = $time_base_proc.toString("yyyy-MM-dd");
 
         // Go through each chat line.
@@ -347,9 +337,6 @@ QVariant Omegle::generate(StdFormat *$log)
         }
         $log_new["Omegle conversation log"+$appender+".html"] = $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
 
-        /*DEBUG*/
-        qDebug() << "DEBUG TO: " + $HEADER + $DATER + $INNER + $LOGGER + $FOOTER;
-
         // Increment the entry key.
         $log->nextEntry();
     }
@@ -380,7 +367,6 @@ StdFormat* Omegle::from(QHash<QString, QVariant> data)
     while (i != list.constEnd())
     {
         QVariant $raw_item = (i.value());
-        qDebug() << "Encountered file: " + i.key();
         this->load($raw_item);
         c++;
         msleep(1);

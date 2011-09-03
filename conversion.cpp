@@ -107,7 +107,7 @@ void Conversion::convertTo()
     $TO->setInput(final);
     $TO->start();
 
-    connect($FROM, SIGNAL(finished()), this, SLOT(save()), Qt::QueuedConnection);
+    connect($TO, SIGNAL(finished()), this, SLOT(save()), Qt::QueuedConnection);
 
     emit done();
 }
