@@ -91,7 +91,8 @@ void Omegle::load(QVariant $log_raw)
                 xml.readNext();
                 QString $_evt = xml.text().toString();
                 // If conversation initialized (_evt_open)
-                if ($_evt == "You're now chatting with a random stranger. Say hi!")
+                if ($_evt == "You're now chatting with a random stranger. Say hi!" ||
+                    $_evt == "You're now watching two strangers discuss your question!")
                 {
                     final->newLine();
                     final->setCode(1);
@@ -102,7 +103,7 @@ void Omegle::load(QVariant $log_raw)
                 }
 
                 // If conversation closed (_evt_close) by _self
-                if ($_evt == "You have disconnected.")
+                else if ($_evt == "You have disconnected.")
                 {
                     final->newLine();
                     final->setCode(1);
@@ -113,7 +114,7 @@ void Omegle::load(QVariant $log_raw)
                 }
 
                 // If conversation closed (_evt_close)
-                if ($_evt.indexOf("disconnected") != -1)
+                else if ($_evt.indexOf("disconnected") != -1)
                 {
                     final->newLine();
                     final->setCode(1);
@@ -133,6 +134,17 @@ void Omegle::load(QVariant $log_raw)
                     // Otherwise? O_o
                     else
                         final->setContent("_unknown");
+                    final->setTime($time_base);
+                    final->setSpecificity(6);
+                }
+
+                // If something else (_evt)
+                else
+                {
+                    final->newLine();
+                    final->setCode(1);
+                    final->setSender("_evt");
+                    final->setContent($_evt);
                     final->setTime($time_base);
                     final->setSpecificity(6);
                 }
@@ -233,7 +245,7 @@ QVariant Omegle::generate(StdFormat *$log)
     // Browser
     $log->resetPointer();
 
-    while ($log->hasNextEntry())
+    while ($log->nextEntry())
     {
         // Put the longer variables into something more readily accessible.
         QString $protocol      = $log->getProtocol();
@@ -257,8 +269,7 @@ QVariant Omegle::generate(StdFormat *$log)
         $DATER = $time_base_proc.toString("yyyy-MM-dd");
 
         // Go through each chat line.
-        $log->gotoLine(0);
-        while ($log->hasNextLine())
+        while ($log->nextLine())
         {
             // Make array items more readily accessible.
             qlonglong $time_cur  = $log->getTime();
@@ -284,7 +295,8 @@ QVariant Omegle::generate(StdFormat *$log)
                     // Conversation open (_evt_open)
                     if ($sender == "_evt_open")
                     {
-                        $message = "You're now chatting with a random stranger. Say hi!";
+                        if ($message.isEmpty())
+                            $message = "You're now chatting with a random stranger. Say hi!";
                     }
                     // Conversation closed (_evt_close)
                     if ($sender == "_evt_close")
@@ -295,7 +307,11 @@ QVariant Omegle::generate(StdFormat *$log)
                         else if ($message == "_self")
                             $message_proto = "You have disconnected.";
                         else if ($message.startsWith("_group"))
-                            $message_proto = $message.split(" ").value(1) + " has disconnected";
+                        {
+                            QStringList $message_proto_proto = $message.split(" ");
+                            $message_proto_proto.pop_front();
+                            $message_proto = $message_proto_proto.join(" ") + " has disconnected";
+                        }
                         $message = $message_proto;
                     }
                     $LOGGER = $LOGGER + "<div class=\"logitem\"><p class=\"statuslog\">" + $message + "</p></div>";
@@ -316,16 +332,13 @@ QVariant Omegle::generate(StdFormat *$log)
 
                 // Determine the message sender indicator
                 QString $sender_color;
-                if ($sender == $account)
+                if ($sender == $account || $alias == "Stranger 1")
                     $sender_color = "youmsg";
                 else
                     $sender_color = "strangermsg";
 
                 $LOGGER = $LOGGER + "<div class=\"logitem\"><p class=\"" + $sender_color + "\"><strong class=\"msgsource\">" + $alias + ":</strong> " + $message + "</p></div>";
             }
-
-            // Next!
-            $log->nextLine();
         }
 
         // Add to the generated log.
@@ -341,7 +354,6 @@ QVariant Omegle::generate(StdFormat *$log)
         $log_new["Omegle conversation log"+$appender+".html"] = $info;
 
         // Increment the entry key.
-        $log->nextEntry();
         $i ++;
         // Update the progress bar.
         updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");

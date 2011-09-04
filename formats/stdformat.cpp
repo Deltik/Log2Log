@@ -33,6 +33,9 @@
 
 #include "stdformat.h"
 
+/*DEBUG*/
+#include <QDebug>
+
 /**
  * Constructor
  */
@@ -88,10 +91,10 @@ QString StdFormat::getClient()
  */
 void StdFormat::resetPointer()
 {
-    dexEntry  = 0;
-    dexLine   = 0;
-    inLine    = 0;
-    dexSystem = 0;
+    dexEntry  = -1;
+    dexLine   = -1;
+    inLine    = false;
+    dexSystem = -1;
 }
 
 /**
@@ -113,6 +116,9 @@ int StdFormat::newEntry()
     // Reinsert
     final["data"] = data;
 
+    // Not pointing in a chat row
+    inLine = false;
+
     // Return current entry number
     return dexEntry;
 }
@@ -125,7 +131,7 @@ bool StdFormat::hasNextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (dexEntry >= data.size())
+    if (dexEntry >= data.size() - 1)
         return false;
     return true;
 }
@@ -138,9 +144,9 @@ bool StdFormat::nextEntry()
 {
     // Extract
     QMap<QString, QVariant> data = final["data"].toMap();
-    if (dexEntry >= data.size())
+    if (dexEntry >= data.size() - 1)
         return false;
-    dexEntry ++;
+    dexEntry ++; dexLine = -1; inLine = false;
     return true;
 }
 
@@ -150,7 +156,7 @@ bool StdFormat::nextEntry()
  */
 bool StdFormat::hasPreviousEntry()
 {
-    if (dexEntry == 0)
+    if (dexEntry < 0)
         return false;
     return true;
 }
@@ -161,9 +167,9 @@ bool StdFormat::hasPreviousEntry()
  */
 bool StdFormat::previousEntry()
 {
-    if (dexEntry == 0)
+    if (dexEntry < 0)
         return false;
-    dexEntry --;
+    dexEntry --; inLine = false;
     return true;
 }
 
@@ -180,7 +186,7 @@ bool StdFormat::gotoEntry(int index)
     if (data[indexStr].isNull())
         return false;
     dexEntry = index;
-    dexLine = 0;
+    dexLine = -1; inLine = false;
     return true;
 }
 
@@ -271,7 +277,7 @@ bool StdFormat::hasNextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (dexLine >= chat.size())
+    if (dexLine >= chat.size() - 1)
         return false;
     // Now pointing in chat rows
     inLine = true;
@@ -293,7 +299,7 @@ bool StdFormat::nextLine()
     if (entry.value("chat").isNull())
         return false;
     QMap<QString, QVariant> chat = entry["chat"].toMap();
-    if (dexLine >= chat.size())
+    if (dexLine >= chat.size() - 1)
         return false;
     dexLine ++;
     // Now pointing in chat rows
@@ -307,7 +313,7 @@ bool StdFormat::nextLine()
  */
 bool StdFormat::hasPreviousLine()
 {
-    if (dexLine == 0)
+    if (dexLine < 0)
         return false;
     // Now pointing in chat rows
     inLine = true;
@@ -320,7 +326,7 @@ bool StdFormat::hasPreviousLine()
  */
 bool StdFormat::previousLine()
 {
-    if (dexLine == 0)
+    if (dexLine < 0)
         return false;
     dexLine --;
     // Now pointing in chat rows
