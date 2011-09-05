@@ -1,6 +1,7 @@
 #include "log2log.h"
 #include "helper.h"
 #include "ui_log2log.h"
+#include "update.h"
 #include "about.h"
 #include "formatinfo.h"
 #include "conversion.h"
@@ -25,6 +26,7 @@ Log2Log::Log2Log(QWidget *parent) :
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(toggleConversion()));
+    connect(ui->actionUpdates, SIGNAL(triggered()), this, SLOT(menuUpdates()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(menuAbout()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(quit()));
 
@@ -439,6 +441,15 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
 
     // So tell me: what's wrong?
     ui->whatsWrong->setHtml(html);
+}
+
+/**
+ * Check for Updates Dialog Box
+ */
+void Log2Log::menuUpdates()
+{
+    Update *w = new Update(this);
+    w->show();
 }
 
 /**

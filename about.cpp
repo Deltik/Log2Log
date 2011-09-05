@@ -1,5 +1,6 @@
 #include "about.h"
 #include "ui_about.h"
+#include "update.h"
 #include <QTimer>
 
 About::About(QWidget *parent) :
@@ -10,6 +11,9 @@ About::About(QWidget *parent) :
     connect(ui->backButton, SIGNAL(clicked()), this, SLOT(goBack()));
     connect(ui->creditsButton, SIGNAL(clicked()), this, SLOT(showCredits()));
     connect(ui->licenseButton, SIGNAL(clicked()), this, SLOT(showLicense()));
+
+    // Set Version Number
+    ui->textBrowser->setHtml(ui->textBrowser->toHtml().replace("VERSION", (QString)VERSION));
 
     this->setWindowTitle("About Log2Log");
 

@@ -31,6 +31,7 @@ protected:
 
 private slots:
     void quit();
+    void menuUpdates();
     void menuAbout();
     void updateFields();
     void determineSrcDefault(QString newValue);

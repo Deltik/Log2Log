@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     formats/omegle.cpp \
     about.cpp \
     conversion.cpp \
-    formats/stdconverter.cpp
+    formats/stdconverter.cpp \
+    update.cpp
 
 HEADERS  += \
     log2log.h \
@@ -28,11 +29,13 @@ HEADERS  += \
     formats/omegle.h \
     about.h \
     conversion.h \
-    formats/stdconverter.h
+    formats/stdconverter.h \
+    update.h
 
 FORMS    += \
     log2log.ui \
-    about.ui
+    about.ui \
+    update.ui
 
 RESOURCES += \
     log2log.qrc
