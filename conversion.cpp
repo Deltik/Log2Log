@@ -61,6 +61,8 @@ void Conversion::collectData()
     $FROM = new StdConverter();
     if (from_name == "Omegle")
         $FROM = new Omegle();
+    if (from_name == "Pidgin")
+        $FROM = new Pidgin();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -69,6 +71,8 @@ void Conversion::collectData()
     $TO = new StdConverter();
     if (to_name == "Omegle")
         $TO = new Omegle();
+    if (to_name == "Pidgin")
+        $TO = new Pidgin();
 
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())

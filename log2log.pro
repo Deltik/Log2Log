@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     conversion.cpp \
     formats/stdconverter.cpp \
     update.cpp \
-    api.cpp
+    api.cpp \
+    formats/pidgin.cpp
 
 HEADERS  += \
     log2log.h \
@@ -32,7 +33,8 @@ HEADERS  += \
     conversion.h \
     formats/stdconverter.h \
     update.h \
-    api.h
+    api.h \
+    formats/pidgin.h
 
 FORMS    += \
     log2log.ui \
