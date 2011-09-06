@@ -236,7 +236,7 @@
 		<client>Trillian</client>
 		<class>Trillian</class>
 		<icon>:/images/services/Trillian.png</icon>
-                <default>%APPDATA%Trillian</default>
+                <default>%APPDATA%/Trillian</default>
 		<support>
 			<from>true</from>
 			<to>true</to>
