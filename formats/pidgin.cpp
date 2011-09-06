@@ -25,7 +25,7 @@ Pidgin::Pidgin()
  */
 void Pidgin::load(QVariant $log_raw)
 {
-    ;
+    // TODO
 }
 
 /**
@@ -33,7 +33,7 @@ void Pidgin::load(QVariant $log_raw)
  */
 QVariant Pidgin::generate(StdFormat *$log)
 {
-    ;
+    // TODO
 }
 
 /**

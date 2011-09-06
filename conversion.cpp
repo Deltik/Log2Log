@@ -5,6 +5,7 @@
 /* INCLUDE FORMAT CONVERTER CLASSES */
 #include "formats/stdformat.h"
 #include "formats/omegle.h"
+#include "formats/pidgin.h"
 
 
 /**
