@@ -215,13 +215,6 @@ void Update::interpretReply(QString reply)
                                      "<br /><br /><center><img src=\":/images/etc/Deltik.png\" /></center>");
         }
     }
-
-    /*DEBUG*/
-    QString symbol = "<";
-    QString v1 = "0.9.9";
-    QString v2 = updateInfo["version"].toString();
-    qDebug() << "Comparing: "+v1+" "+symbol+" "+v2;
-    qDebug() << version_compare(v1, v2, symbol);
 }
 
 /**
