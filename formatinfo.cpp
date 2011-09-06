@@ -221,8 +221,9 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
         if (currentElement == "default")
         {
             QString path_proc = reader.text().toString();
-            QString path_home = QDir::homePath();
-            fDefaultPath = QDir::toNativeSeparators(path_proc.replace("~", path_home));
+            path_proc = path_proc.replace("~", QDir::homePath());
+            path_proc = path_proc.replace("%APPDATA%", QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+            fDefaultPath = QDir::toNativeSeparators(path_proc);
         }
         if (currentElement == "to")
         {

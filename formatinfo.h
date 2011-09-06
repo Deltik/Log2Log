@@ -13,8 +13,7 @@
 #include <QtCore>
 #include <QIcon>
 #include <QXmlStreamReader>
-#include <string>
-#include <stdio.h>
+#include <QDesktopServices>
 #include <QtDebug>
 
 class FormatInfo

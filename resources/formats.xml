@@ -231,6 +231,27 @@
 			<toinfo></toinfo>
 		</support>
 	</format>
+	<format id="trillian">
+		<name>Trillian</name>
+		<client>Trillian</client>
+		<class>Trillian</class>
+		<icon>:/images/services/Trillian.png</icon>
+                <default>%APPDATA%Trillian</default>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>-2</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>true</status>
+			<system>true</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo></frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
 </formats>
 <!-- NOTE: <group> has yet to be designed in Log2Log Standard Chat Log Format. -->
 
