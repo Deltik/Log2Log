@@ -12,8 +12,6 @@
 #include <QLabel>
 #include "conversion.h"
 
-#define VERSION "1.0.0"
-
 namespace Ui {
     class Log2Log;
 }
