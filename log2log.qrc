@@ -7,6 +7,7 @@
         <file>images/etc/favicon.ico</file>
         <file>images/etc/blank.png</file>
         <file>images/services/Adium.png</file>
+        <file>images/services/AIM.png</file>
         <file>images/services/Deltik.png</file>
         <file>images/services/Digsby.png</file>
         <file>images/services/Empathy.png</file>
@@ -22,6 +23,7 @@
         <file>images/services/Pidgin.png</file>
         <file>images/services/Skype.png</file>
         <file>images/services/Trillian.png</file>
+        <file>images/services/WLM.png</file>
         <file>resources/formats.xml</file>
     </qresource>
 </RCC>

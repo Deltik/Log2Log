@@ -14,10 +14,31 @@
 			<time>yes</time>
 			<timezone>yes</timezone>
 			<status>true</status>
-			<system></system>
+			<system>false</system>
 			<aliases>true</aliases>
 			<group>true</group>
 			<frominfo>Did you shoot Adiumy, the Adium duck?</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="aim">
+		<name>AIM</name>
+		<client>AIM</client>
+		<class>Aim</class>
+		<icon>:/images/services/AIM.png</icon>
+		<default>~/Documents/AIMLogger</default>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>0</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo></frominfo>
 			<toinfo></toinfo>
 		</support>
 	</format>
@@ -30,7 +51,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-                        <specificity>-2</specificity>
+                        <specificity>-1</specificity>
 			<accuracy>true</accuracy>
 			<time>yes</time>
 			<timezone>yes</timezone>
@@ -114,7 +135,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-                        <specificity>-2</specificity>
+                        <specificity>-1</specificity>
 			<accuracy>true</accuracy>
 			<time>yes</time>
 			<timezone>yes</timezone>
@@ -240,12 +261,33 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>-2</specificity>
+			<specificity>-1</specificity>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
 			<status>true</status>
 			<system>true</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo></frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="wlm">
+		<name>Windows Live Messenger</name>
+		<client>Windows Live Messenger</client>
+		<class>Wlm</class>
+		<icon>:/images/services/WLM.png</icon>
+		<default>~/My Received Files/YOUR_WLM_USERNAME/History</default>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<specificity>-1</specificity>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
 			<aliases>true</aliases>
 			<group>true</group>
 			<frominfo></frominfo>
@@ -287,7 +329,7 @@ Maximum Log2Log Timestamp Specificity Index
  Legend:
   null: No time information
   -3: Nanoseconds (not implemented)
-  -2: Microseconds
+  -2: Microseconds (not implemented)
   -1: Milliseconds
   0 : Seconds
   1 : Ten Seconds

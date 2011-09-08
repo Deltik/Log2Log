@@ -32,6 +32,7 @@ public:
     /* PHP Function Ports */
     static void dummy();
     static QMap<QString, QVariant> files_get_contents(QString directory_path);
+    static QList<QList<QString> > timezone_abbreviations_list();
 };
 
 #endif // HELPERS_H

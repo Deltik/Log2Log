@@ -36,6 +36,10 @@ class Pidgin : public StdConverter
 public:
     Pidgin();
     virtual void load(QVariant $log_raw);
+    virtual void loadHtml(QVariant $log_raw);
+    virtual void loadPlainText(QVariant $log_raw);
+    virtual void loadSystemHtml(QVariant $log_raw);
+    virtual void loadSystemPlainText(QVariant $log_raw);
     virtual QVariant generate(StdFormat* $log);
 
 public slots:

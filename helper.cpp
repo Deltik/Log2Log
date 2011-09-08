@@ -171,3 +171,13 @@ QMap<QString, QVariant> Helper::files_get_contents(QString directory_path)
     // Return the list that this method made. :D
     return list;
 }
+
+/**
+ * Returns associative array containing dst, offset and the timezone name
+ * @returns QList<QList>
+ */
+QList<QList<QString> > timezone_abbreviations_list()
+{
+    // TODO: Timezone Support
+    //#include "resources/timezonemap.h"
+}

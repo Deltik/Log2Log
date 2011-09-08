@@ -25,6 +25,113 @@ Pidgin::Pidgin()
  */
 void Pidgin::load(QVariant $log_raw)
 {
+    // There are two types of Pidgin chat logs:
+    //  - HTML
+    //  - Plain text
+    // Which is it gonna be?
+    if ($log_raw.toString().left(6) == "<html>")
+        loadHtml($log_raw);
+    else
+        loadPlainText($log_raw);
+}
+
+/**
+ * Load an HTML Pidgin Chat Log
+ */
+void Pidgin::loadHtml(QVariant $log_raw)
+{
+    // Import the chat log.
+    QString $log_proc = $log_raw.toString();
+
+    // Assume that the inputted log is in Pidgin HTML. Create new entry.
+    final->newEntry();
+
+    // Remove cruft that will interfere with QXmlStreamReader.
+    QStringList $log_split = $log_proc.split("</head>");
+    $log_split.pop_front();
+    $log_proc = $log_split.join("</head>");
+    $log_proc.replace("</body></html>", "</body>");
+
+    // Create the HTML reader.
+    QXmlStreamReader xml($log_proc);
+
+    // Read the HTML file.
+    while (!xml.atEnd())
+    {
+        // Read next item
+        QXmlStreamReader::TokenType token = xml.readNext();
+
+        // Just some items that might be used in this scope
+        qlonglong $time_base;
+
+        // Looking at element beginnings...
+        if (token == QXmlStreamReader::StartElement)
+        {
+            // If token is the log meta indicator...
+            if (xml.qualifiedName().toString() == "h3")
+            {
+                // Point to the data.
+                xml.readNext();
+
+                // Unfortunately, RegExp can't help with this tricky next part.
+                // Here, we look at Pidgin's chat log or system log header:
+                //  - "Conversation with _WITH at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION on _SELF (_PROTOCOL)"
+                //  - "System log for account _SELF (_PROTOCOL) connected at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION"
+                QString $log_header = xml.text().toString();
+                // If this is a system log, forward to the proper method.
+                if ($log_header.left(6) == "System")
+                    return loadSystemHtml($log_raw);
+
+                QString $log_header_proc = $log_header.mid(18);
+                QStringList $log_header_split = $log_header_proc.split(" at ");
+                final->setWith($log_header_split.takeFirst());
+                $log_header_proc = $log_header_split.join(" at ");
+                $log_header_split = $log_header_proc.split(" on ");
+                QString $date_proc = $log_header_split.takeFirst();
+                $log_header_proc = $log_header_split.join(" on ");
+                $log_header_split = $log_header_proc.split(" (");
+                final->setSelf($log_header_split.takeFirst());
+                $log_header_proc = $log_header_split.join(" (");
+                $log_header_split = $log_header_proc.split(")");
+                final->setProtocol($log_header_split.takeFirst());
+
+                QStringList $date_split = $date_proc.split(" ");
+                int $date_parts_count = $date_split.count();
+                QString $timezone = $date_split.takeLast();
+                $date_proc = $date_split.join(" ");
+                QDateTime $time_proc;
+                if ($date_parts_count == 7)
+                    $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss AP");
+                else
+                    $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss");
+
+                // TODO: Timezone Support
+            }
+        }
+    }
+}
+
+/**
+ * Load a Plain Text Pidgin Chat Log
+ */
+void Pidgin::loadPlainText(QVariant $log_raw)
+{
+    // TODO
+}
+
+/**
+ * Load an HTML Pidgin System Log
+ */
+void Pidgin::loadSystemHtml(QVariant $log_raw)
+{
+    // TODO
+}
+
+/**
+ * Load a Plain Text Pidgin System Log
+ */
+void Pidgin::loadSystemPlainText(QVariant $log_raw)
+{
     // TODO
 }
 
