@@ -9,7 +9,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>0</specificity>
+			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>yes</timezone>
@@ -30,7 +30,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>0</specificity>
+			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -51,7 +51,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-                        <specificity>-1</specificity>
+                        <precision>-1</precision>
 			<accuracy>true</accuracy>
 			<time>yes</time>
 			<timezone>yes</timezone>
@@ -72,7 +72,7 @@
 		<support>
 			<from>true</from>
 			<to>false</to>
-			<specificity>2</specificity>
+			<precision>2</precision>
 			<accuracy>false</accuracy>
 			<time>group</time>
 			<timezone>group</timezone>
@@ -93,7 +93,7 @@
 		<support>
 			<from>true</from>
 			<to>false</to>
-			<specificity>2</specificity>
+			<precision>2</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -114,7 +114,7 @@
 		<support>
 			<from>true</from>
 			<to>false</to>
-			<specificity>0</specificity>
+			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -135,7 +135,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-                        <specificity>-1</specificity>
+                        <precision>-1</precision>
 			<accuracy>true</accuracy>
 			<time>yes</time>
 			<timezone>yes</timezone>
@@ -156,7 +156,7 @@
 		<support>
 			<from>true</from>
 			<to>false</to>
-			<specificity>2</specificity>
+			<precision>2</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -177,7 +177,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>2</specificity>
+			<precision>2</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -198,7 +198,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-                        <specificity>6</specificity>
+                        <precision>6</precision>
 			<accuracy>false</accuracy>
                         <time>group</time>
 			<timezone>no</timezone>
@@ -219,7 +219,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>0</specificity>
+			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>group</timezone>
@@ -240,7 +240,7 @@
 		<support>
 			<from>true</from>
 			<to>false</to>
-			<specificity>0</specificity>
+			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -261,7 +261,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>-1</specificity>
+			<precision>-1</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -282,7 +282,7 @@
 		<support>
 			<from>true</from>
 			<to>true</to>
-			<specificity>-1</specificity>
+			<precision>-1</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
@@ -307,7 +307,7 @@
 		<support> Support information.
 			<from>BOOLEAN</from> Set to "true" if you can convert from this format.
 			<to>BOOLEAN</to> Set to "true" if you can convert to this format.
-			<specificity>INTEGER</specificity> See the Log2Log Timestamp Specificity Index guide below.
+			<precision>INTEGER</precision> See the Log2Log Timestamp Precision Index guide below.
 			<accuracy>BOOLEAN</accuracy> Set to "true" if this format supports Log2Log Message Content Accuracy Index. Probably "false".
 			<time>STRING[yes|group|no]</time> Set to "yes" if time is stored for each message. Set to "group" if a group of messages is assigned to a time. Set to "no" if times are not stored.
 			<timezone>STRING[yes|group|no]</timezone> Set to "yes" if timezones are stored for each message. Set to "group" if a group of messages is assigned to a timezone. Set to "no" if timezones are not stored.
@@ -325,7 +325,7 @@
 
 <!--
 
-Maximum Log2Log Timestamp Specificity Index
+Maximum Log2Log Timestamp Precision Index
  Legend:
   null: No time information
   -3: Nanoseconds (not implemented)

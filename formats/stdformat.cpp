@@ -708,11 +708,11 @@ bool StdFormat::setCode(int code)
 }
 
 /**
- * Setter: Set Log2Log Timestamp Specificity Index
- * @param int specificity Log2Log Timestamp Specificity Index
+ * Setter: Set Log2Log Timestamp Precision Index
+ * @param int precision Log2Log Timestamp Precision Index
  * @returns bool true on success
  */
-bool StdFormat::setSpecificity(int specificity)
+bool StdFormat::setPrecision(int precision)
 {
     QString curEntry;
     QString curLine;
@@ -733,7 +733,7 @@ bool StdFormat::setSpecificity(int specificity)
         return false;
     QHash<QString, QVariant> chatRow = chat[curLine].toHash();
     // Reinsert
-    chatRow["specificity"] = specificity;
+    chatRow["precision"] = precision;
     chat[curLine] = chatRow;
     entry["chat"] = chat;
     // Reinsert
@@ -1079,10 +1079,10 @@ int StdFormat::getCode()
 }
 
 /**
- * Getter: Get Log2Log Timestamp Specificity Index
- * @returns int Log2Log Timestamp Specificity Index
+ * Getter: Get Log2Log Timestamp Precision Index
+ * @returns int Log2Log Timestamp Precision Index
  */
-int StdFormat::getSpecificity()
+int StdFormat::getPrecision()
 {
     QString curEntry;
     QString curLine;
@@ -1102,8 +1102,8 @@ int StdFormat::getSpecificity()
     if (chat[curLine].isNull())
         return false;
     QHash<QString, QVariant> chatRow = chat[curLine].toHash();
-    // Get specificity
-    return chatRow["specificity"].toInt();
+    // Get precision
+    return chatRow["precision"].toInt();
 }
 
 /**
@@ -1185,7 +1185,7 @@ TODO: Redraw the structure to make it look better.
             "alias" -> a more readable "sender"; "_with" defaults to "with_alias", if applicable
             "content" -> what the sender actually sent; ex. "I found a five-dollar bill!"
             (int)"code" -> identifier for what type of entry this is
-            (int)"specificity" -> an index of how accurate the time is; ex. 2
+            (int)"precision" -> an index of how accurate the time is; ex. 2
             (int)"accuracy" -> how accurate the "content" is as an index; ex. 3
             (int)"nice" -> how urgent this entry is from -20 (most) to 20 (least) (not implemented); ex. 3
         "system" -> system log; TODO: TBD
@@ -1227,7 +1227,7 @@ msn         MSN
 skype       Skype
 yahoo       YIM
 
-Log2Log Timestamp Specificity Index
+Log2Log Timestamp Precision Index
  Legend:
   null: No time information
   -3: Nanoseconds

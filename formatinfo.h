@@ -35,7 +35,7 @@ public:
     QString getDefaultPath() { return fDefaultPath; }
     bool getTo() { return fTo; }
     bool getFrom() { return fFrom; }
-    int getSpecificity() { return fSpecificity; }
+    int getPrecision() { return fPrecision; }
     bool getAccuracy() { return fAccuracy; }
     int getTime() { return fTime; }
     int getTimezone() { return fTimezone; }
@@ -47,9 +47,6 @@ public:
     QString getToInfo() { return fToInfo; }
 
     QString xmlsrc;
-
-private slots:
-    //internals();
 
 private:
     bool dig_the_information_out(QXmlStreamReader& reader);
@@ -66,7 +63,7 @@ private:
     QString fDefaultPath;
     bool fTo;
     bool fFrom;
-    int fSpecificity;
+    int fPrecision;
     bool fAccuracy;
     int fTime;
     int fTimezone;

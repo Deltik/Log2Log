@@ -305,21 +305,21 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
                 hEnd;
         cError ++;
     }
-    // Specificity Index not as precise in destination
-    if (srcFI->getTime() > 0 && dstFI->getTime() > 0 && srcFI->getSpecificity() < dstFI->getSpecificity())
+    // Precision Index not as precise in destination
+    if (srcFI->getTime() > 0 && dstFI->getTime() > 0 && srcFI->getPrecision() < dstFI->getPrecision())
     {
         Helper* helper = new Helper();
-        QString srcSpecificityReadable = helper->whatSpecificity(srcFI->getSpecificity());
-        QString dstSpecificityReadable = helper->whatSpecificity(dstFI->getSpecificity());
+        QString srcPrecisionReadable = helper->whatPrecision(srcFI->getPrecision());
+        QString dstPrecisionReadable = helper->whatPrecision(dstFI->getPrecision());
         html += hError +
                 "Times are not as accurately saved. " +
                 srcFI->getName("display") +
                 " can store as close as a <b>" +
-                srcSpecificityReadable +
+                srcPrecisionReadable +
                 "</b>, but " +
                 dstFI->getName("display") +
                 " can only store as close as a <b>" +
-                dstSpecificityReadable +
+                dstPrecisionReadable +
                 "</b>." +
                 hEnd;
         cError ++;

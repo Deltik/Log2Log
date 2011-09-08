@@ -66,7 +66,7 @@ public:
     bool setAlias(QString name);
     bool setContent(QString content);
     bool setCode(int code);
-    bool setSpecificity(int specificity);
+    bool setPrecision(int precision);
     bool setAccuracy(int accuracy);
     bool setNice(int nice);
     /* Getters */
@@ -82,7 +82,7 @@ public:
     QString getAlias();
     QString getContent();
     int getCode();
-    int getSpecificity();
+    int getPrecision();
     int getAccuracy();
     int getNice();
 

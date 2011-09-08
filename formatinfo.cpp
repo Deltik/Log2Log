@@ -174,7 +174,7 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
     fIcon = fIconn;
     fTo = NULL;
     fFrom = NULL;
-    fSpecificity = NULL;
+    fPrecision = NULL;
     fAccuracy = NULL;
     fTime = NULL;
     fTimezone = NULL;
@@ -241,9 +241,9 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
             else
                 fFrom = false;
         }
-        if (currentElement == "specificity")
+        if (currentElement == "precision")
         {
-            fSpecificity = (int)reader.text().toString().toInt();
+            fPrecision = (int)reader.text().toString().toInt();
         }
         if (currentElement == "accuracy")
         {

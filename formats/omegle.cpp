@@ -99,7 +99,7 @@ void Omegle::load(QVariant $log_raw)
                     final->setSender("_evt_open");
                     final->setContent($_evt);
                     final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setPrecision(6);
                 }
 
                 // If conversation closed (_evt_close) by _self
@@ -110,7 +110,7 @@ void Omegle::load(QVariant $log_raw)
                     final->setSender("_evt_close");
                     final->setContent("_self");
                     final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setPrecision(6);
                 }
 
                 // If conversation closed (_evt_close)
@@ -135,7 +135,7 @@ void Omegle::load(QVariant $log_raw)
                     else
                         final->setContent("_unknown");
                     final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setPrecision(6);
                 }
 
                 // If something else (_evt)
@@ -146,7 +146,7 @@ void Omegle::load(QVariant $log_raw)
                     final->setSender("_evt");
                     final->setContent($_evt);
                     final->setTime($time_base);
-                    final->setSpecificity(6);
+                    final->setPrecision(6);
                 }
             }
 
@@ -159,7 +159,7 @@ void Omegle::load(QVariant $log_raw)
                 final->setSender("_evt");
                 final->setContent("Question to discuss: " + xml.text().toString());
                 final->setTime($time_base);
-                final->setSpecificity(6);
+                final->setPrecision(6);
             }
 
             // If the element was sent by _self (_msg_self) {There is an exception.}
@@ -193,7 +193,7 @@ void Omegle::load(QVariant $log_raw)
 
                 final->setContent(xml.text().toString().mid(1));
                 final->setTime($time_base);
-                final->setSpecificity(6);
+                final->setPrecision(6);
             }
             // If the element was sent by _with (_msg_with) {There is an exception.}
             if (xml.attributes().value("class").toString() == "strangermsg")
@@ -226,7 +226,7 @@ void Omegle::load(QVariant $log_raw)
 
                 final->setContent(xml.text().toString().mid(1));
                 final->setTime($time_base);
-                final->setSpecificity(6);
+                final->setPrecision(6);
             }
         }
     }
@@ -277,7 +277,7 @@ QVariant Omegle::generate(StdFormat *$log)
             QString $sender      = $log->getSender();
             QString $alias       = $log->getAlias();
             QString $message     = $log->getContent();
-            int     $specificity = $log->getSpecificity();
+            int     $precision   = $log->getPrecision();
             int     $accuracy    = $log->getAccuracy();
             int     $nice        = $log->getNice();
 

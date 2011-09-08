@@ -94,10 +94,10 @@ void Helper::mainMode(Ui::Log2Log *parent)
 }
 
 /**
- * Log2Log Timestamp Specificity Index Interpreter
+ * Log2Log Timestamp Precision Index Interpreter
  * @author Deltik
  */
-QString Helper::whatSpecificity(int index)
+QString Helper::whatPrecision(int index)
 {
     switch (index)
     {
