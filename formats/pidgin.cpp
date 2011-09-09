@@ -171,7 +171,7 @@ void Pidgin::loadSystemPlainText(QVariant $log_raw)
  * @returns qint64 The interpreted timestamp in Log2Log format
  */
 qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
-{qDebug()<<"Interpreting: "+input+" with "+QVariant($time_base).toString();
+{
     // Trim input of parentheses
     if (input.left(1) == "(")
         input = input.mid(1);
@@ -202,7 +202,7 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
             break;
     // Guess the time, trying various possible formats.
     if (timePos < parts_count && split[timePos].contains(":"))
-    {qDebug()<<"split[timePos]: "+split[timePos];
+    {
         time_proc = QTime::fromString(split[timePos], "hh:mm:ss");
         if (!time_proc.isValid())
             time_proc = QTime::fromString(split[timePos], "h:mm:ss");
@@ -214,7 +214,7 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
             time_proc = QTime::fromString(split[timePos], "hh:mm:ss.zzz");
         // Add to the final sum
         time_sum += -time_proc.msecsTo(QTime());
-    }qDebug()<<"time_proc: "+QVariant(-time_proc.msecsTo(QTime())).toString();
+    }
 
     // DATE GUESSER
     // Try to match for "/"
