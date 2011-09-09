@@ -84,15 +84,18 @@ void Pidgin::loadHtml(QVariant $log_raw)
 
                 QString $log_header_proc = $log_header.mid(18);
                 QStringList $log_header_split = $log_header_proc.split(" at ");
+                // CONSTRUCT: _with
                 final->setWith($log_header_split.takeFirst());
                 $log_header_proc = $log_header_split.join(" at ");
                 $log_header_split = $log_header_proc.split(" on ");
                 QString $date_proc = $log_header_split.takeFirst();
                 $log_header_proc = $log_header_split.join(" on ");
                 $log_header_split = $log_header_proc.split(" (");
+                // CONSTRUCT: _self
                 final->setSelf($log_header_split.takeFirst());
                 $log_header_proc = $log_header_split.join(" (");
                 $log_header_split = $log_header_proc.split(")");
+                // CONSTRUCT: _protocol
                 final->setProtocol($log_header_split.takeFirst());
 
                 QStringList $date_split = $date_proc.split(" ");
@@ -104,8 +107,12 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss AP");
                 else
                     $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss");
+                // CONSTRUCT: _time
+                final->setTime($time_proc.toMSecsSinceEpoch());
 
-                // TODO: Timezone Support
+                QMap<QString, QVariant> $equizone = Helper::zone_search($timezone);
+                // CONSTRUCT: _timezone
+                final->setTimezone($equizone["full_tz_name"].toString());
             }
         }
     }

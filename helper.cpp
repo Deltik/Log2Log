@@ -174,10 +174,57 @@ QMap<QString, QVariant> Helper::files_get_contents(QString directory_path)
 
 /**
  * Returns associative array containing dst, offset and the timezone name
- * @returns QList<QList>
+ * @remarks The table <resources/timezonemap.h> is directly exported from
+ *          PHP.
+ * @returns QList<QMap<QString, QVariant> >
  */
-QList<QList<QString> > timezone_abbreviations_list()
+QList<QMap<QString, QVariant> > Helper::timezone_abbreviations_list()
 {
-    // TODO: Timezone Support
-    //#include "resources/timezonemap.h"
+    typedef struct _timelib_tz_lookup_table {
+            QString     name;
+            int         type;
+            float       gmtoffset;
+            QString     full_tz_name;
+    } timelib_tz_lookup_table;
+
+    timelib_tz_lookup_table timelib_timezone_lookup[] = {
+        #include "resources/timezonemap.h"
+        { NULL, 0, 0, NULL },
+    };
+
+    int i = 0;
+    QList<QMap<QString, QVariant> > list;
+    while (!timelib_timezone_lookup[i].name.isNull())
+    {
+        QMap<QString, QVariant> map;
+        map["name"] = timelib_timezone_lookup[i].name;
+        map["type"] = timelib_timezone_lookup[i].type;
+        map["gmtoffset"] = timelib_timezone_lookup[i].gmtoffset;
+        map["full_tz_name"] = timelib_timezone_lookup[i].full_tz_name;
+        list << map;
+        i ++;
+    }
+
+    return list;
+}
+
+/**
+ * Timezone Search
+ * @returns QMap<QString, QVariant>
+ */
+QMap<QString, QVariant> Helper::zone_search(QVariant query)
+{
+    QList<QMap<QString, QVariant> > list = timezone_abbreviations_list();
+
+    for (int i = 0; i < list.count(); i ++)
+    {
+        QMap<QString, QVariant> map_cur = list[i];
+        if (map_cur["name"].toString().toLower()         == query.toString().toLower() ||
+            map_cur["type"].toInt()                      == query.toInt()              ||
+            map_cur["gmtoffset"].toFloat()               == query.toFloat()            ||
+            map_cur["full_tz_name"].toString().toLower() == query.toString().toLower())
+            return map_cur;
+    }
+
+    return QMap<QString, QVariant>();
 }

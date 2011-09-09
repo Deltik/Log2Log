@@ -29,10 +29,10 @@ public:
     static void showPathItems(QLayout *ql, QWidget *qw);
     QString whatPrecision(int index);
     QString whatTrinary(int bit);
-    /* PHP Function Ports */
-    static void dummy();
+    /* Custom PHP-based Functions */
     static QMap<QString, QVariant> files_get_contents(QString directory_path);
-    static QList<QList<QString> > timezone_abbreviations_list();
+    static QList<QMap<QString, QVariant> > timezone_abbreviations_list();
+    static QMap<QString, QVariant> zone_search(QVariant query);
 };
 
 #endif // HELPERS_H
