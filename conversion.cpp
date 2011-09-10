@@ -240,7 +240,10 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
         while (!in.atEnd())
         {
             QString line = in.readLine();
-            fileContents += line;
+            if (!in.atEnd())
+                fileContents += line + "\n";
+            else
+                fileContents += line;
         }
         list[directory_walker.filePath()] = fileContents;
         emit updateProgress((10 * n / t), "Loaded " + QVariant(n).toString() + "/" + QVariant(t).toString() + " files...");

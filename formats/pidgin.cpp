@@ -133,7 +133,10 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     // Entering text for timestamp
                     xml.readNext();
                     $time_base = interpretTime(xml.text().toString(), $time_base);
+                    // CONSTRUCT: _time
                     final->setTime($time_base);
+                    QString $line = readLine($log_proc, xml.lineNumber());
+                    qDebug() << $line;
                 }
             }
         }
@@ -347,6 +350,15 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
 
     // After MUCH exhaustive work, we FINALLY return the interpreted time!
     return time_sum;
+}
+
+/**
+ * Return the Specified Line
+ */
+QString Pidgin::readLine(QString text, qint64 line)
+{
+    QStringList text_split = text.split("\n");
+    return text_split[(int)line - 1];
 }
 
 /**

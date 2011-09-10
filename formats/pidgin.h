@@ -49,6 +49,7 @@ public slots:
 private:
     int total;
     qlonglong interpretTime(QString input, qlonglong $time_base = 0);
+    QString readLine(QString text, qint64 line);
 };
 
 #endif // PIDGIN_H

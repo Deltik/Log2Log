@@ -163,7 +163,10 @@ QMap<QString, QVariant> Helper::files_get_contents(QString directory_path)
         while (!in.atEnd())
         {
             QString line = in.readLine();
-            fileContents += line;
+            if (!in.atEnd())
+                fileContents += line + "\n";
+            else
+                fileContents += line;
         }
         list[directory_walker.filePath()] = fileContents;
     }
