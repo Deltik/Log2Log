@@ -6,6 +6,15 @@
  * @author Deltik
  */
 
+/**
+ * TODO: THIS FORMAT CONVERTER IS INCOMPLETE. List of incomplete features:
+ *  - Group Chat
+ *  - File Transfers
+ *  - /me
+ *  - System Log
+ *  - More that have yet to be discovered...
+ */
+
 #include "pidgin.h"
 #include "helper.h"
 #include <QtXml>
@@ -62,7 +71,13 @@ void Pidgin::loadHtml(QVariant $log_raw)
         QXmlStreamReader::TokenType token = xml.readNext();
 
         // Just some items that might be used in this scope
-        qlonglong $time_base;
+        qlonglong               $time_base;
+        QMap<QString, QVariant> $equizone;
+        QString                 $with;
+        QString                 $with_alias;
+        QString                 $self;
+        QString                 $self_alias;
+        QString                 $file_transfer_by;
 
         // Looking at element beginnings...
         if (token == QXmlStreamReader::StartElement)
@@ -111,7 +126,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
                 $time_base = $time_proc.toMSecsSinceEpoch();
                 final->setTime($time_base);
 
-                QMap<QString, QVariant> $equizone = Helper::zone_search($timezone);
+                $equizone = Helper::zone_search($timezone);
                 // CONSTRUCT: _timezone
                 final->setTimezone($equizone["full_tz_name"].toString());
             }
@@ -119,6 +134,11 @@ void Pidgin::loadHtml(QVariant $log_raw)
             // If token is a chat row
             if (xml.qualifiedName().toString() == "font")
             {
+                // Create new chat row
+                final->newLine();
+                // CONSTRUCT: _timezone
+                final->setTimezone($equizone["full_tz_name"].toString());
+
                 // Color Legend:
                 //  #16569E : _self
                 //  #A82F2F : _with
@@ -135,12 +155,175 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     $time_base = interpretTime(xml.text().toString(), $time_base);
                     // CONSTRUCT: _time
                     final->setTime($time_base);
-                    QString $line = readLine($log_proc, xml.lineNumber());
-                    qDebug() << $line;
+                    // CONSTRUCT: _time_precision
+                    final->setPrecision(0);
+                    // CONSTRUCT: _code
+                    final->setCode(1);
+                    // CONSTRUCT: _sender
+                    final->setSender("_evt");
+                }
+                // If element is an error (_error)
+                // (Log2Log Generic Chat Log Format 1.2 has a primitive error
+                //  system. Just an _error should suffice for everyone for the
+                //  time being.)
+                else if ($sender_color == "#FF0000")
+                {
+                    // Entering element for timestamp
+                    xml.readNext();
+                    // Entering text for timestamp
+                    xml.readNext();
+                    $time_base = interpretTime(xml.text().toString(), $time_base);
+                    // CONSTRUCT: _time
+                    final->setTime($time_base);
+                    // CONSTRUCT: _time_precision
+                    final->setPrecision(0);
+                    // CONSTRUCT: _sender
+                    final->setSender("_error");
+                    // Entering element for bold
+                    xml.readNext();
+                    // Entering error message
+                    xml.readNext();
+                    // CONSTRUCT: _message
+                    final->setContent(xml.text().toString());
+                }
+                // If element was sent by _self (_msg_self)
+                else if ($sender_color == "#16569E")
+                {
+                    // Entering element for timestamp
+                    xml.readNext();
+                    // Entering text for timestamp
+                    xml.readNext();
+                    $time_base = interpretTime(xml.text().toString(), $time_base);
+                    // CONSTRUCT: _time
+                    final->setTime($time_base);
+                    // CONSTRUCT: _time_precision
+                    final->setPrecision(0);
+                    // CONSTRUCT: _sender
+                    final->setSender("_self");
+                }
+                // If element was sent by _with (_msg_with)
+                else if ($sender_color == "#A82F2F")
+                {
+                    // Entering element for timestamp
+                    xml.readNext();
+                    // Entering text for timestamp
+                    xml.readNext();
+                    $time_base = interpretTime(xml.text().toString(), $time_base);
+                    // CONSTRUCT: _time
+                    final->setTime($time_base);
+                    // CONSTRUCT: _time_precision
+                    final->setPrecision(0);
+                    // CONSTRUCT: _sender
+                    final->setSender("_with");
+                }
+
+                // Sadly, this QXmlStreamReader has extreme difficulty
+                // processing the rest of the chat row. We must now rely on
+                // good ol' explode()ions and implode()ions...
+                QString $line = readLine($log_proc, xml.lineNumber());
+                QStringList $line_split = $line.split(")</font>");
+                $line_split.pop_front();
+                $line = $line_split.join(")</font>").trimmed();
+
+                // If there is a _sender identifier
+                if ($line.left(3) == "<b>")
+                {
+                    $line_split = $line.split("<b>");
+                    $line_split.pop_front();
+                    $line = $line_split.join("<b>");
+                    $line_split = $line.split("</b>");
+                    QString $sender_id = $line_split.takeFirst();
+                    $line = $line_split.join("</b>");
+                    // Process Log2Log-supported events. TODO
+                    QHash<QString, QString> $sweep_terms;
+                    $sweep_terms[" has signed off."]            = "_offline";
+                    $sweep_terms[" has signed on."]             = "_online";
+                    $sweep_terms[" has gone away."]             = "_away";
+                    $sweep_terms[" is no longer away."]         = "_available";
+                    $sweep_terms[" has left the conversation."] = "_evt_close";
+                    $sweep_terms[" wants to send you a file"]   = "_file_init";
+                    QHashIterator<QString, QString> i($sweep_terms);
+                    while (i.hasNext())
+                    {
+                        i.next();
+                        QString $sender_alias = $sender_id.replace(i.key(), "");
+                        if ($sender_alias != $sender_id)
+                        {
+                            if ($sender_alias == $with_alias)
+                                // CONSTRUCT: _message
+                                final->setContent($with);
+                            else if ($sender_alias == $self_alias)
+                                // CONSTRUCT: _message
+                                final->setContent($self);
+                            // else There is no _sender.
+                            // CONSTRUCT: _code
+                            final->setCode(1);
+                            // CONSTRUCT: _sender
+                            final->setSender(i.value());
+                            // CONSTRUCT: _alias
+                            final->setAlias($sender_alias);
+
+                            // Exception: File Transfer
+                            $file_transfer_by = $sender_alias;
+
+                            break;
+                        }
+                        // Exception: "Transfer of file ... complete"
+                        if ($sender_id.contains("Transfer of file "))
+                        {
+                            QString $filename_proc;
+                            QString $filename;
+                            QString $src;
+                            $filename_proc = $sender_id.mid(17).right(9);
+                            QXmlStreamReader $filename_reader($filename_proc);
+                            // Entering <a>
+                            $filename_reader.readNext();
+                            $src = $filename_reader.attributes().value("href").toString();
+                            // Entering <a> innerHTML
+                            $filename_reader.readNext();
+                            $filename = $filename_reader.text().toString();
+                            // CONSTRUCT: _code
+                            final->setCode(1);
+                            // CONSTRUCT: _sender
+                            final->setSender("_file_done \"" +
+                                             $file_transfer_by +
+                                             "\" \"" +
+                                             $filename +
+                                             "\" \"" +
+                                             $src +
+                                             "\"");
+                        }
+                    }
+                    if ($sender_id.right(1) == ":")
+                    {
+                        $sender_id.chop(1);
+                        // CONSTRUCT: _sender
+                        final->setAlias($sender_id);
+                    }
+                }
+
+                // Finalize the message
+                if (final->getCode() != 1 && final->getContent().isEmpty())
+                {
+                    // Cleanup
+                    if ($line.right(5) == "<br/>")
+                        $line.chop(5);
+                    $line = $line.trimmed();
+                    if ($line.left(7) == "</font>")
+                        $line = $line.mid(7).trimmed();
+                    $line = $line.replace("&quot;", "\"");
+                    $line = $line.replace("&amp;", "&");
+                    // CONSTRUCT: _message
+                    final->setContent($line);
                 }
             }
         }
-    }qDebug()<<final->final;
+    }
+
+    // Run the Log2Log Postprocessor to guess or try to fill in missing data.
+    Helper::postprocessor(final);
+
+    qDebug()<<final->final;
 }
 
 /**

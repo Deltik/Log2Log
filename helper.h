@@ -29,6 +29,8 @@ public:
     static void showPathItems(QLayout *ql, QWidget *qw);
     QString whatPrecision(int index);
     QString whatTrinary(int bit);
+    /* Log2Log Generic Chat Log Format Methods */
+    static void postprocessor(StdFormat* $log);
     /* Custom PHP-based Functions */
     static QMap<QString, QVariant> files_get_contents(QString directory_path);
     static QList<QMap<QString, QVariant> > timezone_abbreviations_list();

@@ -137,6 +137,92 @@ QString Helper::whatTrinary(int bit)
 }
 
 /**
+ * Log2Log Generic Chat Log Format Postprocessor
+ * @author Deltik
+ */
+void Helper::postprocessor(StdFormat *$log)
+{
+    // Browser
+    $log->resetPointer();
+
+    // Artificially Intelligent Information Tracker
+    QHash<QString, QString> people;
+
+    while ($log->nextEntry())
+    {
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
+
+        // DEFAULT: _protocol
+        if ($protocol.isEmpty())
+            $log->setProtocol("unknown");
+
+        while ($log->nextLine())
+        {
+            // Make array items more readily accessible.
+            qlonglong $time_cur  = $log->getTime();
+            QString $timezone    = $log->getTimezone();
+            int     $code        = $log->getCode();
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+            QString $message     = $log->getContent();
+            int     $precision   = $log->getPrecision();
+            int     $accuracy    = $log->getAccuracy();
+            int     $nice        = $log->getNice();
+
+            // DEFAULT: _time
+            if ($time_cur == null)
+                $log->setTime($time_base);
+
+            // DEFAULT: _time_zone
+            if ($timezone.isEmpty())
+                $log->setTimezone($timezone_base);
+
+            // DEFAULT: _code
+            if ($code == null)
+                $log->setCode(0);
+
+            // DEFAULT: _precision
+            if ($precision == null)
+                $log->setPrecision(0);
+
+            // DEFAULT: _accuracy
+            if ($accuracy == null)
+                $log->setAccuracy(0);
+
+            // DEFAULT: _nice
+            if ($nice == null)
+                $log->setNice(0);
+
+            // DEFAULT: _sender
+            if ($sender.left(5) == "_with" && !$with.isEmpty())
+                $log->setSender($with);
+            if ($sender.left(5) == "_self" && !$account.isEmpty())
+                $log->setSender($account);
+            // If there's no information about the sender...
+            if (($sender.isEmpty() || $sender == "_unknown") && $alias.isEmpty())
+            {
+                $log->setSender("_unknown");
+            }
+            // Pull sender from global with or global self
+            else if (($sender.isEmpty() || $sender == "_unknown") && !$alias.isEmpty())
+            {
+                if ($alias == $self_alias && !$account.isEmpty())
+                    $log->setSender($account);
+                if ($alias == $with_alias && !$with.isEmpty())
+                    $log->setSender($with);
+            }
+        }
+    }
+}
+
+/**
  * Get Multiple Files' Contents
  * @returns QMap<QString, QVariant> where QString is the filename and QVariant
  *          is the file contents
