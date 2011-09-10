@@ -142,11 +142,61 @@ QString Helper::whatTrinary(int bit)
  */
 void Helper::postprocessor(StdFormat *$log)
 {
+    /// Log2Log Postprocessor makes two runs through the log data:
+    ///  1. Creation of a massive alias-to-sender association array to make it
+    ///     convenient to look up the sender when only the alias is present
+    ///  2. Defaulting to fill in gaps, including the ones fillable from the
+    ///     alias-to-sender array.
+
     // Browser
     $log->resetPointer();
 
     // Artificially Intelligent Information Tracker
     QHash<QString, QString> people;
+
+    // CREATE: Alias-Account Association Array
+    while ($log->nextEntry())
+    {
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+
+        while ($log->nextLine())
+        {
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+
+            // DEFAULT: _sender
+            if ($sender.left(5) == "_with" && !$with.isEmpty())
+                $log->setSender($with);
+            if ($sender.left(5) == "_self" && !$account.isEmpty())
+                $log->setSender($account);
+            // If there's no information about the sender...
+            if (($sender.isEmpty() || $sender == "_unknown") && $alias.isEmpty())
+            {
+                $log->setSender("_unknown");
+            }
+            // Pull sender from global with or global self
+            else if (($sender.isEmpty() || $sender == "_unknown") && !$alias.isEmpty())
+            {
+                if ($alias == $self_alias && !$account.isEmpty())
+                    $log->setSender($account);
+                if ($alias == $with_alias && !$with.isEmpty())
+                    $log->setSender($with);
+            }
+
+            // ADD: Alias-Account Association Array
+            if (!$sender.contains("_unknown") && !$alias.contains("_unknown") &&
+                !$sender.isEmpty() && !$alias.isEmpty())
+            {
+                people.insert($alias, $account);
+            }
+        }
+    }
+
+    // Start Over
+    $log->resetPointer();
 
     while ($log->nextEntry())
     {
@@ -177,7 +227,7 @@ void Helper::postprocessor(StdFormat *$log)
             int     $nice        = $log->getNice();
 
             // DEFAULT: _time
-            if ($time_cur == null)
+            if (!$time_cur)
                 $log->setTime($time_base);
 
             // DEFAULT: _time_zone
@@ -185,38 +235,26 @@ void Helper::postprocessor(StdFormat *$log)
                 $log->setTimezone($timezone_base);
 
             // DEFAULT: _code
-            if ($code == null)
+            if (!$code)
                 $log->setCode(0);
 
             // DEFAULT: _precision
-            if ($precision == null)
+            if (!$precision)
                 $log->setPrecision(0);
 
             // DEFAULT: _accuracy
-            if ($accuracy == null)
+            if (!$accuracy)
                 $log->setAccuracy(0);
 
             // DEFAULT: _nice
-            if ($nice == null)
+            if (!$nice)
                 $log->setNice(0);
 
-            // DEFAULT: _sender
-            if ($sender.left(5) == "_with" && !$with.isEmpty())
-                $log->setSender($with);
-            if ($sender.left(5) == "_self" && !$account.isEmpty())
-                $log->setSender($account);
-            // If there's no information about the sender...
-            if (($sender.isEmpty() || $sender == "_unknown") && $alias.isEmpty())
+            // FILL: _sender
+            if (($sender.isEmpty() || $sender == "_unknown") && !$alias.isEmpty())
             {
-                $log->setSender("_unknown");
-            }
-            // Pull sender from global with or global self
-            else if (($sender.isEmpty() || $sender == "_unknown") && !$alias.isEmpty())
-            {
-                if ($alias == $self_alias && !$account.isEmpty())
-                    $log->setSender($account);
-                if ($alias == $with_alias && !$with.isEmpty())
-                    $log->setSender($with);
+                if (!people.value($alias).isNull())
+                    $log->setSender(people.value($alias));
             }
         }
     }
