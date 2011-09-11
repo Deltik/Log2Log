@@ -240,6 +240,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     $sweep_terms[" has signed on."]             = "_online";
                     $sweep_terms[" has gone away."]             = "_away";
                     $sweep_terms[" is no longer away."]         = "_available";
+                    $sweep_terms[" has nudged you!"]            = "_attention";
                     $sweep_terms[" has left the conversation."] = "_evt_close";
                     $sweep_terms[" wants to send you a file"]   = "_file_init";
                     QHashIterator<QString, QString> i($sweep_terms);
