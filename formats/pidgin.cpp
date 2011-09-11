@@ -549,7 +549,113 @@ QString Pidgin::readLine(QString text, qint64 line)
  */
 QVariant Pidgin::generate(StdFormat *$log)
 {
-    // TODO
+    // Generated Log Container
+    QVariant $log_generated;
+    QMap<QString, QVariant> $log_new;
+    QHash<QString, QVariant> $info;
+    // Counter
+    int $i = 1;
+    // Browser
+    $log->resetPointer();
+
+    while ($log->nextEntry())
+    {
+        // Chat log header
+        QString $content = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><title>";
+
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
+
+        // <title> Setup
+        /** * * * * * * * * * * * * * * * * * * *
+         *   THIS IS THE VERY FIRST THING YOU   *
+         *   NEED TO WORK ON... TOP PRIORITY!   *
+         * _________ _______  ______   _______  *
+         * \__   __/(  ___  )(  __  \ (  ___  ) *
+         *    ) (   | (   ) || (  \  )| (   ) | *
+         *    | |   | |   | || |   ) || |   | | *
+         *    | |   | |   | || |   | || |   | | *
+         *    | |   | |   | || |   ) || |   | | *
+         *    | |   | (___) || (__/  )| (___) | *
+         *    )_(   (_______)(______/ (_______) *
+         *                                      *
+         * #################################### *
+         * #  SUPER-MEGA-HYPER PRIORITY TODO  # *
+         * #################################### *
+         *                                      *
+         * TODO: Get timezones to work.         *
+         ** * * * * * * * * * * * * * * * * * * */
+        QMap<QString, QVariant> equizone = Helper::zone_search($timezone_base);
+        QString $timezone_abbreviation = equizone["name"].toString();
+        QLocale la; QString tmp = la.dateTimeFormat(QLocale::ShortFormat);
+        QString $autoAP;
+        if (tmp.toLower().contains("ap"))
+            $autoAP = " AP";
+        QString $datetimestamp = QDateTime::fromMSecsSinceEpoch($time_base).toString("ddd dd MMM yyyy hh:mm:ss"+$autoAP+" ");
+        QString title = "Conversation with " +
+                        $with +
+                        " at " +
+                        $datetimestamp +
+                        $timezone_abbreviation.toUpper() +
+                        " on " +
+                        $account +
+                        " (" +
+                        $protocol +
+                        ")";
+
+        // <title>
+        $content += title + "</title></head><body><h3>" + title + "</h3>\n";
+
+        // Go through each chat line.
+        while ($log->nextLine())
+        {
+            // Make array items more readily accessible.
+            qlonglong $time_cur  = $log->getTime();
+            int     $code        = $log->getCode();
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+            QString $message     = $log->getContent();
+            int     $precision   = $log->getPrecision();
+            int     $accuracy    = $log->getAccuracy();
+            int     $nice        = $log->getNice();
+
+            // Color Legend:
+            //  #16569E : _self
+            //  #A82F2F : _with
+            //  #FF0000 : _evt_error
+            //  #6C2585 : Whisper (not supported yet)
+            //  #062585 : /me
+            QString $sender_color;
+
+            // Timestamp (hh:mm:ss [AP])
+            QString $timestamp = QDateTime::fromMSecsSinceEpoch($time_cur)
+                                 .toString("hh:mm:ss"+$autoAP);
+            if (QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base).toString("yyyy/MM/dd")
+                                      , "yyyy/MM/dd").toMSecsSinceEpoch() !=
+                QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_cur).toString("yyyy/MM/dd")
+                                      , "yyyy/MM/dd").toMSecsSinceEpoch())
+                $timestamp = QDateTime::fromMSecsSinceEpoch($time_cur)
+                .toString("yyyy/MM/dd hh:mm:ss"+$autoAP);
+
+            // If we're looking at a system message...
+            if ($code >= 1)
+            {
+                if ($sender.contains("_evt_fail") ||
+                    $sender.contains("_error"))
+                    $sender_color = "#FF0000";
+                if (!$sender_color.isEmpty())
+                {
+                    ;
+                }
+            }
+        }qDebug() << $content;
+    }
 }
 
 /**
