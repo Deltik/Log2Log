@@ -647,14 +647,57 @@ QVariant Pidgin::generate(StdFormat *$log)
             // If we're looking at a system message...
             if ($code >= 1)
             {
+                // Color: Error
                 if ($sender.contains("_evt_fail") ||
                     $sender.contains("_error"))
                     $sender_color = "#FF0000";
-                if (!$sender_color.isEmpty())
-                {
-                    ;
-                }
+
+                // To Pidgin Notices
+                if ($sender.contains("_online"))
+                    $message = $alias + " has signed on.";
+
+                if ($sender_color.isEmpty())
+                    $content += "<font size=\"2\">(" +
+                                $timestamp +
+                                ")</font><b> " +
+                                $message +
+                                "</b><br/>\n";
+                else
+                    $content += "<font color=\"" +
+                                $sender_color +
+                                "\"><font size=\"2\">(" +
+                                $timestamp +
+                                ")</font><b> " +
+                                $message +
+                                "</b><br/>\n";
             }
+            // Color: Sent by _self
+            if ($sender == "_self" ||
+                $sender == $account ||
+                $sender == $self_alias)
+                $sender_color = "#16569E";
+            // Color: Sent by _self
+            if ($sender == "_with" ||
+                $sender == $with ||
+                $sender == $with_alias)
+                $sender_color = "#A82F2F";
+
+            if (!$sender_color.isEmpty())
+            {
+                $content += "<font color=\"" +
+                            $sender_color +
+                            "\"><font size=\"2\">(" +
+                            $timestamp +
+                            ")</font> <b>" +
+                            $alias +
+                            ":</b></font> " +
+                            $message +
+                            "<br/>\n";
+            }
+
+            // Closing
+            if (!$log->hasNextLine())
+                $content += "</body></html>";
         }qDebug() << $content;
     }
 }
