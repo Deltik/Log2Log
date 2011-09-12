@@ -10,12 +10,12 @@
  *          multidimensional arrays, each type of data must be "extracted" from
  *          its QVariant. For example:
  *
- *          You have final["data"], which is a QMap inside a QVariant of final.
+ *          You have final["data"], which is a QHash inside a QVariant of final.
  *          If you want to insert what is logically final["data"][0], you must
  *          have the following code:
  *
  *          // 1. EXTRACT the data
- *          QMap extractedData = final.value("data").toMap();
+ *          QHash extractedData = final.value("data").toHash();
  *          // 2. MODIFY the data
  *          extractedData.insert("0", "Something because this is a QVariant");
  *          // 3. REINSERT the data
@@ -24,7 +24,7 @@
  *          or equally compatible code:
  *
  *          // 1. EXTRACT the data
- *          QMap extractedData = final["data"].toMap();
+ *          QHash extractedData = final["data"].toHash();
  *          // 2. MODIFY the data
  *          extractedData["0"] = "Something because this is a QVariant";
  *          // 3. REINSERT the data
@@ -47,8 +47,8 @@ StdFormat::StdFormat()
     // Give an empty client string to final["client"]
     final["client"] = "";
 
-    // Give an empty QMap to final["data"]
-    QMap<QString, QVariant> data_empty;
+    // Give an empty QHash to final["data"]
+    QHash<QString, QVariant> data_empty;
     final.insert("data", data_empty);
 }
 
@@ -105,7 +105,7 @@ int StdFormat::newEntry()
 {
     QString curEntry;
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     int count = data.size();
     dexEntry = count;
     curEntry.setNum(dexEntry);
@@ -130,7 +130,7 @@ int StdFormat::newEntry()
 bool StdFormat::hasNextEntry()
 {
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     if (dexEntry >= data.size() - 1)
         return false;
     return true;
@@ -143,7 +143,7 @@ bool StdFormat::hasNextEntry()
 bool StdFormat::nextEntry()
 {
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     if (dexEntry >= data.size() - 1)
         return false;
     dexEntry ++; dexLine = -1; inLine = false;
@@ -182,7 +182,7 @@ bool StdFormat::gotoEntry(int index)
     QString indexStr;
     indexStr.setNum(index);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     if (data[indexStr].isNull())
         return false;
     dexEntry = index;
@@ -197,7 +197,7 @@ bool StdFormat::gotoEntry(int index)
 bool StdFormat::toggleLine()
 {
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     if (inLine)
     {
         inLine = false;
@@ -206,9 +206,9 @@ bool StdFormat::toggleLine()
     // Check to see if final["data"][dexEntry]["chat"] is safe to enter.
     QString curEntry;
     curEntry.setNum(dexEntry);
-    if (!data[curEntry].toMap().contains("chat"))
+    if (!data[curEntry].toHash().contains("chat"))
         return false;
-    if (data[curEntry].toMap().value("chat").toMap().isEmpty())
+    if (data[curEntry].toHash().value("chat").toHash().isEmpty())
         return false;
     // Safe to enter. Enter.
     inLine = true;
@@ -226,12 +226,12 @@ int StdFormat::newLine()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     // Create chat row if no rows exist
     if (entry.value("chat").isNull())
     {
-        QMap<QString, QVariant> empty;
+        QHash<QString, QVariant> empty;
         dexLine = 0; curLine = "0";
         // Edit
         QHash<QString, QVariant> emptyHash;
@@ -242,7 +242,7 @@ int StdFormat::newLine()
     }
     else
     {
-        QMap<QString, QVariant> chat = entry["chat"].toMap();
+        QHash<QString, QVariant> chat = entry["chat"].toHash();
         int count = chat.size();
         dexLine = count;
         curLine.setNum(dexLine);
@@ -271,12 +271,12 @@ bool StdFormat::hasNextLine()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     // If chat rows don't exist in this entry...
     if (entry.value("chat").isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     if (dexLine >= chat.size() - 1)
         return false;
     // Now pointing in chat rows
@@ -293,12 +293,12 @@ bool StdFormat::nextLine()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     // If chat rows don't exist in this entry...
     if (entry.value("chat").isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     if (dexLine >= chat.size() - 1)
         return false;
     dexLine ++;
@@ -345,12 +345,12 @@ bool StdFormat::gotoLine(int index)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     QHash<QString, QVariant> entry = data[curEntry].toHash();
     // If chat rows don't exist in this entry...
     if (entry.value("chat").isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If selected chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -370,7 +370,7 @@ bool StdFormat::setProtocol(QString name)
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -393,7 +393,7 @@ bool StdFormat::setSelf(QString username)
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -416,7 +416,7 @@ bool StdFormat::setSelfAlias(QString myname)
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -439,7 +439,7 @@ bool StdFormat::setWith(QString username)
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -462,7 +462,7 @@ bool StdFormat::setWithAlias(QString buddyname)
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -487,7 +487,7 @@ bool StdFormat::setTime(qlonglong time)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -502,7 +502,7 @@ bool StdFormat::setTime(qlonglong time)
         // If the entry hasn't initialized any chat rows...
         if (entry["chat"].isNull())
             return false;
-        QMap<QString, QVariant> chat = entry["chat"].toMap();
+        QHash<QString, QVariant> chat = entry["chat"].toHash();
         // If the set chat row doesn't exist...
         if (chat[curLine].isNull())
             return false;
@@ -531,7 +531,7 @@ bool StdFormat::setTimezone(QString timezone)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -546,7 +546,7 @@ bool StdFormat::setTimezone(QString timezone)
         // If the entry hasn't initialized any chat rows...
         if (entry["chat"].isNull())
             return false;
-        QMap<QString, QVariant> chat = entry["chat"].toMap();
+        QHash<QString, QVariant> chat = entry["chat"].toHash();
         // If the set chat row doesn't exist...
         if (chat[curLine].isNull())
             return false;
@@ -575,7 +575,7 @@ bool StdFormat::setSender(QString name)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -583,7 +583,7 @@ bool StdFormat::setSender(QString name)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -611,7 +611,7 @@ bool StdFormat::setAlias(QString name)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -619,7 +619,7 @@ bool StdFormat::setAlias(QString name)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -647,7 +647,7 @@ bool StdFormat::setContent(QString content)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -655,7 +655,7 @@ bool StdFormat::setContent(QString content)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -683,7 +683,7 @@ bool StdFormat::setCode(int code)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -691,7 +691,7 @@ bool StdFormat::setCode(int code)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -719,7 +719,7 @@ bool StdFormat::setPrecision(int precision)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -727,7 +727,7 @@ bool StdFormat::setPrecision(int precision)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -755,7 +755,7 @@ bool StdFormat::setAccuracy(int accuracy)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -763,7 +763,7 @@ bool StdFormat::setAccuracy(int accuracy)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -791,7 +791,7 @@ bool StdFormat::setNice(int nice)
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -799,7 +799,7 @@ bool StdFormat::setNice(int nice)
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -824,7 +824,7 @@ QString StdFormat::getProtocol()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -841,7 +841,7 @@ QString StdFormat::getSelf()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -858,7 +858,7 @@ QString StdFormat::getSelfAlias()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -875,7 +875,7 @@ QString StdFormat::getWith()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -892,7 +892,7 @@ QString StdFormat::getWithAlias()
     QString curEntry;
     curEntry.setNum(dexEntry);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -911,7 +911,7 @@ qlonglong StdFormat::getTime()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -924,7 +924,7 @@ qlonglong StdFormat::getTime()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -944,7 +944,7 @@ QString StdFormat::getTimezone()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -957,7 +957,7 @@ QString StdFormat::getTimezone()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -977,7 +977,7 @@ QString StdFormat::getSender()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -985,7 +985,7 @@ QString StdFormat::getSender()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1005,7 +1005,7 @@ QString StdFormat::getAlias()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1013,7 +1013,7 @@ QString StdFormat::getAlias()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1033,7 +1033,7 @@ QString StdFormat::getContent()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1041,7 +1041,7 @@ QString StdFormat::getContent()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1061,7 +1061,7 @@ int StdFormat::getCode()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1069,7 +1069,7 @@ int StdFormat::getCode()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1089,7 +1089,7 @@ int StdFormat::getPrecision()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1097,7 +1097,7 @@ int StdFormat::getPrecision()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1117,7 +1117,7 @@ int StdFormat::getAccuracy()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1125,7 +1125,7 @@ int StdFormat::getAccuracy()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
@@ -1145,7 +1145,7 @@ int StdFormat::getNice()
     curEntry.setNum(dexEntry);
     curLine.setNum(dexLine);
     // Extract
-    QMap<QString, QVariant> data = final["data"].toMap();
+    QHash<QString, QVariant> data = final["data"].toHash();
     // If selected entry doesn't exist...
     if (data[curEntry].isNull())
         return false;
@@ -1153,7 +1153,7 @@ int StdFormat::getNice()
     // If the entry hasn't initialized any chat rows...
     if (entry["chat"].isNull())
         return false;
-    QMap<QString, QVariant> chat = entry["chat"].toMap();
+    QHash<QString, QVariant> chat = entry["chat"].toHash();
     // If the set chat row doesn't exist...
     if (chat[curLine].isNull())
         return false;
