@@ -226,6 +226,7 @@ void Log2Log::startConversion()
     /* ### GO!!! ### */
     cvHandler = new Conversion(ui);
     connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
+    connect(cvHandler, SIGNAL(finished()), this, SLOT(stopConversion()), Qt::QueuedConnection);
 
     cvHandler->start();
 }
@@ -237,14 +238,17 @@ void Log2Log::stopConversion()
 {
     // Set Mode
     convertMode = false;
-
+    
     // Show Main UI
     Helper::mainMode(ui);
-
+    
     // Hide Progress UI
-    progress.hide();
-    proginfo.hide();
-
+    if (proginfo.text() != "Conversion complete!")
+    {
+        progress.hide();
+        proginfo.hide();
+    }
+    
     /* STOP */
     cvHandler->terminate_all();
 }

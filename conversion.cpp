@@ -6,6 +6,7 @@
 #include "formats/stdformat.h"
 #include "formats/omegle.h"
 #include "formats/pidgin.h"
+#include "formats/meebo.h"
 
 
 /**
@@ -64,6 +65,8 @@ void Conversion::collectData()
         $FROM = new Omegle();
     if (from_name == "Pidgin")
         $FROM = new Pidgin();
+    if (from_name == "Meebo")
+        $FROM = new Meebo();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -74,6 +77,8 @@ void Conversion::collectData()
         $TO = new Omegle();
     if (to_name == "Pidgin")
         $TO = new Pidgin();
+    if (to_name == "Meebo")
+        $TO = new Meebo();
 
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())
@@ -183,6 +188,7 @@ void Conversion::save()
 
     // ### DONE! ###
     updateProgress(100, "Conversion complete!");
+    emit finished();
 }
 
 /**

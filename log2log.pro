@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     formats/stdconverter.cpp \
     update.cpp \
     api.cpp \
-    formats/pidgin.cpp
+    formats/pidgin.cpp \
+    formats/meebo.cpp
 
 HEADERS  += \
     log2log.h \
@@ -34,7 +35,8 @@ HEADERS  += \
     formats/stdconverter.h \
     update.h \
     api.h \
-    formats/pidgin.h
+    formats/pidgin.h \
+    formats/meebo.h
 
 FORMS    += \
     log2log.ui \

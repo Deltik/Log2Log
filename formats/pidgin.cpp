@@ -547,6 +547,7 @@ QString Pidgin::readLine(QString text, qint64 line)
 
 /**
  * Generate Log from Standardized Log
+ * TODO: Finish
  */
 QVariant Pidgin::generate(StdFormat *$log)
 {
@@ -653,6 +654,7 @@ QVariant Pidgin::generate(StdFormat *$log)
                     $sender_color = "#FF0000";
 
                 // To Pidgin Notices
+                // TODO
                 if ($sender.contains("_online"))
                     $message = $alias + " has signed on.";
 

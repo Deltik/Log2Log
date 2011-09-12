@@ -257,7 +257,7 @@
 		<client>Trillian</client>
 		<class>Trillian</class>
 		<icon>:/images/services/Trillian.png</icon>
-                <default>%APPDATA%/Trillian</default>
+                <default>%APPDATA%/Trillian/users/YOUR_TRILLIAN_USERNAME/logs</default>
 		<support>
 			<from>true</from>
 			<to>true</to>
