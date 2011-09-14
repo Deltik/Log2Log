@@ -20,6 +20,8 @@
 #include <QtXml>
 #include <QDateTime>
 
+#include <ctime>
+
 /**
  * Constructor
  */
@@ -49,6 +51,8 @@ void Pidgin::load(QVariant $log_raw)
  */
 void Pidgin::loadHtml(QVariant $log_raw)
 {
+    time_t tstart, tend, tpp;
+
     // Import the chat log.
     QString $log_proc = $log_raw.toString();
 
@@ -64,6 +68,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
     // Create the HTML reader.
     QXmlStreamReader xml($log_proc);
 
+    tstart = time(0);
     // Read the HTML file.
     while (!xml.atEnd())
     {
@@ -320,11 +325,15 @@ void Pidgin::loadHtml(QVariant $log_raw)
             }
         }
     }
+    tend = time(0);
 
     // Run the Log2Log Postprocessor to guess or try to fill in missing data.
     Helper::postprocessor(final);
+    tpp = time(0);
 
     qDebug()<<final->final;
+    qDebug()<<"TIME TOOK TO LOAD PIDGIN HTML: "<<difftime(tend, tstart);
+    qDebug()<<"TIME TOOK TO POSTPROCESS PIDGIN: "<<difftime(tpp, tend);
 }
 
 /**

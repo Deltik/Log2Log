@@ -15,6 +15,8 @@
 /*DEBUG*/
 #include <QDebug>
 
+#include <ctime>
+
 /**
  * Constructor
  */
@@ -237,6 +239,8 @@ void Omegle::load(QVariant $log_raw)
  */
 QVariant Omegle::generate(StdFormat *$log)
 {
+    time_t tstart, tend;
+
     // Generated Log Container
     QVariant $log_generated;
     QMap<QString, QVariant> $log_new;
@@ -245,6 +249,7 @@ QVariant Omegle::generate(StdFormat *$log)
     // Browser
     $log->resetPointer();
 
+    tstart = time(0);
     while ($log->nextEntry())
     {
         // Put the longer variables into something more readily accessible.
@@ -358,8 +363,10 @@ QVariant Omegle::generate(StdFormat *$log)
         // Update the progress bar.
         updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
     }
-
+    tend = time(0);
     $log_generated = $log_new;
+
+    qDebug()<<"TIME TOOK TO GENERATE OMEGLE HTML: "<<difftime(tend, tstart);
     return $log_generated;
 }
 
