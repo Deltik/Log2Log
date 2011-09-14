@@ -1,5 +1,5 @@
 /**
- * Log2Log Online Chat Log Converter
+ * Log2Log Chat Log Converter
  *  Formats
  *   Omegle
  *
@@ -94,7 +94,7 @@ void Omegle::load(QVariant $log_raw)
                 if ($_evt == "You're now chatting with a random stranger. Say hi!" ||
                     $_evt == "You're now watching two strangers discuss your question!")
                 {
-                    final->newLine();
+                    final->newRow();
                     final->setCode(1);
                     final->setSender("_evt_open");
                     final->setContent($_evt);
@@ -105,7 +105,7 @@ void Omegle::load(QVariant $log_raw)
                 // If conversation closed (_evt_close) by _self
                 else if ($_evt == "You have disconnected.")
                 {
-                    final->newLine();
+                    final->newRow();
                     final->setCode(1);
                     final->setSender("_evt_close");
                     final->setContent("_self");
@@ -116,7 +116,7 @@ void Omegle::load(QVariant $log_raw)
                 // If conversation closed (_evt_close)
                 else if ($_evt.indexOf("disconnected") != -1)
                 {
-                    final->newLine();
+                    final->newRow();
                     final->setCode(1);
                     final->setSender("_evt_close");
                     // If _evt_close by _with
@@ -141,7 +141,7 @@ void Omegle::load(QVariant $log_raw)
                 // If something else (_evt)
                 else
                 {
-                    final->newLine();
+                    final->newRow();
                     final->setCode(1);
                     final->setSender("_evt");
                     final->setContent($_evt);
@@ -154,7 +154,7 @@ void Omegle::load(QVariant $log_raw)
             if (xml.attributes().value("class").toString() == "questionText")
             {
                 xml.readNext();
-                final->newLine();
+                final->newRow();
                 final->setCode(1);
                 final->setSender("_evt");
                 final->setContent("Question to discuss: " + xml.text().toString());
@@ -170,7 +170,7 @@ void Omegle::load(QVariant $log_raw)
                 // Entering message source
                 xml.readNext();
 
-                final->newLine();
+                final->newRow();
                 final->setCode(0);
                 QString $_alias = xml.text().toString();
                 $_alias.chop(1);
@@ -203,7 +203,7 @@ void Omegle::load(QVariant $log_raw)
                 // Entering message source
                 xml.readNext();
 
-                final->newLine();
+                final->newRow();
                 final->setCode(0);
                 QString $_alias = xml.text().toString();
                 $_alias.chop(1);
@@ -268,8 +268,8 @@ QVariant Omegle::generate(StdFormat *$log)
         $time_base_proc.setMSecsSinceEpoch($time_base);
         $DATER = $time_base_proc.toString("yyyy-MM-dd");
 
-        // Go through each chat line.
-        while ($log->nextLine())
+        // Go through each chat row.
+        while ($log->nextRow())
         {
             // Make array items more readily accessible.
             qlonglong $time_cur  = $log->getTime();

@@ -1,5 +1,5 @@
 /**
- * Log2Log Online Chat Log Converter
+ * Log2Log Chat Log Converter
  *  Formats
  *   Pidgin HTML
  *
@@ -135,7 +135,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
             if (xml.qualifiedName().toString() == "font")
             {
                 // Create new chat row
-                final->newLine();
+                final->newRow();
                 // CONSTRUCT: _timezone
                 final->setTimezone($equizone["full_tz_name"].toString());
 
@@ -321,10 +321,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
         }
     }
 
-    // Run the Log2Log Postprocessor to guess or try to fill in missing data.
-    Helper::postprocessor(final);
-
-    qDebug()<<final->final;
+    //qDebug()<<final->final;
 }
 
 /**
@@ -614,8 +611,8 @@ QVariant Pidgin::generate(StdFormat *$log)
         // <title>
         $content += title + "</title></head><body><h3>" + title + "</h3>\n";
 
-        // Go through each chat line.
-        while ($log->nextLine())
+        // Go through each chat row.
+        while ($log->nextRow())
         {
             // Make array items more readily accessible.
             qlonglong $time_cur  = $log->getTime();
@@ -698,7 +695,7 @@ QVariant Pidgin::generate(StdFormat *$log)
             }
 
             // Closing
-            if (!$log->hasNextLine())
+            if (!$log->hasNextRow())
                 $content += "</body></html>";
         }qDebug() << $content;
     }
@@ -727,6 +724,8 @@ StdFormat* Pidgin::from(QHash<QString, QVariant> data)
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
     }
+    // Run the Log2Log Postprocessor to guess or try to fill in missing data.
+    Helper::postprocessor(final);
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     emit finished();

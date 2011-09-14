@@ -1,5 +1,5 @@
 /**
- * Log2Log Online Chat Log Converter
+ * Log2Log Chat Log Converter
  *  Formats
  *   Standard Format
  *
@@ -32,6 +32,19 @@ class StdFormat
 public:
     StdFormat();
     ~StdFormat();
+    /* Saver */
+    void applyData();
+    void applyEntry();
+    void applyChat();
+    void applyRow();
+    void applySystem();
+    void applyAuto();
+    /* Extractor */
+    void extractData();
+    void extractEntry();
+    void extractChat();
+    void extractRow();
+    void extractSystem();
     /* Browser */
     void resetPointer();
     int newEntry();
@@ -40,13 +53,13 @@ public:
     bool hasPreviousEntry();
     bool previousEntry();
     bool gotoEntry(int index);
-    bool toggleLine();
-    int newLine();
-    bool hasNextLine();
-    bool nextLine();
-    bool hasPreviousLine();
-    bool previousLine();
-    bool gotoLine(int index);
+    bool toggleRow();
+    int newRow();
+    bool hasNextRow();
+    bool nextRow();
+    bool hasPreviousRow();
+    bool previousRow();
+    bool gotoRow(int index);
     bool switchLocalSystem(); // TODO: Implementation TBD
     bool switchSystem(); // TODO: Implementation TBD
     bool newSystem(); // TODO: Implementation TBD
@@ -70,6 +83,7 @@ public:
     bool setAccuracy(int accuracy);
     bool setNice(int nice);
     /* Getters */
+    QString getVersion();
     QString getClient();
     QString getProtocol();
     QString getSelf();
@@ -93,16 +107,27 @@ public:
     //  The slower, ordered indexed array (QMap) is not necessary.
     //  The index is a string (QString).
     //  The associated value can be one of many things (QVariant).
-    QHash<QString, QVariant> final;
+    QHash<QString, QVariant> log;
+    QHash<QString, QVariant> data;
+    QHash<QString, QVariant> entry;
+    QHash<QString, QVariant> chat;
+    QHash<QString, QVariant> row;
+    QHash<QString, QVariant> system;
+
+/* VARIABLES */
+protected:
+    QHash<QString, QVariant> empty;
 
 /* VARIABLES */
 private:
     // Current Entry Index
     int dexEntry;
     // Current Chat Row
-    int dexLine;
+    int dexLine; // DEPRECATED
+    int dexRow;
     // Whether in a Chat Row
-    bool inLine;
+    bool inLine; // DEPRECATED
+    bool inRow;
     // Current System Log Row
     int dexSystem; // TODO: Implementation TBD
 

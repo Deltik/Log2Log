@@ -162,7 +162,7 @@ void Helper::postprocessor(StdFormat *$log)
         QString $with          = $log->getWith();
         QString $with_alias    = $log->getWithAlias();
 
-        while ($log->nextLine())
+        while ($log->nextRow())
         {
             QString $sender      = $log->getSender();
             QString $alias       = $log->getAlias();
@@ -213,7 +213,7 @@ void Helper::postprocessor(StdFormat *$log)
         if ($protocol.isEmpty())
             $log->setProtocol("unknown");
 
-        while ($log->nextLine())
+        while ($log->nextRow())
         {
             // Make array items more readily accessible.
             qlonglong $time_cur  = $log->getTime();
