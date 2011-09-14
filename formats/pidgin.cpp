@@ -725,6 +725,7 @@ StdFormat* Pidgin::from(QHash<QString, QVariant> data)
         i ++;
     }
     // Run the Log2Log Postprocessor to guess or try to fill in missing data.
+    updateProgress(50, "Filling in data gaps...");
     Helper::postprocessor(final);
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
