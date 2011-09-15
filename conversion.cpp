@@ -139,7 +139,7 @@ void Conversion::save()
     while (i != log.constEnd())
     {
         // Extract
-        QString key = ui->dstPathEdit->text() + "/" + i.key();
+        QString key = QDir::fromNativeSeparators(ui->dstPathEdit->text()) + "/" + i.key();
         QVariant value = i.value();
         QHash<QString, QVariant> info = value.toHash();
         // Assume that info["content"] has the file contents

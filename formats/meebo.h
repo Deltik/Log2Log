@@ -42,7 +42,15 @@ public slots:
     virtual void to(StdFormat* $log);
 
 private:
+    void setAccount(QString account);
+    void setProtocol(QString protocol);
+    void setWith(QString with);
+
+private:
     int total;
+    QString $account;
+    QString $protocol;
+    QString $with;
 };
 
 #endif // MEEBO_H

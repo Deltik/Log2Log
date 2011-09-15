@@ -38,6 +38,30 @@ QVariant Meebo::generate(StdFormat *$log)
 }
 
 /**
+ * MEEBO_CUSTOM: Set Account
+ */
+void Meebo::setAccount(QString account)
+{
+    $account = account;
+}
+
+/**
+ * MEEBO_CUSTOM: Set IM Protocol
+ */
+void Meebo::setProtocol(QString protocol)
+{
+    $protocol = protocol;
+}
+
+/**
+ * MEEBO_CUSTOM: Set Other User's Account
+ */
+void Meebo::setWith(QString with)
+{
+    $with = with;
+}
+
+/**
  * Process "From" Request
  */
 StdFormat* Meebo::from(QHash<QString, QVariant> data)
@@ -55,6 +79,24 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
     while (i != list.constEnd())
     {
         QVariant $raw_item = (i.value());
+
+        // Get file path
+        QString filepath = i.key();
+        // Remove file extension
+        QStringList path_parts = filepath.split(".");
+        path_parts.pop_back();
+        filepath = path_parts.join(".");
+        // Get Log2Log Meebo metadata
+        path_parts = filepath.split("|");
+        QString account  = path_parts[0];
+        QString protocol = path_parts[1];
+        QString with     = path_parts[2];
+
+        // Set metadata
+        this->setAccount(account);
+        this->setProtocol(protocol);
+        this->setWith(with);
+
         this->load($raw_item);
         c++;
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
