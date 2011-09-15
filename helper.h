@@ -5,10 +5,7 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <QDialog>
-#include <QLayoutItem>
-#include <QGridLayout>
-#include <QMap>
+#include <QtCore>
 #include "log2log.h"
 
 class Helper
@@ -35,6 +32,11 @@ public:
     static QMap<QString, QVariant> files_get_contents(QString directory_path);
     static QList<QMap<QString, QVariant> > timezone_abbreviations_list();
     static QMap<QString, QVariant> zone_search(QVariant query);
+    static QString stripslashes(QString original);
+
+private:
+    /* Custom PHP-based Functions */
+    static void php_stripslashes(char *str, int *len);
 };
 
 #endif // HELPERS_H

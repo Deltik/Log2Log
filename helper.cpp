@@ -353,3 +353,59 @@ QMap<QString, QVariant> Helper::zone_search(QVariant query)
 
     return QMap<QString, QVariant>();
 }
+
+/**
+ * Strip Slashes
+ * @param QString original The original string to stripslashes
+ * @returns QString The stripslashed string
+ */
+// Ported from PHP 5.3.8
+void Helper::php_stripslashes(char *str, int *len)
+{
+        char *s, *t;
+        int l;
+
+        if (len != NULL) {
+                l = *len;
+        } else {
+                l = strlen(str);
+        }
+        s = str;
+        t = str;
+
+        while (l > 0) {
+                if (*t == '\\') {
+                        t++;				/* skip the slash */
+                        if (len != NULL) {
+                                (*len)--;
+                        }
+                        l--;
+                        if (l > 0) {
+                                if (*t == '0') {
+                                        *s++='\0';
+                                        t++;
+                                } else {
+                                        *s++ = *t++;	/* preserve the next character */
+                                }
+                                l--;
+                        }
+                } else {
+                        *s++ = *t++;
+                        l--;
+                }
+        }
+        if (s != t) {
+                *s = '\0';
+        }
+}
+
+QString Helper::stripslashes(QString original)
+{
+    QByteArray proto;
+    proto = original.toAscii();
+    char *str = proto.data();
+    php_stripslashes(str, NULL);
+    QString stripped(str);
+
+    return stripped;
+}
