@@ -293,18 +293,20 @@ QVariant Omegle::generate(StdFormat *$log)
                 else if ($sender.startsWith("_evt"))
                 {
                     // Conversation open (_evt_open)
-                    if ($sender == "_evt_open")
+                    if ($sender == "_evt_open" ||
+                        $sender == "_evt_online")
                     {
                         if ($message.isEmpty())
                             $message = "You're now chatting with a random stranger. Say hi!";
                     }
                     // Conversation closed (_evt_close)
-                    if ($sender == "_evt_close")
+                    if ($sender == "_evt_close" ||
+                        $sender == "_evt_offline")
                     {
                         QString $message_proto = "Conversation has disconnected";
-                        if ($message == "_with")
+                        if ($message == "_with" || $message == $with || $message == $with_alias)
                             $message_proto = "Your conversational partner has disconnected.";
-                        else if ($message == "_self")
+                        else if ($message == "_self" || $message == $account || $message == $self_alias)
                             $message_proto = "You have disconnected.";
                         else if ($message.startsWith("_group"))
                         {

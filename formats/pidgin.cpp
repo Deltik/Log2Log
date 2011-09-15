@@ -236,11 +236,11 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     $line = $line_split.join("</b>");
                     // Process Log2Log-supported events. TODO
                     QHash<QString, QString> $sweep_terms;
-                    $sweep_terms[" has signed off."]            = "_offline";
-                    $sweep_terms[" has signed on."]             = "_online";
-                    $sweep_terms[" has gone away."]             = "_away";
-                    $sweep_terms[" is no longer away."]         = "_available";
-                    $sweep_terms[" has nudged you!"]            = "_attention";
+                    $sweep_terms[" has signed off."]            = "_evt_offline";
+                    $sweep_terms[" has signed on."]             = "_evt_online";
+                    $sweep_terms[" has gone away."]             = "_evt_away";
+                    $sweep_terms[" is no longer away."]         = "_evt_available";
+                    $sweep_terms[" has nudged you!"]            = "_evt_attention";
                     $sweep_terms[" has left the conversation."] = "_evt_close";
                     $sweep_terms[" wants to send you a file"]   = "_file_init";
                     QHashIterator<QString, QString> i($sweep_terms);
@@ -652,7 +652,7 @@ QVariant Pidgin::generate(StdFormat *$log)
 
                 // To Pidgin Notices
                 // TODO
-                if ($sender.contains("_online"))
+                if ($sender.contains("_evt_online"))
                     $message = $alias + " has signed on.";
 
                 if ($sender_color.isEmpty())
