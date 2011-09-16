@@ -42,6 +42,10 @@ QVariant Meebo::generate(StdFormat *$log)
  */
 void Meebo::setAccount(QString account)
 {
+    /* PATCH FOR REMOVING "/Meebo" RESOURCE TAG */
+    if (account.toLower().endsWith("/meebo"))
+        account.chop(6);
+    /* END PATCH */
     $account = account;
 }
 
