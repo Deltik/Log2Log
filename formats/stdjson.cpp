@@ -1,7 +1,7 @@
 /**
  * Log2Log
  *  Formats
- *   Meebo (files)
+ *   Log2Log JSON
  *
  * @author Deltik
  *
@@ -22,25 +22,18 @@
  *  along with Log2Log.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "meebo.h"
+#include "stdjson.h"
 #include "helper.h"
-#include <QtCore>
-#include <QtXml>
-#include <QDateTime>
 
-/**
- * Constructor
- */
-Meebo::Meebo()
+StdJson::StdJson()
 {
     final = new StdFormat();
-    final->setClient("Meebo");
 }
 
 /**
  * Load a Chat Log
  */
-void Meebo::load(QVariant $log_raw)
+void StdJson::load(QVariant $log_raw)
 {
     // TODO
 }
@@ -48,43 +41,14 @@ void Meebo::load(QVariant $log_raw)
 /**
  * Generate Log from Standardized Log
  */
-QVariant Meebo::generate(StdFormat *$log)
+QVariant StdJson::generate(StdFormat *$log)
 {
     // TODO
 }
-
-/**
- * MEEBO_CUSTOM: Set Account
- */
-void Meebo::setAccount(QString account)
-{
-    /* PATCH FOR REMOVING "/Meebo" RESOURCE TAG */
-    if (account.toLower().endsWith("/meebo"))
-        account.chop(6);
-    /* END PATCH */
-    $account = account;
-}
-
-/**
- * MEEBO_CUSTOM: Set IM Protocol
- */
-void Meebo::setProtocol(QString protocol)
-{
-    $protocol = protocol;
-}
-
-/**
- * MEEBO_CUSTOM: Set Other User's Account
- */
-void Meebo::setWith(QString with)
-{
-    $with = with;
-}
-
 /**
  * Process "From" Request
  */
-StdFormat* Meebo::from(QHash<QString, QVariant> data)
+StdFormat* StdJson::from(QHash<QString, QVariant> data)
 {
     // Step 1/3: Fetch the data.
     QMap<QString, QVariant> list;
@@ -99,29 +63,14 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
     while (i != list.constEnd())
     {
         QVariant $raw_item = (i.value());
-
-        // Get file path
-        QString filepath = i.key();
-        // Remove file extension
-        QStringList path_parts = filepath.split(".");
-        path_parts.pop_back();
-        filepath = path_parts.join(".");
-        // Get Log2Log Meebo metadata
-        path_parts = filepath.split("|");
-        QString account  = path_parts[0];
-        QString protocol = path_parts[1];
-        QString with     = path_parts[2];
-
-        // Set metadata
-        this->setAccount(account);
-        this->setProtocol(protocol);
-        this->setWith(with);
-
         this->load($raw_item);
         c++;
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
     }
+    // Run the Log2Log Postprocessor to guess or try to fill in missing data.
+    updateProgress(50, "Filling in data gaps...");
+    Helper::postprocessor(final);
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     emit finished();
@@ -131,7 +80,7 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
 /**
  * Process "To" Request
  */
-void Meebo::to(StdFormat* $log)
+void StdJson::to(StdFormat* $log)
 {
     // Count Log Entries
     updateProgress(50, "Counting Log Entries...");

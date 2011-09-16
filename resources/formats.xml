@@ -129,7 +129,7 @@
 	<format id="json">
 		<name>Log2Log JSON</name>
 		<client>Log2Log</client>
-		<class>JSON</class>
+		<class>StdJson</class>
 		<icon>:/images/services/JSON.png</icon>
 		<default>~/Documents/Chat Logs/Raw</default>
 		<support>

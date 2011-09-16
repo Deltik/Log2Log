@@ -35,33 +35,34 @@
 
 
 /**
- * Constructor
+ * Constructor for ConversionConsole
  */
-Conversion::Conversion()
+Conversion::Conversion(QHash<QString, QVariant> import)
 {
-}
+    // Load each indexs' profiles
+    FormatInfo* srcFI = new FormatInfo(import["from"].toString());
+    srcFI->pointerDig();
+    from_name = srcFI->getName("class");
+    FormatInfo* dstFI = new FormatInfo(import["to"].toString());
+    dstFI->pointerDig();
+    to_name = dstFI->getName("class");
+    //  Load form information
+    from["path"]     = import["source"]              .toString();
+    from["username"] = import["source-username"]     .toString();
+    from["password"] = import["source-password"]     .toString();
+    to  ["path"]     = import["destination"]         .toString();
+    to  ["username"] = import["destination-username"].toString();
+    to  ["password"] = import["destination-password"].toString();
 
-Conversion::Conversion(Ui::Log2Log *parentUi)
-{
-    ui = parentUi;
     moveToThread(this);
 }
 
 /**
- * Thread Runner
+ * Constructor for Ui::Log2Log
  */
-void Conversion::run()
+Conversion::Conversion(Ui::Log2Log *parentUi)
 {
-    QTimer::singleShot(0, this, SLOT(collectData()));
-
-    exec();
-}
-
-/**
- * Data Collection
- */
-void Conversion::collectData()
-{
+    ui = parentUi;
     // Data Collection
     emit updateProgress(0, "Reading Form Data...");
     int srcIndex = ui->srcProtoBox->currentIndex();
@@ -81,6 +82,24 @@ void Conversion::collectData()
     to  ["username"] = ui->dstUserEdit->text();
     to  ["password"] = ui->dstPassEdit->text();
 
+    moveToThread(this);
+}
+
+/**
+ * Thread Runner
+ */
+void Conversion::run()
+{
+    QTimer::singleShot(0, this, SLOT(collectData()));
+
+    exec();
+}
+
+/**
+ * Data Collection
+ */
+void Conversion::collectData()
+{
     // Load "From" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
     //  are loaded by hard-code.
@@ -164,7 +183,7 @@ void Conversion::save()
     while (i != log.constEnd())
     {
         // Extract
-        QString key = QDir::fromNativeSeparators(ui->dstPathEdit->text()) + "/" + i.key();
+        QString key = QDir::fromNativeSeparators(to["path"].toString()) + "/" + i.key();
         QVariant value = i.value();
         QHash<QString, QVariant> info = value.toHash();
         // Assume that info["content"] has the file contents
@@ -213,16 +232,6 @@ void Conversion::save()
 
     // ### DONE! ###
     updateProgress(100, "Conversion complete!");
-    emit finished();
-}
-
-/**
- * DEBUG: Do Dummy Work
- */
-void Conversion::doDummyWork()
-{
-    sleep(3);
-    qDebug()<<"Dummy work done.";
     emit finished();
 }
 

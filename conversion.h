@@ -37,7 +37,7 @@ class Conversion : public QThread
     Q_OBJECT
 
 public:
-    Conversion();
+    Conversion(QHash<QString, QVariant> import);
     Conversion(Ui::Log2Log *ui);
     void terminate_all();
 
@@ -49,7 +49,6 @@ public slots:
     void convertFrom();
     void convertTo();
     void save();
-    void doDummyWork();
     void setProgressProto(int meter, QString description);
 
 private:
