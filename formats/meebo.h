@@ -1,7 +1,10 @@
 /**
- * Log2Log Online Chat Log Converter
+ * Log2Log
  *  Formats
  *   Meebo (files)
+ *    Header File
+ *
+ * @author Deltik
  *
  * License:
  *  This file is part of Log2Log.
@@ -18,7 +21,6 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with Log2Log.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef MEEBO_H

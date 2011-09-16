@@ -2,6 +2,11 @@
  * Log2Log Chat Log Converter
  *  Formats
  *   Standard Format
+ *    Header File
+ *
+ * @author Deltik
+ * @brief You can find out how Log2Log Generic Chat Log Format works by going
+ *        into :/formats/stdformat.cpp .
  *
  * License:
  *  This file is part of Log2Log.

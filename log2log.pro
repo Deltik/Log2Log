@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     update.cpp \
     api.cpp \
     formats/pidgin.cpp \
-    formats/meebo.cpp
+    formats/meebo.cpp \
+    json.cpp
 
 HEADERS  += \
     log2log.h \
@@ -36,7 +37,8 @@ HEADERS  += \
     update.h \
     api.h \
     formats/pidgin.h \
-    formats/meebo.h
+    formats/meebo.h \
+    json.h
 
 FORMS    += \
     log2log.ui \
