@@ -1,7 +1,7 @@
 /**
  * Log2Log
  *  Formats
- *   Log2Log JSON
+ *   Skype DBB
  *
  * @author Deltik
  *
@@ -22,12 +22,10 @@
  *  along with Log2Log.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdjson.h"
-#include "json.h"
+#include "skype.h"
 #include "helper.h"
-#include "update.h"
 
-StdJson::StdJson()
+Skype::Skype()
 {
     final = new StdFormat();
 }
@@ -35,40 +33,23 @@ StdJson::StdJson()
 /**
  * Load a Chat Log
  */
-void StdJson::load(QVariant $log_raw)
+void Skype::load(QVariant $log_raw)
 {
-    bool logIsJson = false;
-    updateProgress(30, "Importing... (Be patient)");
-    QMap<QString, QVariant> log = Json::parse($log_raw.toString(), logIsJson).toMap();
-
-    if (logIsJson)
-        final->log = log;
+    // TODO
 }
 
 /**
  * Generate Log from Standardized Log
  */
-QVariant StdJson::generate(StdFormat *$log)
+QVariant Skype::generate(StdFormat *$log)
 {
-    QVariant $log_generated;
-    QMap<QString, QVariant> $log_new;
-    QHash<QString, QVariant> $info;
-
-    updateProgress(70, "Exporting... (Be patient)");
-
-    $info["content"] = Json::serialize($log->log);
-    $info["modtime"] = QDateTime::currentMSecsSinceEpoch() / 1000;
-
-    $log_new[QDateTime::fromMSecsSinceEpoch(QDateTime::currentMSecsSinceEpoch()).toString(Qt::ISODate) + ".json"] = $info;
-    $log_generated = $log_new;
-
-    return $log_generated;
+    // TODO
 }
 
 /**
  * Process "From" Request
  */
-StdFormat* StdJson::from(QHash<QString, QVariant> data)
+StdFormat* Skype::from(QHash<QString, QVariant> data)
 {
     // Step 1/3: Fetch the data.
     QMap<QString, QVariant> list;
@@ -97,7 +78,7 @@ StdFormat* StdJson::from(QHash<QString, QVariant> data)
 /**
  * Process "To" Request
  */
-void StdJson::to(StdFormat* $log)
+void Skype::to(StdFormat* $log)
 {
     // Count Log Entries
     updateProgress(50, "Counting Log Entries...");

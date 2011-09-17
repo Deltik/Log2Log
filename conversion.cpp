@@ -33,6 +33,10 @@
 #include "formats/pidgin.h"
 #include "formats/meebo.h"
 #include "formats/stdjson.h"
+#include "formats/trillian.h"
+#include "formats/wlm.h"
+#include "formats/aim.h"
+#include "formats/skype.h"
 
 
 /**
@@ -114,6 +118,14 @@ void Conversion::collectData()
         $FROM = new Meebo();
     if (from_name == "StdJson")
         $FROM = new StdJson();
+    if (from_name == "Trillian")
+        $FROM = new Trillian();
+    if (from_name == "Wlm")
+        $FROM = new Wlm();
+    if (from_name == "Aim")
+        $FROM = new Aim();
+    if (from_name == "Skype")
+        $FROM = new Skype();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -128,6 +140,14 @@ void Conversion::collectData()
         $TO = new Meebo();
     if (to_name == "StdJson")
         $TO = new StdJson();
+    if (to_name == "Trillian")
+        $TO = new Trillian();
+    if (to_name == "Wlm")
+        $TO = new Wlm();
+    if (to_name == "Aim")
+        $TO = new Aim();
+    if (to_name == "Skype")
+        $TO = new Skype();
 
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())

@@ -25,7 +25,11 @@ SOURCES += main.cpp \
     formats/meebo.cpp \
     json.cpp \
     formats/stdjson.cpp \
-    conversionconsole.cpp
+    conversionconsole.cpp \
+    formats/trillian.cpp \
+    formats/wlm.cpp \
+    formats/aim.cpp \
+    formats/skype.cpp
 
 HEADERS  += \
     log2log.h \
@@ -42,7 +46,11 @@ HEADERS  += \
     formats/meebo.h \
     json.h \
     formats/stdjson.h \
-    conversionconsole.h
+    conversionconsole.h \
+    formats/trillian.h \
+    formats/wlm.h \
+    formats/aim.h \
+    formats/skype.h
 
 FORMS    += \
     log2log.ui \
