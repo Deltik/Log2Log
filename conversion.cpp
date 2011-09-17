@@ -32,6 +32,7 @@
 #include "formats/omegle.h"
 #include "formats/pidgin.h"
 #include "formats/meebo.h"
+#include "formats/stdjson.h"
 
 
 /**
@@ -111,6 +112,8 @@ void Conversion::collectData()
         $FROM = new Pidgin();
     if (from_name == "Meebo")
         $FROM = new Meebo();
+    if (from_name == "StdJson")
+        $FROM = new StdJson();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -123,6 +126,8 @@ void Conversion::collectData()
         $TO = new Pidgin();
     if (to_name == "Meebo")
         $TO = new Meebo();
+    if (to_name == "StdJson")
+        $TO = new StdJson();
 
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())

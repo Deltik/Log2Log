@@ -423,16 +423,10 @@ void Omegle::to(StdFormat* $log)
     updateProgress(50, "Counting Log Entries...");
     $log->resetPointer();
     total = 0;
-    if ($log->gotoEntry(0) == false)
-        total = 0;
-    else
+    while ($log->nextEntry())
     {
-        do
-        {
-            total ++;
-            updateProgress(50, "Counting Log Entries... ("+QVariant(total).toString()+" found so far)");
-        }
-        while ($log->nextEntry());
+        total ++;
+        updateProgress(50, "Counting Log Entries... ("+QVariant(total).toString()+" found so far)");
     }
 
     data = this->generate($log);

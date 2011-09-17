@@ -108,30 +108,49 @@ public:
 /* VARIABLES */
 public:
     // Final Construction
-    //  This is an unordered indexed array (QHash).
-    //  The slower, ordered indexed array (QMap) is not necessary.
-    //  The index is a string (QString).
-    //  The associated value can be one of many things (QVariant).
-    QHash<QString, QVariant> log;
-    QHash<QString, QVariant> data;
-    QHash<QString, QVariant> entry;
-    QHash<QString, QVariant> chat;
-    QHash<QString, QVariant> row;
-    QHash<QString, QVariant> system;
+    //  You may argue that I should be using QHash instead of QMap to store the
+    //  log data, and you might point to this source:
+    //  <http://doc.qt.nokia.com/latest/containers.html#algorithmic-complexity>
+    //
+    //  I say: No. Here is my source:
+    //  <http://thesmithfam.org/blog/2011/02/12/when-faster-is-actually-slower>
+    //
+    //  Furthermore, I did my own testing to confirm.
+    //  Pidgin to Omegle with QMap as StdFormat internals:
+    //   124478 ms for 10584 arbitrary files with 6309 real chat logs.
+    //  Pidgin to Omegle with QHash as StdFormat internals:
+    //   135343 ms for 10584 arbitrary files with 6309 real chat logs.
+    //
+    //  That's 2 minutes 4.478 seconds vs. 2 minutes 15.34 seconds.
+    //  You SAVE 10.87 seconds by using QMap, which Qt stated would be slower.
+    //
+    //  Not convinced? Here is the deciding factor for using QMap:
+    //   - StdFormat will be compatible with the StdJson format converter if I
+    //     use QMap. The JSON class supports QMap, and not QHash.
+    //
+    //  It's a win-win for us:
+    //   - Time-saving
+    //   - Prettier
+    //   - Compatible
+    QMap<QString, QVariant> log;
+    QList<QVariant> data;
+    QMap<QString, QVariant> entry;
+    QList<QVariant> chat;
+    QMap<QString, QVariant> row;
+    QList<QVariant> system;
 
 /* VARIABLES */
 protected:
-    QHash<QString, QVariant> empty;
+    QMap<QString, QVariant> empty;
+    QList<QVariant> emptyl;
 
 /* VARIABLES */
 private:
     // Current Entry Index
     int dexEntry;
     // Current Chat Row
-    int dexLine; // DEPRECATED
     int dexRow;
     // Whether in a Chat Row
-    bool inLine; // DEPRECATED
     bool inRow;
     // Current System Log Row
     int dexSystem; // TODO: Implementation TBD

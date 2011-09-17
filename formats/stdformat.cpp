@@ -5,17 +5,17 @@
  *
  * @author Deltik
  * @brief Log2Log Generic Chat Log Structure: At bottom
- * @remarks Qt/C++ arrays (QMap and QHash) are ridiculously more complicated
+ * @remarks Qt/C++ arrays (QHash and QMap) are ridiculously more complicated
  *          than arrays in PHP. To improve efficiency and avoid crazy
  *          multidimensional arrays, each type of data must be "extracted" from
  *          its QVariant. For example:
  *
- *          You have final["data"], which is a QHash inside a QVariant of final.
+ *          You have final["data"], which is a QMap inside a QVariant of final.
  *          If you want to insert what is logically final["data"][0], you must
  *          have the following code:
  *
  *          // 1. EXTRACT the data
- *          QHash extractedData = final.value("data").toHash();
+ *          QMap extractedData = final.value("data").toMap();
  *          // 2. MODIFY the data
  *          extractedData.insert("0", "Something because this is a QVariant");
  *          // 3. REINSERT the data
@@ -24,7 +24,7 @@
  *          or equally compatible code:
  *
  *          // 1. EXTRACT the data
- *          QHash extractedData = final["data"].toHash();
+ *          QMap extractedData = final["data"].toMap();
  *          // 2. MODIFY the data
  *          extractedData["0"] = "Something because this is a QVariant";
  *          // 3. REINSERT the data
@@ -70,7 +70,7 @@ StdFormat::StdFormat()
  */
 StdFormat::~StdFormat()
 {
-    QHash<QString, QVariant> empty;
+    QMap<QString, QVariant> empty;
     log = empty;
 }
 
@@ -85,7 +85,7 @@ void StdFormat::applyData()
     if (!data.isEmpty())
     {
         log["data"] = data;
-        data = empty;
+        data = emptyl;
     }
 }
 
@@ -98,7 +98,9 @@ void StdFormat::applyEntry()
 
     if (!entry.isEmpty())
     {
-        data[QVariant(dexEntry).toString()] = entry;
+        while (dexEntry > data.size() - 1)
+            data << false;
+        data[dexEntry] = entry;
         entry = empty;
     }
 }
@@ -113,7 +115,7 @@ void StdFormat::applyChat()
     if (!chat.isEmpty())
     {
         entry["chat"] = chat;
-        chat = empty;
+        chat = emptyl;
     }
 }
 
@@ -124,22 +126,26 @@ void StdFormat::applyRow()
 {
     if (!row.isEmpty())
     {
-        chat[QVariant(dexRow).toString()] = row;
+        while (dexRow > chat.size() - 1)
+            chat << false;
+        chat[dexRow] = row;
         row = empty;
     }
 }
 
 /**
- * Saver: Apply log["data"]["system"][row]
+ * Saver: Apply log["system"][row]
  */
 void StdFormat::applySystem()
 {
     if (!system.isEmpty())
     {
-        QHash<QString, QVariant> systemHolder = data["system"].toHash();
-        systemHolder[QVariant(dexSystem).toString()] = system;
-        data["system"] = systemHolder;
-        system = empty;
+        QList<QVariant> systemHolder = log["system"].toList();
+        while (dexSystem > systemHolder.size() - 1)
+            systemHolder << false;
+        systemHolder[dexSystem] = system;
+        log["system"] = systemHolder;
+        system = emptyl;
     }
 }
 
@@ -153,7 +159,7 @@ void StdFormat::applyAuto()
     applyEntry();
     applySystem();
     applyData();
-    // Now, all unsaved data is stored into the QHash log.
+    // Now, all unsaved data is stored into the QMap log.
 }
 
 /**
@@ -162,7 +168,7 @@ void StdFormat::applyAuto()
 void StdFormat::extractData()
 {
     if (data.isEmpty())
-        data = log["data"].toHash();
+        data = log["data"].toList();
 }
 
 /**
@@ -172,7 +178,7 @@ void StdFormat::extractEntry()
 {
     extractData();
     if (entry.isEmpty())
-        entry = data[QVariant(dexEntry).toString()].toHash();
+        entry = data[dexEntry].toMap();
 }
 
 /**
@@ -182,7 +188,7 @@ void StdFormat::extractChat()
 {
     extractEntry();
     if (chat.isEmpty())
-        chat = entry["chat"].toHash();
+        chat = entry["chat"].toList();
 }
 
 /**
@@ -192,7 +198,7 @@ void StdFormat::extractRow()
 {
     extractChat();
     if (row.isEmpty())
-        row = chat[QVariant(dexRow).toString()].toHash();
+        row = chat[dexRow].toMap();
 }
 
 /**
@@ -290,7 +296,7 @@ bool StdFormat::nextEntry()
 
     // Set entry
     entry = empty;
-    chat = empty;
+    chat = emptyl;
     row = empty;
     extractEntry();
 
@@ -323,7 +329,7 @@ bool StdFormat::previousEntry()
 
     // Set entry
     entry = empty;
-    chat = empty;
+    chat = emptyl;
     row = empty;
     extractEntry();
 
@@ -336,18 +342,16 @@ bool StdFormat::previousEntry()
  */
 bool StdFormat::gotoEntry(int index)
 {
-    QString indexStr;
-    indexStr.setNum(index);
     // Extract
     extractData();
 
-    if (data[indexStr].isNull())
+    if (data[index].isNull())
         return false;
     dexEntry = index; dexRow = -1; inRow = false;
 
     // Set entry
     entry = empty;
-    chat = empty;
+    chat = emptyl;
     row = empty;
     extractEntry();
 
@@ -489,7 +493,7 @@ bool StdFormat::gotoRow(int index)
     extractChat();
 
     // If selected chat row doesn't exist...
-    if (chat[QVariant(index).toString()].isNull())
+    if (chat[index].isNull())
         return false;
 
     dexRow = index;

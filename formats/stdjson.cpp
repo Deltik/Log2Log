@@ -23,7 +23,9 @@
  */
 
 #include "stdjson.h"
+#include "json.h"
 #include "helper.h"
+#include "update.h"
 
 StdJson::StdJson()
 {
@@ -35,7 +37,12 @@ StdJson::StdJson()
  */
 void StdJson::load(QVariant $log_raw)
 {
-    // TODO
+    bool logIsJson = false;
+    updateProgress(30, "Importing... (Be patient)");
+    QMap<QString, QVariant> log = Json::parse($log_raw.toString(), logIsJson).toMap();
+
+    if (logIsJson)
+        final->log = log;
 }
 
 /**
@@ -43,7 +50,19 @@ void StdJson::load(QVariant $log_raw)
  */
 QVariant StdJson::generate(StdFormat *$log)
 {
-    // TODO
+    QVariant $log_generated;
+    QMap<QString, QVariant> $log_new;
+    QHash<QString, QVariant> $info;
+
+    updateProgress(70, "Exporting... (Be patient)");
+
+    $info["content"] = Json::serialize($log->log);
+    $info["modtime"] = QDateTime::currentMSecsSinceEpoch() / 1000;
+
+    $log_new[QDateTime::fromMSecsSinceEpoch(QDateTime::currentMSecsSinceEpoch()).toString(Qt::ISODate) + ".json"] = $info;
+    $log_generated = $log_new;
+
+    return $log_generated;
 }
 /**
  * Process "From" Request
@@ -68,9 +87,6 @@ StdFormat* StdJson::from(QHash<QString, QVariant> data)
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
     }
-    // Run the Log2Log Postprocessor to guess or try to fill in missing data.
-    updateProgress(50, "Filling in data gaps...");
-    Helper::postprocessor(final);
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     emit finished();
@@ -86,17 +102,11 @@ void StdJson::to(StdFormat* $log)
     updateProgress(50, "Counting Log Entries...");
     $log->resetPointer();
     total = 0;
-    if ($log->gotoEntry(0) == false)
-        total = 0;
-    else
-    {
-        do
+    while ($log->nextEntry())
         {
             total ++;
             updateProgress(50, "Counting Log Entries... ("+QVariant(total).toString()+" found so far)");
         }
-        while ($log->nextEntry());
-    }
 
     data = this->generate($log);
     emit finished();

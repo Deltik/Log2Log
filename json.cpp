@@ -4,9 +4,13 @@
  *   Third-Party
  *    JSON
  *
+ * @remarks Deltik has modified this library to optimize Json::serialize()
+ *          by reducing data size.
+ *
  * Authors:
  *  Eeli Reilin <eeli@emicode.fi>
  *  Luis Gustavo S. Barreto <gustavosbarreto@gmail.com>
+ *  Nick Liu <deltik@gmx.com>
  *
  * License:
  *  This file is part of Log2Log.
@@ -122,13 +126,13 @@ QByteArray Json::serialize(const QVariant &data, bool &success)
                         values << serializedValue;
                 }
 
-                str = "[ " + join( values, ", " ) + " ]";
+                str = "[" + join( values, "," ) + "]";
         }
         else if(data.type() == QVariant::Map) // variant is a map?
         {
                 const QVariantMap vmap = data.toMap();
                 QMapIterator<QString, QVariant> it( vmap );
-                str = "{ ";
+                str = "{";
                 QList<QByteArray> pairs;
                 while(it.hasNext())
                 {
@@ -139,10 +143,10 @@ QByteArray Json::serialize(const QVariant &data, bool &success)
                                 success = false;
                                 break;
                         }
-                        pairs << sanitizeString(it.key()).toUtf8() + " : " + serializedValue;
+                        pairs << sanitizeString(it.key()).toUtf8() + ":" + serializedValue;
                 }
-                str += join(pairs, ", ");
-                str += " }";
+                str += join(pairs, ",");
+                str += "}";
         }
         else if((data.type() == QVariant::String) || (data.type() == QVariant::ByteArray)) // a string or a byte array?
         {
