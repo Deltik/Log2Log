@@ -193,6 +193,8 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     final->setTime($time_base);
                     // CONSTRUCT: _time_precision
                     final->setPrecision(0);
+                    // CONSTRUCT: _code
+                    final->setCode(1);
                     // CONSTRUCT: _sender
                     final->setSender("_error");
                     // Entering element for bold
@@ -529,10 +531,7 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
         // (+86400000 milliseconds) (24 hours).
         if (-comparer.time().msecsTo(QTime()) > -time_proc.msecsTo(QTime()))
         {
-            time_sum = -time_proc.msecsTo(QTime()) +
-                       QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base)
-                                             .toString("yyyy/MM/dd"),
-                                             "yyyy/MM/dd").toMSecsSinceEpoch();
+            time_sum += 86400000;
         }
     }
 

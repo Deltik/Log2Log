@@ -1,7 +1,7 @@
 /**
  * Log2Log
  *  Formats
- *   Trillian
+ *   Trillian XML
  *    Header File
  *
  * @author Deltik
@@ -45,6 +45,7 @@ public slots:
 
 private:
     int total;
+    QVariantMap chart;
 };
 
 #endif // TRILLIAN_H

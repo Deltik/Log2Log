@@ -327,8 +327,8 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     {
         html += hError +
                 "No Log2Log Message Content Accuracy Index support. " +
-                "Messages that are not precisely character-for-character (e.g. voice transcripts) " +
-                "will be assumed to be precise in " +
+                "Messages that are not exactly character-for-character (e.g. voice transcripts) " +
+                "will be assumed to be exact in " +
                 dstFI->getName("display") +
                 "." +
                 hEnd;

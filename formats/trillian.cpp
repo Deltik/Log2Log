@@ -1,7 +1,7 @@
 /**
  * Log2Log
  *  Formats
- *   Trillian
+ *   Trillian XML
  *
  * @author Deltik
  *
@@ -28,6 +28,17 @@
 Trillian::Trillian()
 {
     final = new StdFormat();
+    chart["AIM"]      = "aim";
+    chart["ASTRA"]    = "astra";
+    chart["BONJOUR"]  = "bonjour";
+    chart["FACEBOOK"] = "facebook";
+    chart["GOOGLE"]   = "jabber";
+    chart["JABBER"]   = "jabber";
+    chart["ICQ"]      = "icq";
+    chart["IRC"]      = "irc";
+    chart["MSN"]      = "msn";
+    chart["SKYPE"]    = "skype";
+    chart["YAHOO"]    = "yim";
 }
 
 /**
@@ -35,7 +46,135 @@ Trillian::Trillian()
  */
 void Trillian::load(QVariant $log_raw)
 {
-    // TODO
+    // QXmlStreamReader is a total conformist and will freak out if XML code is
+    // not exactly the way it wants. For example, QXmlStreamReader will fail to
+    // recognize <tag attr="something"/>, which is a format used throughout
+    // Trillian chat logs. The following code turns the example into something
+    // that will be accepted: <meaningless attr="something"></meaningless> .
+    QString $log_proc = "<meaninglesses>\n" + $log_raw.toString() + "\n</meaninglesses>";
+    $log_proc.replace("<session", "<meaningless");
+    $log_proc.replace("<message", "<meaningless");
+    $log_proc.replace("/>", "></meaningless>");
+    $log_raw = $log_proc;
+
+    // Create XML reader
+    QXmlStreamReader test($log_raw.toString());
+    QXmlStreamReader xml ($log_raw.toString());
+
+    // Test the water
+    test.readNextStartElement();
+    test.readNextStartElement();
+    // If file is not a Trillian XML chat log...
+    if (!test.attributes().hasAttribute("medium"))
+        return;
+
+    // Safety: Don't try to edit entries if none exist yet.
+    bool entryMade, selfSet, withSet = false;
+
+    // Read the XML file
+    while (!xml.atEnd())
+    {
+        // Read next item
+        xml.readNextStartElement();
+
+        QXmlStreamAttributes attr = xml.attributes();
+
+        // If conversation start (_evt_open)
+        if (attr.value("type") == "start")
+        {
+            final->newEntry(); entryMade = true;
+
+            QString protocol = chart[attr.value("medium").toString()].toString();
+            if (protocol.isEmpty())
+                protocol = attr.value("medium").toString().toLower();
+            final->setProtocol(protocol);
+
+            qint64 time = attr.value("time").toString().toLongLong() * 1000 +
+                          attr.value("ms").toString().toLongLong();
+            final->setTime(time);
+
+            final->newRow();
+            final->setTime(time);
+            final->setPrecision(-1);
+            final->setCode(1);
+            final->setSender("_evt_open");
+            final->setContent(attr.value("from").toString());
+
+            // Inaccurately guess _self and _with (should be corrected later)
+            final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
+            final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
+        }
+        // If conversation close (_evt_close)
+        else if (attr.value("type") == "stop")
+        {
+            qint64 time = attr.value("time").toString().toLongLong() * 1000 +
+                          attr.value("ms").toString().toLongLong();
+
+            if (!entryMade) { final->newEntry(); entryMade = true; }
+
+            final->newRow();
+            final->setTime(time);
+            final->setPrecision(-1);
+            final->setCode(1);
+            final->setSender("_evt_close");
+            final->setContent(attr.value("from").toString());
+        }
+
+        // If element was sent by _self (_msg_self)
+        if (attr.value("type") == "outgoing_privateMessage")
+        {
+            if (!selfSet)
+            {
+                final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
+                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+                selfSet = true;
+            }
+            if (!withSet)
+            {
+                final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
+                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toAscii()));
+                selfSet = true;
+            }
+
+            qint64 time = attr.value("time").toString().toLongLong() * 1000 +
+                          attr.value("ms").toString().toLongLong();
+
+            final->newRow();
+            final->setCode(0);
+            final->setTime(time);
+            final->setPrecision(-1);
+            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
+            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toAscii()));
+        }
+        // If element was sent by _with (_msg_with)
+        if (attr.value("type") == "incoming_privateMessage")
+        {
+            if (!selfSet)
+            {
+                final->setSelf(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
+                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toAscii()));
+                selfSet = true;
+            }
+            if (!withSet)
+            {
+                final->setWith(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
+                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+                selfSet = true;
+            }
+
+            qint64 time = attr.value("time").toString().toLongLong() * 1000 +
+                          attr.value("ms").toString().toLongLong();
+
+            final->newRow();
+            final->setCode(0);
+            final->setTime(time);
+            final->setPrecision(-1);
+            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
+            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toAscii()));
+        }
+    }
 }
 
 /**
