@@ -219,7 +219,7 @@ QVariant Trillian::generate(StdFormat *$log)
 
         // Find associated individual, if existing
         $individual = $individuals[protocol + "/Query/" + $with + ".xml"].toHash();
-        $individual_time_assoc = $individual["time_assoc"].toList();
+        /// DISABLED \\\ $individual_time_assoc = $individual["time_assoc"].toList();
 
         QString $starter = "<session type=\"start\" time=\"" +
                            QVariant($time_base / 1000).toString() +
@@ -233,7 +233,8 @@ QVariant Trillian::generate(StdFormat *$log)
                            $account +
                            "\"/>";
 
-        $individual = insertRow($starter, $time_base, $individual);
+        /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+        $individual["data"] = $individual["data"].toString() + $starter;
 
         // Row tracker
         int r = 0;
@@ -270,7 +271,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                $account +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
                 // Conversation close (_evt_close)
                 if ($sender.startsWith("_evt_close"))
@@ -288,7 +290,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                QUrl::toPercentEncoding($account) +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
                 // Close off
                 else if (!$log->hasNextRow())
@@ -306,7 +309,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                QUrl::toPercentEncoding($account) +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
             }
             // Otherwise, it's a normal message...
@@ -342,7 +346,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                QUrl::toPercentEncoding($message) +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
                 // Otherwise, message sender was _with or someone else
                 else
@@ -364,7 +369,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                QUrl::toPercentEncoding($message) +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
 
                 // Close off
@@ -383,7 +389,8 @@ QVariant Trillian::generate(StdFormat *$log)
                                QUrl::toPercentEncoding($account) +
                                "\"/>";
 
-                    $individual = insertRow($content, $time_cur, $individual);
+                    /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    $individual["data"] = $individual["data"].toString() + $content;
                 }
             }
 
@@ -391,7 +398,7 @@ QVariant Trillian::generate(StdFormat *$log)
         }
 
         // Save the modified $individual
-        $individual["modtime"] = $individual["time_assoc"].toList().last().toLongLong() / 1000;
+        /// DISABLED \\\ $individual["modtime"] = $individual["time_assoc"].toList().last().toLongLong() / 1000;
         $individuals[protocol + "/Query/" + $with + ".xml"] = $individual;
 
         // Increment the entry key.
