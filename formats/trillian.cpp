@@ -182,7 +182,296 @@ void Trillian::load(QVariant $log_raw)
  */
 QVariant Trillian::generate(StdFormat *$log)
 {
-    // TODO
+    // Generated Log Container
+    QVariant $log_generated;
+    QMap<QString, QVariant>  $individuals;
+    QHash<QString, QVariant> $individual;
+    QList<QVariant>          $individual_time_assoc;
+    // Counter
+    int C = 1;
+    // Browser
+    $log->resetPointer();
+
+    while ($log->nextEntry())
+    {
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
+
+        // Trillian-ize the protocol
+        QString protocol;
+        QMap<QString, QVariant>::const_iterator i = chart.constBegin();
+        while (i != chart.constEnd())
+        {
+            if (i.value() == protocol)
+            {
+                protocol = i.key();
+            }
+            ++ i;
+        }
+        if (protocol.isEmpty())
+            protocol = $protocol.toUpper();
+
+        // Find associated individual, if existing
+        $individual = $individuals[protocol + "/Query/" + $with + ".xml"].toHash();
+        $individual_time_assoc = $individual["time_assoc"].toList();
+
+        QString $starter = "<session type=\"start\" time=\"" +
+                           QVariant($time_base / 1000).toString() +
+                           "\" ms=\"" +
+                           QVariant($time_base % 1000).toString() +
+                           "\" medium=\"" +
+                           protocol +
+                           "\" to=\"" +
+                           $with +
+                           "\" from=\"" +
+                           $account +
+                           "\"/>";
+
+        $individual = insertRow($starter, $time_base, $individual);
+
+        // Row tracker
+        int r = 0;
+
+        // Go through each chat row.
+        while ($log->nextRow())
+        {
+            // Make array items more readily accessible.
+            qint64  $time_cur    = $log->getTime();
+            int     $code        = $log->getCode();
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+            QString $message     = $log->getContent();
+            int     $precision   = $log->getPrecision();
+            int     $accuracy    = $log->getAccuracy();
+            int     $nice        = $log->getNice();
+
+            // If we're looking at a system message...
+            if ($code >= 1)
+            {
+                // Conversation open (_evt_open)
+                if ($sender.startsWith("_evt_open") && r != 0)
+                {
+                    QString $content;
+                    $content = "<session type=\"start\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               $with +
+                               "\" from=\"" +
+                               $account +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+                // Conversation close (_evt_close)
+                if ($sender.startsWith("_evt_close"))
+                {
+                    QString $content;
+                    $content = "<session type=\"stop\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               QUrl::toPercentEncoding($with) +
+                               "\" from=\"" +
+                               QUrl::toPercentEncoding($account) +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+                // Close off
+                else if (!$log->hasNextRow())
+                {
+                    QString $content;
+                    $content = "<session type=\"stop\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               QUrl::toPercentEncoding($with) +
+                               "\" from=\"" +
+                               QUrl::toPercentEncoding($account) +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+            }
+            // Otherwise, it's a normal message...
+            else
+            {
+                // Common Replacements
+                if ($sender == "_with")
+                    $sender = $with;
+                if ($sender == "_self")
+                    $sender = $account;
+                if ($alias == "_with")
+                    $alias = $with_alias;
+                if ($alias == "_self")
+                    $alias = $self_alias;
+
+                // If message sender was _self
+                if ($sender == $account)
+                {
+                    QString $content;
+                    $content = "<message type=\"outgoing_privateMessage\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               QUrl::toPercentEncoding($with) +
+                               "\" from=\"" +
+                               QUrl::toPercentEncoding($sender) +
+                               "\" from_display=\"" +
+                               QUrl::toPercentEncoding($alias) +
+                               "\" text=\"" +
+                               QUrl::toPercentEncoding($message) +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+                // Otherwise, message sender was _with or someone else
+                else
+                {
+                    QString $content;
+                    $content = "<message type=\"incoming_privateMessage\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               QUrl::toPercentEncoding($account) +
+                               "\" from=\"" +
+                               QUrl::toPercentEncoding($sender) +
+                               "\" from_display=\"" +
+                               QUrl::toPercentEncoding($alias) +
+                               "\" text=\"" +
+                               QUrl::toPercentEncoding($message) +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+
+                // Close off
+                if (!$log->hasNextRow())
+                {
+                    QString $content;
+                    $content = "<session type=\"stop\" time=\"" +
+                               QVariant($time_cur / 1000).toString() +
+                               "\" ms=\"" +
+                               QVariant($time_cur % 1000).toString() +
+                               "\" medium=\"" +
+                               protocol +
+                               "\" to=\"" +
+                               QUrl::toPercentEncoding($with) +
+                               "\" from=\"" +
+                               QUrl::toPercentEncoding($account) +
+                               "\"/>";
+
+                    $individual = insertRow($content, $time_cur, $individual);
+                }
+            }
+
+            r ++;
+        }
+
+        // Save the modified $individual
+        $individual["modtime"] = $individual["time_assoc"].toList().last().toLongLong() / 1000;
+        $individuals[protocol + "/Query/" + $with + ".xml"] = $individual;
+
+        // Increment the entry key.
+        C++;
+        // Update the progress bar.
+        updateProgress((40 * C / total) + 50, "Converted " + QVariant(C).toString() + "/" + QVariant(total).toString() + " files...");
+    }
+
+    // Return
+    $log_generated = $individuals;
+    return $log_generated;
+}
+
+/**
+ * TRILLIAN_CUSTOM: Find Insert Line
+ */
+int Trillian::findInsertLine(qint64 time, QVariantList assoc)
+{
+    for (int i = 0; i < assoc.size(); i ++)
+    {
+        if (time > assoc[i].toLongLong())
+            return i;
+    }
+    return 0;
+}
+
+/**
+ * TRILLIAN_CUSTOM: Do Insert Line
+ */
+QString Trillian::insertLine(int line, QString text, QString toInsert)
+{
+    QStringList split = text.split("\n");
+    split.insert(line, toInsert);
+    text = split.join("\n");
+
+    return text;
+}
+
+/**
+ * TRILLIAN_CUSTOM: Insert Entry Row
+ */
+QVariantHash Trillian::insertRow(QString text, qint64 time, QVariantHash individual)
+{
+    QVariantList individual_time_assoc = individual["time_assoc"].toList();
+    int line = findInsertLine(time, individual_time_assoc);
+    QString newText = insertLine(line, individual["data"].toString(), text);
+    individual_time_assoc.insert(line, time);
+    individual["data"] = newText;
+    individual["time_assoc"] = individual_time_assoc;
+
+    return individual;
+}
+
+/**
+ * HELPER: Modulus for a Very Large Number
+ */
+int Trillian::modulus(qint64 dividend, int divisor)
+{
+    QString dividend_string = QVariant(dividend).toString();
+    QString divisor_string  = QVariant(divisor) .toString();
+    int     chunk_size      = divisor_string.length() + 1;
+    int     position        = 0;
+    int     modulus         = dividend;
+
+    while (dividend_string.length() > 0)
+    {
+        QString part = dividend_string.mid(position, chunk_size);
+        int part_int = part.toInt();
+        int part_mod = part_int % divisor;
+
+        dividend_string = dividend_string.mid(position);
+        position += chunk_size;
+
+        if (dividend_string.length() > 0)
+            dividend_string.append(QVariant(part_mod).toString());
+        else
+            modulus = part_mod;
+    }
+
+    return modulus;
 }
 
 /**

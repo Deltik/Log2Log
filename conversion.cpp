@@ -216,6 +216,9 @@ void Conversion::save()
         // Compatibility: If info["data"] actually has the file contents
         if (content.isNull())
             content = info["data"];
+        // Compatibility: If info["text"] actually has the file contents
+        if (content.isNull())
+            content = info["text"];
         // Compatibility: If just QVariant value is the file contents
         if (content.isNull())
             content = value;

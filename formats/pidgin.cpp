@@ -24,6 +24,8 @@
 
 /**
  * TODO: THIS FORMAT CONVERTER IS INCOMPLETE. List of incomplete features:
+ *  - Time Precision
+ *  - Timezones
  *  - Group Chat
  *  - File Transfers
  *  - /me
@@ -526,10 +528,14 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
     // One last check for backwards time travel...
     if (!matchedDate)
     {
+        time_sum = -time_proc.msecsTo(QTime()) +
+                   QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base)
+                                         .toString("yyyy/MM/dd"),
+                                         "yyyy/MM/dd").toMSecsSinceEpoch();
         QDateTime comparer = QDateTime::fromMSecsSinceEpoch($time_base);
         // If the new time is before $time_base, advance to the next day
         // (+86400000 milliseconds) (24 hours).
-        if (-comparer.time().msecsTo(QTime()) > -time_proc.msecsTo(QTime()))
+        if (comparer > QDateTime::fromMSecsSinceEpoch(time_sum))
         {
             time_sum += 86400000;
         }
@@ -648,8 +654,13 @@ QVariant Pidgin::generate(StdFormat *$log)
             QString $sender_color;
 
             // Timestamp (hh:mm:ss [AP])
-            QString $timestamp = QDateTime::fromMSecsSinceEpoch($time_cur)
-                                 .toString("hh:mm:ss"+$autoAP);
+            QString $timestamp;
+            if ($precision == 2)
+                $timestamp = QDateTime::fromMSecsSinceEpoch($time_cur)
+                                     .toString("hh:mm"+$autoAP);
+            else
+                $timestamp = QDateTime::fromMSecsSinceEpoch($time_cur)
+                                     .toString("hh:mm:ss"+$autoAP);
             if (QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base).toString("yyyy/MM/dd")
                                       , "yyyy/MM/dd").toMSecsSinceEpoch() !=
                 QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_cur).toString("yyyy/MM/dd")
