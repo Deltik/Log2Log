@@ -219,6 +219,7 @@ QVariant Trillian::generate(StdFormat *$log)
 
         // Find associated individual, if existing
         $individual = $individuals[protocol + "/Query/" + $with + ".xml"].toHash();
+        QString content = $individual["data"].toString();
         /// DISABLED \\\ $individual_time_assoc = $individual["time_assoc"].toList();
 
         QString $starter = "<session type=\"start\" time=\"" +
@@ -234,7 +235,7 @@ QVariant Trillian::generate(StdFormat *$log)
                            "\"/>";
 
         /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-        $individual["data"] = $individual["data"].toString() + $starter;
+        content += $starter;
 
         // Row tracker
         int r = 0;
@@ -251,6 +252,10 @@ QVariant Trillian::generate(StdFormat *$log)
             int     $precision   = $log->getPrecision();
             int     $accuracy    = $log->getAccuracy();
             int     $nice        = $log->getNice();
+
+            // Auto line break
+            if (!content.endsWith("\n"))
+                content += "\n";
 
             // If we're looking at a system message...
             if ($code >= 1)
@@ -272,7 +277,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
                 // Conversation close (_evt_close)
                 if ($sender.startsWith("_evt_close"))
@@ -291,7 +296,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
                 // Close off
                 else if (!$log->hasNextRow())
@@ -310,7 +315,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
             }
             // Otherwise, it's a normal message...
@@ -347,7 +352,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
                 // Otherwise, message sender was _with or someone else
                 else
@@ -370,7 +375,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
 
                 // Close off
@@ -390,7 +395,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
-                    $individual["data"] = $individual["data"].toString() + $content;
+                    content += $content;
                 }
             }
 
@@ -399,6 +404,7 @@ QVariant Trillian::generate(StdFormat *$log)
 
         // Save the modified $individual
         /// DISABLED \\\ $individual["modtime"] = $individual["time_assoc"].toList().last().toLongLong() / 1000;
+        $individual["data"] = content;
         $individuals[protocol + "/Query/" + $with + ".xml"] = $individual;
 
         // Increment the entry key.
