@@ -235,6 +235,7 @@ QVariant Trillian::generate(StdFormat *$log)
                            "\"/>";
 
         /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+        autoLineBreak(&content);
         content += $starter;
 
         // Row tracker
@@ -277,6 +278,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
                 // Conversation close (_evt_close)
@@ -296,6 +298,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
                 // Close off
@@ -315,6 +318,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
             }
@@ -352,6 +356,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
                 // Otherwise, message sender was _with or someone else
@@ -375,6 +380,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
 
@@ -395,6 +401,7 @@ QVariant Trillian::generate(StdFormat *$log)
                                "\"/>";
 
                     /// DISABLED \\\ $individual = insertRow($content, $time_cur, $individual);
+                    autoLineBreak(&content);
                     content += $content;
                 }
             }
@@ -485,6 +492,15 @@ int Trillian::modulus(qint64 dividend, int divisor)
     }
 
     return modulus;
+}
+
+/**
+ * TRILLIAN_CUSTOM: Automatically Append Line Break
+ */
+void Trillian::autoLineBreak(QString *text)
+{
+    if (!text->endsWith("\n") && text->length() > 0)
+        text->append("\n");
 }
 
 /**

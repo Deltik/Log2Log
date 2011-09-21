@@ -47,6 +47,7 @@ private:
     int findInsertLine(qint64 time, QVariantList assoc);
     QString insertLine(int line, QString text, QString toInsert);
     QVariantHash insertRow(QString text, qint64 time, QVariantHash individual);
+    void autoLineBreak(QString* text);
     int modulus(qint64 dividend, int divisor);
 
 private:
