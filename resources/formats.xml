@@ -29,7 +29,7 @@
 		<default>~/Documents/AIMLogger</default>
 		<support>
 			<from>true</from>
-			<to>true</to>
+			<to><!--true--></to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
@@ -302,7 +302,7 @@
 		<default>~/My Received Files/YOUR_WLM_USERNAME/History</default>
 		<support>
 			<from>true</from>
-			<to>true</to>
+			<to><!--true--></to>
 			<precision>-1</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
@@ -311,7 +311,7 @@
 			<system>false</system>
 			<aliases>true</aliases>
 			<group>true</group>
-			<frominfo></frominfo>
+			<frominfo>Sender information (except the alias) is NOT stored. Log2Log cannot guess whether or not you are the sender, so your destination format will recognize the each message as someone who is not you, called "Unknown".</frominfo>
 			<toinfo></toinfo>
 		</support>
 	</format>

@@ -44,6 +44,19 @@ void Wlm::load(QVariant $log_raw)
 
     // $log_raw is WLM chat log. Create new entry.
     final->newEntry();
+    final->setSelf("_unknown_1");
+    final->setSelfAlias("Unknown");
+    final->setWith("_unknown");
+    final->setWithAlias("Unknown");
+
+    // QXmlStreamReader is a total conformist and will freak out if XML code is
+    // not exactly the way it wants. For example, QXmlStreamReader will fail to
+    // recognize <User attr="something"/>, which is a format used throughout
+    // WLM chat logs. The following code turns the example into something
+    // that will be accepted: <User attr="something"></User> .
+    QString $log_proc = $log_raw.toString();
+    $log_proc.replace("/>", "</User>");
+    $log_raw = $log_proc;
 
     // Create XML reader
     QXmlStreamReader xml($log_raw.toString());
@@ -57,6 +70,87 @@ void Wlm::load(QVariant $log_raw)
 
     int begin = xml.attributes().value("FirstSessionID").toString().toInt();
     int end   = xml.attributes().value("LastSessionID").toString().toInt();
+    int curid = begin - 1;
+
+    // Variables that are needed in the while() scope below:
+    QString userMode = "unknown";
+
+    // Read the XML file
+    while (!xml.atEnd())
+    {
+        // Read next item
+        QXmlStreamReader::TokenType token = xml.readNext();
+
+        // Looking at element beginnings...
+        if (token == QXmlStreamReader::StartElement)
+        {
+            // If entering DateTime container: <TAG DateTime="DATETIME">
+            if (xml.attributes().hasAttribute("DateTime"))
+            {
+                // Extract entry ID
+                int compare = xml.attributes().value("SessionID").toString().toInt();
+
+                // Extract that ugly Microsoft DateTime that isn't exactly ISODate
+                QString datetime_cur = xml.attributes().value("DateTime").toString();
+                QDateTime datetime_proc = QDateTime::fromString(datetime_cur, Qt::ISODate);
+
+                // If new entry
+                if (compare != curid)
+                {
+                    final->newEntry();
+                    curid = compare;
+                    final->setTime(datetime_proc.toMSecsSinceEpoch());
+                }
+
+                // Move to chat rows
+                final->newRow();
+                // Set time
+                final->setTime(datetime_proc.toMSecsSinceEpoch());
+                final->setPrecision(-1);
+
+                // Determine chat row type
+                if (xml.qualifiedName().toString() == "Message")
+                {
+                    final->setCode(0);
+                    final->setSender("_unknown");
+                }
+                if (xml.qualifiedName().toString() == "Invitation")
+                {
+                    final->setCode(1);
+                    final->setSender("_evt");
+                }
+            }
+
+            // If entering `From` identifier: <From>
+            if (xml.qualifiedName().toString() == "From")
+                userMode = "from";
+
+            // If entering `To` identifier: <To>
+            if (xml.qualifiedName().toString() == "To")
+                userMode = "to";
+
+            // If entering sender or receiver: <User>
+            if (xml.qualifiedName().toString() == "User")
+            {
+                if (userMode == "from")
+                {
+
+                    final->setAlias(xml.attributes().value("FriendlyName").toString());
+                }
+            }
+
+            // If entering message content: <Text>
+            if (xml.qualifiedName().toString() == "Text")
+            {
+                QString css = xml.attributes().value("Style").toString().trimmed();
+                if (!css.isEmpty())
+                    css = "<font style=\"" + css + "</font>";
+                // Entering: CONTENT
+                xml.readNext();
+                final->setContent(xml.text().toString());
+            }
+        }
+    }
 }
 
 /**
