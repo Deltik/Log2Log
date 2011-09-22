@@ -28,6 +28,7 @@
 Wlm::Wlm()
 {
     final = new StdFormat();
+    final->setClient("Windows Live Messenger");
 }
 
 /**
@@ -35,7 +36,27 @@ Wlm::Wlm()
  */
 void Wlm::load(QVariant $log_raw)
 {
-    // TODO
+    // If $log_raw does not contain a WLM chat log...
+    if (!$log_raw.toString().startsWith("<?xml version=\"1.0\"?>\n<?xml-stylesheet type='text/xsl' href='MessageLog.xsl'?>"))
+    {
+        return;
+    }
+
+    // $log_raw is WLM chat log. Create new entry.
+    final->newEntry();
+
+    // Create XML reader
+    QXmlStreamReader xml($log_raw.toString());
+
+    // Entering: <?xml version="1.0"?>
+    xml.readNext();
+    // Entering: <?xml-stylesheet type='text/xsl' href='MessageLog.xsl'?>
+    xml.readNext();
+    // Entering: <Log FirstSessionID="_INT" LastSessionID="_INT">
+    xml.readNext();
+
+    int begin = xml.attributes().value("FirstSessionID").toString().toInt();
+    int end   = xml.attributes().value("LastSessionID").toString().toInt();
 }
 
 /**

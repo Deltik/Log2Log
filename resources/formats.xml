@@ -189,6 +189,27 @@
 			<toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw Meebo chat logs.</toinfo>
 		</support>
 	</format>
+	<format id="minecraft">
+		<name>Minecraft Server</name>
+		<client>minecraft server</client>
+		<class>Minecraft</class>
+		<icon>:/images/services/Minecraft.png</icon>
+		<default>~/Documents/Chat Logs/Minecraft</default>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<precision>0</precision>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>true</status>
+			<system>true</system>
+			<aliases>false</aliases>
+			<group>true</group>
+			<frominfo>Requires server.log</frominfo>
+			<toinfo>This generates fake Minecraft server logs.</toinfo>
+		</support>
+	</format>
 	<format id="omegle">
 		<name>Omegle HTML</name>
 		<client>Omegle</client>

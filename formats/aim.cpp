@@ -28,6 +28,7 @@
 Aim::Aim()
 {
     final = new StdFormat();
+    final->setClient("AIM");
 }
 
 /**

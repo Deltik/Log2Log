@@ -302,7 +302,7 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     dstFI->pointerDig();
 
     // Find out what's lost in this conversion:
-    QString html = "<ul>";
+    QString html   = "<ul>";
     QString hGo    = "<span style=\"color: green;\">";
     QString hWarn  = "<li style=\"color: gold;\">";
     QString hError = "<li style=\"color: darkred;\">";
