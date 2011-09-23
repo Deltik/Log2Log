@@ -110,6 +110,11 @@ void Wlm::load(QVariant $log_raw)
                     final->setCode(1);
                     final->setSender("_evt");
                 }
+                if (xml.qualifiedName().toString() == "InvitationResponse")
+                {
+                    final->setCode(1);
+                    final->setSender("_evt");
+                }
             }
 
             // If entering `From` identifier: <From>

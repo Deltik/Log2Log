@@ -3,6 +3,7 @@
  *  Formats
  *   Meebo (files)
  *
+ * @author igordcard
  * @author Deltik
  *
  * License:
