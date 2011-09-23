@@ -45,8 +45,10 @@ Meebo::Meebo()
 void Meebo::load(QVariant $log_raw)
 {
     QString $log_refined;
+    QString $log_date;
     QStringList $log_chats;
     QStringList $log_each_item;
+    QByteArray *$log_date_bytes = new QByteArray();
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -56,23 +58,30 @@ void Meebo::load(QVariant $log_raw)
             .replace("\\0", "\0")
             .replace("\\x0B", "\x0B");
 
-    // TODO: Probably not required: "Strip the crufty slashes inside the Meebo file"
+    // Strip the crufty slashes inside the Meebo file
     $log_refined = Helper::stripslashes($log_refined);
 
-    // Trim log string
+    // Trim log string: '\t', '\n', '\v', '\f', '\r', and ' '
     $log_refined.trimmed();
 
-    // Trim extra unwanted characters
-    $log_refined.replace("\n", "").replace("\"","");
+    // Trim log string: '"'
+    $log_refined.replace(0, 1, "");
+    $log_refined.replace($log_refined.length()-1, 1, "");
+
+    // Split chat instances
+    $log_chats = $log_refined.split("<br/><hr size=1><div class='ImChatHeader'>");
+    $log_chats.removeFirst();
 
     // Retrieve Meebo log entries' start times
-    $log_chats = $log_refined.split("<br/><hr size=1><div class='ImChatHeader'>");
-
-
-    // TODO: is it necessary to discard the first $log_chats element? (AKA $log_each_raw)
     foreach(QString $log_item, $log_chats) {
+        $log_each_item.clear();
+        $log_date.clear();
+        $log_date_bytes->clear();
         $log_each_item = $log_item.split("</div><hr size=1>");
-        // TODOs
+        $log_date = $log_each_item.first();
+        // HTML entity decode
+        $log_date = QUrl::fromPercentEncoding($log_date_bytes->append($log_date.toUtf8()));
+        // TODO: standardize $log_date to time
     }
 }
 
