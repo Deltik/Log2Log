@@ -31,6 +31,7 @@
 /**
  * Constructor
  */
+
 Meebo::Meebo()
 {
     final = new StdFormat();
@@ -42,7 +43,35 @@ Meebo::Meebo()
  */
 void Meebo::load(QVariant $log_raw)
 {
-    // TODO
+    QString $log_refined;
+    QStringList $log_chats;
+    QStringList $log_each_item;
+
+    // Fix whitespace characters recognition
+    $log_refined = $log_raw.toString()
+            .replace("\"\t\"", QString((QChar)'\t'))
+            .replace("\"\n\"", QString((QChar)'\n'))
+            .replace("\"\r\"", QString((QChar)'\r'))
+            .replace("\"\0\"", QString((QChar)'\0'))
+            .replace("\"\x0B\"", QString((QChar)'\x0B'));
+
+    // TODO: Probably not required: "Strip the crufty slashes inside the Meebo file"
+
+    // Trim log string
+    $log_refined.trimmed();
+
+    // Trim extra unwanted characters
+    $log_refined.replace("\n", "").replace("\"","");
+
+    // Retrieve Meebo log entries' start times
+    $log_chats = $log_refined.split("<br/><hr size=1><div class='ImChatHeader'>");
+
+
+    // TODO: is it necessary to discard the first $log_chats element? (AKA $log_each_raw)
+    foreach(QString $log_item, $log_chats) {
+        $log_each_item = $log_item.split("</div><hr size=1>");
+        // TODOs
+    }
 }
 
 /**
