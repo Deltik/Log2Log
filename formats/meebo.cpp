@@ -49,13 +49,14 @@ void Meebo::load(QVariant $log_raw)
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
-            .replace("\"\t\"", QString((QChar)'\t'))
-            .replace("\"\n\"", QString((QChar)'\n'))
-            .replace("\"\r\"", QString((QChar)'\r'))
-            .replace("\"\0\"", QString((QChar)'\0'))
-            .replace("\"\x0B\"", QString((QChar)'\x0B'));
+            .replace("\\t", "\t")
+            .replace("\\n", "\n")
+            .replace("\\r", "\r")
+            .replace("\\0", "\0")
+            .replace("\\x0B", "\x0B");
 
     // TODO: Probably not required: "Strip the crufty slashes inside the Meebo file"
+    $log_refined = Helper::stripslashes($log_refined);
 
     // Trim log string
     $log_refined.trimmed();
