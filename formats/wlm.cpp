@@ -49,15 +49,6 @@ void Wlm::load(QVariant $log_raw)
     final->setWith("_unknown");
     final->setWithAlias("Unknown");
 
-    // QXmlStreamReader is a total conformist and will freak out if XML code is
-    // not exactly the way it wants. For example, QXmlStreamReader will fail to
-    // recognize <User attr="something"/>, which is a format used throughout
-    // WLM chat logs. The following code turns the example into something
-    // that will be accepted: <User attr="something"></User> .
-    QString $log_proc = $log_raw.toString();
-    $log_proc.replace("/>", "</User>");
-    $log_raw = $log_proc;
-
     // Create XML reader
     QXmlStreamReader xml($log_raw.toString());
 
