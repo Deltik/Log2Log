@@ -191,7 +191,7 @@
 	</format>
 	<format id="minecraft">
 		<name>Minecraft Server</name>
-		<client>minecraft server</client>
+                <client>minecraft</client>
 		<class>Minecraft</class>
 		<icon>:/images/services/Minecraft.png</icon>
 		<default>~/Documents/Chat Logs/Minecraft</default>

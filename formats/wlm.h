@@ -45,6 +45,8 @@ public slots:
 
 private:
     int total;
+    QString accountGuess;
+    QString buddyGuess;
 };
 
 #endif // WLM_H

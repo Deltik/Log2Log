@@ -44,9 +44,9 @@ void Wlm::load(QVariant $log_raw)
 
     // $log_raw is WLM chat log. Create new entry.
     final->newEntry();
-    final->setSelf("_unknown_1");
+    final->setSelf(accountGuess);
     final->setSelfAlias("Unknown");
-    final->setWith("_unknown");
+    final->setWith(buddyGuess);
     final->setWithAlias("Unknown");
 
     // Create XML reader
@@ -175,7 +175,30 @@ StdFormat* Wlm::from(QHash<QString, QVariant> data)
     while (i != list.constEnd())
     {
         QVariant $raw_item = (i.value());
-        this->load($raw_item);
+
+        /// "%CHATLOGSPATH%/My Received Files/your_username0123456789/History/buddy_username0123456789.xml"
+        QString unames_proc = i.key();
+
+        // Guess the account and buddy (not accurate)
+        accountGuess.clear();
+        buddyGuess.clear();
+        if (unames_proc.endsWith(".xml"))
+        {
+            unames_proc = QDir::fromNativeSeparators(unames_proc);
+            unames_proc.remove(unames_proc.length() - 4);
+            QStringList unames_split = unames_proc.split("/");
+            // Buddy Username
+            buddyGuess = unames_split.takeLast();
+            buddyGuess.remove(buddyGuess.length() - 10);
+            // Cruft
+            unames_split.pop_back();
+            // Account Username
+            accountGuess = unames_split.takeLast();
+            accountGuess.remove(accountGuess.length() - 10);
+
+            this->load($raw_item);
+        }
+
         c++;
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;
