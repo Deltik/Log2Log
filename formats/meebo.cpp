@@ -48,12 +48,17 @@ void Meebo::load(QVariant $log_raw)
     QString $log_date; // temporarily stores the date of a chatlog
     QStringList $log_chats; // contains all the chatlogs to be processed
     QByteArray *$log_date_bytes = new QByteArray();
-    QStringList $times_tmp; // TODO: change to a more proper type
+    QList<QDateTime> $times;
+    QDateTime $time_cur;
     QStringList $log_chat_entries;
+    QStringList $log_entry_items;
     QString $from_sep = "<span class='ImReceive'>"; // from separator
     QString $to_sep = "<span class='ImSend'>"; // to separator
+    QString $sender;
     bool $from;
     bool $to;
+    qint8 $accuracy, $specificity;
+    qint32 $count;
     //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
 
     // Fix whitespace characters recognition
@@ -84,16 +89,22 @@ void Meebo::load(QVariant $log_raw)
 
     // Retrieve Meebo log entries' start times
     foreach(QString $log_chat, $log_chats) {
+
         $log_date.clear();
         $log_date_bytes->clear();
         $log_date = $log_chat.split("</div><hr size=1>").first();
+
         // HTML entity decode
         $log_date = QUrl::fromPercentEncoding($log_date_bytes->append($log_date.toUtf8()));
+
         // TODO: standardize $log_date to time
-        $times_tmp << $log_date;
+        $times << QDateTime::fromString($log_date, "l, yyyy MMMM dd (HH:mm:ss)");
     }
 
     foreach(QString $log_chat, $log_chats) {
+
+        $time_cur = $times.first();
+
         // TODO: detection
         final->newEntry();
         final->setProtocol("meebo");
@@ -101,8 +112,7 @@ void Meebo::load(QVariant $log_raw)
         final->setSelfAlias("myself");
         final->setWith("someone");
         final->setWithAlias("someone");
-        final->setTime($times_tmp.first().toLongLong());
-        $times_tmp.removeFirst();
+        final->setTime($time_cur.toString().toLongLong());
 
         $log_chat_entries = $log_chat.split("<br/>");
 
@@ -110,7 +120,9 @@ void Meebo::load(QVariant $log_raw)
         $log_chat_entries.removeFirst();
         $log_chat_entries.removeLast();
 
+        $count = 0;
         foreach(QString $log_chat_entry, $log_chat_entries) {
+
             // check if an entry is from or to the user
             $from = $to = false;
             if($log_chat_entry.indexOf($from_sep,0) == 0) {
@@ -121,8 +133,67 @@ void Meebo::load(QVariant $log_raw)
                 $to = true;
                 $log_chat_entry = $log_chat_entry.mid($from_sep.length());
             }
-            // TODO: the rest
+
+            QRegExp re("/(\\[)((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)(\\])/is");
+            re.indexIn($log_chat_entry); // the index returned is irrelevant
+
+            // If entry contains valid Meebo chat log timestamp...
+            if(re.captureCount() == 5) { // 1 for the whole + 4 for each captured
+                $time_cur = QDateTime::fromString($time_cur.toString("dd-MMMM-YYYY"),"dd-MMMM-YYYY amAM");
+
+                // Set Log2Log Timestamp Specificity Index
+                $specificity = 2;
+                // Set Log2Log Message Content Accuracy Index
+                $accuracy = 0;
+
+                // The first Meebo chat log entry has a Log2Log Timestamp Specificity Index of 0.
+                // It is the same value as the header time.
+                if ($count == 0)
+                {
+                    $time_cur = $times.first();
+                    $specificity = 0;
+                }
+            }
+
+            // Get the sender name and get the entry message.
+            $log_entry_items = $log_chat_entry.split("</span>: ");
+            $log_entry_items.removeFirst();
+            $log_chat_entry = $log_entry_items.join("</span>: )");
+
+            // Clean up the sender's name.
+            $sender = $log_entry_items.first().replace(0, re.capturedTexts().takeAt(1).length(), "").trimmed();
+
+            // TODO: Clean up the entry message.
+            $log_chat_entry.replace("<br>", "\n", Qt::CaseInsensitive);
+            //$log_chat_entry = /*htmlspecialchars_decode(html_entity_decode(*/$log_chat_entry/*))*/;
+            $log_chat_entry.replace("&apos;", "'", Qt::CaseInsensitive);
+
+            // FINAL CONSTRUCTION
+//            $final['data'][$count]['chat'][$key1]['time'] = $time_cur;
+//            if ($from)
+//            {
+//                $final['data'][$count]['chat'][$key1]['sender'] = "_with";
+//                $final['data'][$count]['chat'][$key1]['alias'] = "_with";
+//                $this->with_alias = $sender;
+//            }
+//            else if ($to)
+//            {
+//                $final['data'][$count]['chat'][$key1]['sender'] = "_self";
+//                $final['data'][$count]['chat'][$key1]['alias'] = $sender;
+//            }
+//            else
+//            {
+//                $final['data'][$count]['chat'][$key1]['sender'] = "_unknown";
+//                $final['data'][$count]['chat'][$key1]['alias'] = "_unknown";
+//            }
+//            $final['data'][$count]['chat'][$key1]['content'] = $log_chat_entry;
+//            $final['data'][$count]['chat'][$key1]['specificity'] = $specificity;
+//            $final['data'][$count]['chat'][$key1]['accuracy'] = $accuracy;
+//            $final['data'][$count]['with_alias'] = $this->with_alias;
+            /*********************/
         }
+        $count++;
+        $times.removeFirst();
     }
 }
 
