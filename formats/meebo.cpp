@@ -101,6 +101,7 @@ void Meebo::load(QVariant $log_raw)
         $times << QDateTime::fromString($log_date, "l, yyyy MMMM dd (HH:mm:ss)");
     }
 
+    // Go through all the Meebo chatlogs
     foreach(QString $log_chat, $log_chats) {
 
         $time_cur = $times.first();
@@ -141,7 +142,7 @@ void Meebo::load(QVariant $log_raw)
             if(re.captureCount() == 5) { // 1 for the whole + 4 for each captured
                 $time_cur = QDateTime::fromString($time_cur.toString("dd-MMMM-YYYY"),"dd-MMMM-YYYY amAM");
 
-                // Set Log2Log Timestamp Specificity Index
+                // Set Log2Log Timestamp Spezcificity Index
                 $specificity = 2;
                 // Set Log2Log Message Content Accuracy Index
                 $accuracy = 0;
@@ -169,30 +170,31 @@ void Meebo::load(QVariant $log_raw)
             $log_chat_entry.replace("&apos;", "'", Qt::CaseInsensitive);
 
             // FINAL CONSTRUCTION
-//            $final['data'][$count]['chat'][$key1]['time'] = $time_cur;
-//            if ($from)
-//            {
-//                $final['data'][$count]['chat'][$key1]['sender'] = "_with";
-//                $final['data'][$count]['chat'][$key1]['alias'] = "_with";
-//                $this->with_alias = $sender;
-//            }
-//            else if ($to)
-//            {
-//                $final['data'][$count]['chat'][$key1]['sender'] = "_self";
-//                $final['data'][$count]['chat'][$key1]['alias'] = $sender;
-//            }
-//            else
-//            {
-//                $final['data'][$count]['chat'][$key1]['sender'] = "_unknown";
-//                $final['data'][$count]['chat'][$key1]['alias'] = "_unknown";
-//            }
-//            $final['data'][$count]['chat'][$key1]['content'] = $log_chat_entry;
-//            $final['data'][$count]['chat'][$key1]['specificity'] = $specificity;
-//            $final['data'][$count]['chat'][$key1]['accuracy'] = $accuracy;
-//            $final['data'][$count]['with_alias'] = $this->with_alias;
-            /*********************/
+            final->newRow();
+            final->setCode(0);
+            final->setTime($time_cur.toString().toLongLong());
+            if ($from)
+            {
+                final->setSender($sender);
+                final->setAlias($sender); //TODO
+            }
+            else if ($to)
+            {
+                final->setSender("myself"); //TODO
+                final->setAlias("someone"); //TODO
+            }
+            else
+            {
+                final->setSender("_unknown"); //TODO
+                final->setAlias("_unknown"); //TODO
+            }
+            final->setContent($log_chat_entry);
+            final->setPrecision($specificity); //TODO IS THIS ONE?
+            final->setAccuracy($accuracy);
+            final->setWithAlias("with_alias"); //TODO
+
+            $count++;
         }
-        $count++;
         $times.removeFirst();
     }
 }
