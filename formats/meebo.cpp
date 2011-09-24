@@ -44,11 +44,17 @@ Meebo::Meebo()
  */
 void Meebo::load(QVariant $log_raw)
 {
-    QString $log_refined;
-    QString $log_date;
-    QStringList $log_chats;
-    QStringList $log_each_item;
+    QString $log_refined; // whitespace fixed and trimmed version of $log_raw
+    QString $log_date; // temporarily stores the date of a chatlog
+    QStringList $log_chats; // contains all the chatlogs to be processed
     QByteArray *$log_date_bytes = new QByteArray();
+    QStringList $times_tmp; // TODO: change to a more proper type
+    QStringList $log_chat_entries;
+    QString $from_sep = "<span class='ImReceive'>"; // from separator
+    QString $to_sep = "<span class='ImSend'>"; // to separator
+    bool $from;
+    bool $to;
+    //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -72,16 +78,51 @@ void Meebo::load(QVariant $log_raw)
     $log_chats = $log_refined.split("<br/><hr size=1><div class='ImChatHeader'>");
     $log_chats.removeFirst();
 
+    // If there are no Meebo Chat Logs
+    if($log_chats.size() == 0)
+        return;
+
     // Retrieve Meebo log entries' start times
-    foreach(QString $log_item, $log_chats) {
-        $log_each_item.clear();
+    foreach(QString $log_chat, $log_chats) {
         $log_date.clear();
         $log_date_bytes->clear();
-        $log_each_item = $log_item.split("</div><hr size=1>");
-        $log_date = $log_each_item.first();
+        $log_date = $log_chat.split("</div><hr size=1>").first();
         // HTML entity decode
         $log_date = QUrl::fromPercentEncoding($log_date_bytes->append($log_date.toUtf8()));
         // TODO: standardize $log_date to time
+        $times_tmp << $log_date;
+    }
+
+    foreach(QString $log_chat, $log_chats) {
+        // TODO: detection
+        final->newEntry();
+        final->setProtocol("meebo");
+        final->setSelf("myself");
+        final->setSelfAlias("myself");
+        final->setWith("someone");
+        final->setWithAlias("someone");
+        final->setTime($times_tmp.first().toLongLong());
+        $times_tmp.removeFirst();
+
+        $log_chat_entries = $log_chat.split("<br/>");
+
+        // invalid entries
+        $log_chat_entries.removeFirst();
+        $log_chat_entries.removeLast();
+
+        foreach(QString $log_chat_entry, $log_chat_entries) {
+            // check if an entry is from or to the user
+            $from = $to = false;
+            if($log_chat_entry.indexOf($from_sep,0) == 0) {
+                $from = true;
+                $log_chat_entry = $log_chat_entry.mid($from_sep.length());
+            }
+            else if($log_chat_entry.indexOf($to_sep,0) == 0) {
+                $to = true;
+                $log_chat_entry = $log_chat_entry.mid($from_sep.length());
+            }
+            // TODO: the rest
+        }
     }
 }
 
