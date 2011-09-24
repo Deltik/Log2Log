@@ -63,6 +63,27 @@
 			<toinfo>This is a specialized format invented by Deltik to create readable yet detailed chat logs.</toinfo>
 		</support>
 	</format>
+	<format id="facebook">
+		<name>Facebook Messages (download)</name>
+		<client>Facebook</client>
+		<class>Facebook</class>
+		<icon>:/images/services/Facebook.png</icon>
+		<default>~/Documents/Chat Logs/Facebook</default>
+		<support>
+			<from>true</from>
+			<to>false</to>
+			<precision>0</precision>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>true</group>
+			<frominfo>Sign into Facebook</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
 	<format id="gchat">
 		<name>Gmail Chats (download)</name>
 		<client>Gmail</client>
