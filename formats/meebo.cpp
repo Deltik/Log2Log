@@ -52,6 +52,7 @@ void Meebo::load(QVariant $log_raw)
     QDateTime $time_cur;
     QStringList $log_chat_entries;
     QStringList $log_entry_items;
+    QString $chat_sep = "<br/><hr size=1><div class='ImChatHeader'>"; // chat instance separator
     QString $from_sep = "<span class='ImReceive'>"; // from separator
     QString $to_sep = "<span class='ImSend'>"; // to separator
     QString $sender;
@@ -60,6 +61,8 @@ void Meebo::load(QVariant $log_raw)
     qint8 $accuracy, $specificity;
     qint32 $count;
     //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
+
+    qDebug()<<"CAME 3";
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -80,12 +83,16 @@ void Meebo::load(QVariant $log_raw)
     $log_refined.replace($log_refined.length()-1, 1, "");
 
     // Split chat instances
-    $log_chats = $log_refined.split("<br/><hr size=1><div class='ImChatHeader'>");
+    $log_chats = $log_refined.split($chat_sep);
     $log_chats.removeFirst();
+
+    qDebug()<<"CAME 4";
 
     // If there are no Meebo Chat Logs
     if($log_chats.size() == 0)
         return;
+
+    qDebug()<<"CAME 5";
 
     // Retrieve Meebo log entries' start times
     foreach(QString $log_chat, $log_chats) {
@@ -204,6 +211,29 @@ void Meebo::load(QVariant $log_raw)
  */
 QVariant Meebo::generate(StdFormat *$log)
 {
+    // Generated Log Container
+    QVariant $log_generated;
+    QMap<QString, QVariant> $log_new;
+    QHash<QString, QVariant> $info;
+    // Counter
+    int $i = 1;
+    // Browser
+    $log->resetPointer();
+
+    while ($log->nextEntry())
+    {
+        // Chat log header
+        QString $content = "<br/><hr size=1><div class='ImChatHeader'>";
+
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
+    }
     // TODO
 }
 
