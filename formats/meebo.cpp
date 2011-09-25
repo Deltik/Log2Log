@@ -285,11 +285,9 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
         filepath = path_parts.join(".");
         // Get Log2Log Meebo metadata
         path_parts = filepath.split("|");
-        QString account  = path_parts[0];
-        // Fix whitespace
-        account.replace(0,1,"");
-        QString protocol = path_parts[1];
-        QString with     = path_parts[2];
+        QString account  = path_parts[0].trimmed();
+        QString protocol = path_parts[1].trimmed();
+        QString with     = path_parts[2].trimmed();
 
         // Set metadata
         this->setAccount(account);
