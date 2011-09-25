@@ -37,6 +37,7 @@ Meebo::Meebo()
 {
     final = new StdFormat();
     final->setClient("Meebo");
+    qDebug()<<"CONSTRUCTED";
 }
 
 /**
@@ -44,6 +45,7 @@ Meebo::Meebo()
  */
 void Meebo::load(QVariant $log_raw)
 {
+    qDebug()<<"CAME 0";
     QString $log_refined; // whitespace fixed and trimmed version of $log_raw
     QString $log_date; // temporarily stores the date of a chatlog
     QStringList $log_chats; // contains all the chatlogs to be processed
@@ -61,8 +63,9 @@ void Meebo::load(QVariant $log_raw)
     qint8 $accuracy, $specificity;
     qint32 $count;
     //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
-
-    qDebug()<<"CAME 3";
+    //DEBUG
+    QString $test;
+    qDebug()<<"CAME 1";
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -86,7 +89,7 @@ void Meebo::load(QVariant $log_raw)
     $log_chats = $log_refined.split($chat_sep);
     $log_chats.removeFirst();
 
-    qDebug()<<"CAME 4";
+    qDebug()<<"CAME 3";
 
     // If there are no Meebo Chat Logs
     if($log_chats.size() == 0)
@@ -108,6 +111,8 @@ void Meebo::load(QVariant $log_raw)
         $times << QDateTime::fromString($log_date, "l, yyyy MMMM dd (HH:mm:ss)");
     }
 
+    qDebug()<<"CAME 7";
+
     // Go through all the Meebo chatlogs
     foreach(QString $log_chat, $log_chats) {
 
@@ -122,34 +127,50 @@ void Meebo::load(QVariant $log_raw)
         final->setWithAlias("someone");
         final->setTime($time_cur.toString().toLongLong());
 
-        $log_chat_entries = $log_chat.split("<br/>");
+        $log_chat_entries = $log_chat.split("<br/>\n");
 
         // invalid entries
         $log_chat_entries.removeFirst();
         $log_chat_entries.removeLast();
 
+        qDebug()<<"CAME 9";
+
         $count = 0;
         foreach(QString $log_chat_entry, $log_chat_entries) {
 
+            $log_chat_entry.replace("\n","");
+
             // check if an entry is from or to the user
             $from = $to = false;
+//            qDebug() << "ENTRY: "+$log_chat_entry;
+//            qDebug() << "SEPAR: "+$from_sep;
             if($log_chat_entry.indexOf($from_sep,0) == 0) {
                 $from = true;
                 $log_chat_entry = $log_chat_entry.mid($from_sep.length());
             }
             else if($log_chat_entry.indexOf($to_sep,0) == 0) {
                 $to = true;
-                $log_chat_entry = $log_chat_entry.mid($from_sep.length());
+                $log_chat_entry = $log_chat_entry.mid($to_sep.length());
             }
-
-            QRegExp re("/(\\[)((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)(\\])/is");
-            re.indexIn($log_chat_entry); // the index returned is irrelevant
+            qDebug() << "ENTRY: "+$log_chat_entry;
+            //QRegExp re("/(\\[)((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)(\\])/is");
+            //QRegExp re("\[((1[0-9])|(2[0-3]):[0-5][0-9]\]/)[\S" "][\S" "]*");
+            QRegExp re("\\[((1[0-9])|(2[0-3]):[0-5][0-9]\\]/)[\\S" "][\\S" "]*");
+            qDebug() << "INDEX: " << re.indexIn($log_chat_entry);
+            //$test = "[17:46] deltik</span>: Hi, Al.";
+            //qDebug() << "INDEX: " << re.indexIn($test);
+            if(re.indexIn($log_chat_entry) < 0)
+                return;
 
             // If entry contains valid Meebo chat log timestamp...
-            if(re.captureCount() == 5) { // 1 for the whole + 4 for each captured
+            //qDebug() << "CAPTURES: " << re.captureCount();
+            if(re.captureCount() == 3) { // 1 for the whole + 3 for each captured
                 $time_cur = QDateTime::fromString($time_cur.toString("dd-MMMM-YYYY"),"dd-MMMM-YYYY amAM");
-
-                // Set Log2Log Timestamp Spezcificity Index
+                qDebug() << "TIME: "+$time_cur.toString("dd-MMMM-YYYY");
+                qDebug() << "TAKEAT 0 " << re.capturedTexts().takeAt(0);
+                qDebug() << "TAKEAT 1 " << re.capturedTexts().takeAt(1);
+                qDebug() << "TAKEAT 2 " << re.capturedTexts().takeAt(2);
+                // Set Log2Log Timestamp Specificity Index
                 $specificity = 2;
                 // Set Log2Log Message Content Accuracy Index
                 $accuracy = 0;
@@ -163,9 +184,11 @@ void Meebo::load(QVariant $log_raw)
                 }
             }
 
+            qDebug()<<"CAME 11";
+
             // Get the sender name and get the entry message.
             $log_entry_items = $log_chat_entry.split("</span>: ");
-            $log_entry_items.removeFirst();
+            //$log_entry_items.removeFirst(); // seems to not be required
             $log_chat_entry = $log_entry_items.join("</span>: )");
 
             // Clean up the sender's name.
@@ -188,7 +211,7 @@ void Meebo::load(QVariant $log_raw)
             else if ($to)
             {
                 final->setSender("myself"); //TODO
-                final->setAlias("someone"); //TODO
+                final->setAlias("myself_alias"); //TODO
             }
             else
             {
@@ -202,8 +225,10 @@ void Meebo::load(QVariant $log_raw)
 
             $count++;
         }
+        qDebug()<<"CAME 13";
         $times.removeFirst();
     }
+    qDebug()<<"CAME 15";
 }
 
 /**
