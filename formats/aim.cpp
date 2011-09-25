@@ -36,6 +36,49 @@ Aim::Aim()
  */
 void Aim::load(QVariant $log_raw)
 {
+    // If $log_raw does not contain an AIM chat log...
+    if (!$log_raw.toString().startsWith("<?xml version=\"1.0\" standalone=\"yes\" encoding=\"UTF-8\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html>\n<head>\n<meta http-equiv=\"content-type\" content=\"application/xhtml+xml;charset=utf-8\"/>\n<title>IM History with buddy "))
+    {
+        return;
+    }
+
+    // Import the chat log.
+    QString $log_proc = $log_raw.toString();
+
+    // Remove cruft that will interfere with QXmlStreamReader.
+    QStringList $log_split = $log_proc.split("</head>");
+    $log_split.pop_front();
+    $log_proc = $log_split.join("</head>");
+    $log_proc.replace("</body></html>", "</body>");
+
+    // Get _self and _with
+    QString $self, $with;
+    // Non-group chat (_self and _with defined)
+    if ($log_proc.contains("<a href=\"aim:goim?screenName="))
+    {
+        QString $users_proc = $log_proc;
+        QStringList $users_split = $users_proc.split("<a href=\"aim:goim?screenName=");
+        $users_split.pop_front();
+        $users_proc = $users_split.join("<a href=\"aim:goim?screenName=");
+        $users_split = $users_proc.split("&targetBuddyList=");
+        $with = $users_split.takeFirst();
+        $users_proc = $users_split.join("&targetBuddyList");
+        $users_split = $users_proc.split("\">");
+        $self = $users_split.takeFirst();
+    }
+    // Group chat (sorry; there's no _with information)
+    else
+    {
+        $self = accountGuess;
+        $with = buddyGuess;
+    }
+
+    // Create HTML reader
+    QXmlStreamReader xml($log_raw.toString());
+
+    // $log_raw is AIM chat log. Create new entry.
+    final->newEntry();
+
     // TODO
 }
 
@@ -65,7 +108,32 @@ StdFormat* Aim::from(QHash<QString, QVariant> data)
     while (i != list.constEnd())
     {
         QVariant $raw_item = (i.value());
-        this->load($raw_item);
+
+        /// "%PATHUPTOAIMLOGGER%/AIMLogger/your_username/IM Logs/buddy_username.html"
+        QString unames_proc = i.key();
+
+        // Guess the account and buddy (not accurate)
+        accountGuess.clear();
+        buddyGuess.clear();
+        if (unames_proc.endsWith(".html"))
+        {
+            unames_proc = QDir::fromNativeSeparators(unames_proc);
+            unames_proc.remove(unames_proc.length() - 4);
+            QStringList unames_split = unames_proc.split("/");
+            // Buddy Username
+            buddyGuess = unames_split.takeLast();
+            buddyGuess.remove(buddyGuess.length() - 10);
+            if (buddyGuess.startsWith("conf-"))
+                buddyGuess = "_group";
+            // Cruft
+            unames_split.pop_back();
+            // Account Username
+            accountGuess = unames_split.takeLast();
+            accountGuess.remove(accountGuess.length() - 10);
+
+            this->load($raw_item);
+        }
+
         c++;
         updateProgress((40 * c / list.count()) + 10, "Interpreted " + QVariant(c).toString() + "/" + QVariant(list.count()).toString() + " files...");
         i ++;

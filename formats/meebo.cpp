@@ -293,6 +293,9 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
 
         // Get file path
         QString filepath = i.key();
+        // Remove directory path
+        QStringList dirs_parts = QDir::fromNativeSeparators(filepath).split("/");
+        QString filepath = dirs_parts.takeLast();
         // Remove file extension
         QStringList path_parts = filepath.split(".");
         path_parts.pop_back();
