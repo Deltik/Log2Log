@@ -37,7 +37,6 @@ Meebo::Meebo()
 {
     final = new StdFormat();
     final->setClient("Meebo");
-    qDebug()<<"CONSTRUCTED";
 }
 
 /**
@@ -45,25 +44,26 @@ Meebo::Meebo()
  */
 void Meebo::load(QVariant $log_raw)
 {
-    qDebug()<<"CAME 0";
     QString $log_refined; // whitespace fixed and trimmed version of $log_raw
     QString $log_date; // temporarily stores the date of a chatlog
-    QStringList $log_chats; // contains all the chatlogs to be processed
+    QStringList $log_entries; // contains all the chatlogs to be processed
     QByteArray *$log_date_bytes = new QByteArray();
     QList<QDateTime> $times;
     QDateTime $time_cur;
-    QStringList $log_chat_entries;
-    QStringList $log_entry_items;
+    QStringList $log_chatrows;
+    //QStringList $log_entry_items;
     QString $chat_sep = "<br/><hr size=1><div class='ImChatHeader'>"; // chat instance separator
-    QString $from_sep = "<span class='ImReceive'>"; // from separator
-    QString $to_sep = "<span class='ImSend'>"; // to separator
+    QString $rece_sep = "<span class='ImReceive'>"; // from separator
+    QString $send_sep = "<span class='ImSend'>"; // to separator
     QString $sender;
-    bool $from;
-    bool $to;
+    QString $message;
+    QTextEdit $htmldecoder; // workaround
+    bool $rece, $send;
+    bool $self_set, $with_set;
     qint8 $accuracy, $specificity;
     qint32 $count;
-    //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
-    qDebug()<<"CAME 1";
+    //QString $log_entry : contains a chat log to be processed (inside foreach)
+    // QString $log_chatrow : contains a chat log entry to be processed (inside foreach)
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -84,142 +84,133 @@ void Meebo::load(QVariant $log_raw)
     $log_refined.replace($log_refined.length()-1, 1, "");
 
     // Split chat instances
-    $log_chats = $log_refined.split($chat_sep);
-    $log_chats.removeFirst();
-
-    qDebug()<<"CAME 3";
+    $log_entries = $log_refined.split($chat_sep);
+    $log_entries.removeFirst();
 
     // If there are no Meebo Chat Logs
-    if($log_chats.size() == 0)
+    if($log_entries.size() == 0)
         return;
 
-    qDebug()<<"CAME 5";
-
     // Retrieve Meebo log entries' start times
-    foreach(QString $log_chat, $log_chats) {
+    foreach(QString $log_entry, $log_entries) {
 
         $log_date.clear();
         $log_date_bytes->clear();
-        $log_date = $log_chat.split("</div><hr size=1>").first();
+        $log_date = $log_entry.split("</div><hr size=1>").first();
 
         // HTML entity decode
-        $log_date = QUrl::fromPercentEncoding($log_date_bytes->append($log_date.toUtf8()));
+        $htmldecoder.setHtml($log_date);
+        $log_date = $htmldecoder.toPlainText();
 
-        // TODO: standardize $log_date to time
-        $times << QDateTime::fromString($log_date, "l, yyyy MMMM dd (HH:mm:ss)");
+        // Remove the week day to ease conversion
+        $log_date.replace(0,($log_date.indexOf(" ")+1),"");
+
+        // Standardize (convert) $log_date to QDateTime
+        $times << QDateTime::fromString($log_date, "yyyy MMMM dd (HH:mm:ss)");
     }
 
-    qDebug()<<"CAME 7";
-
     // Go through all the Meebo chatlogs
-    foreach(QString $log_chat, $log_chats) {
+    foreach(QString $log_entry, $log_entries) {
 
+        $self_set = $with_set = false;
         $time_cur = $times.first();
 
         // TODO: detection
         final->newEntry();
-        final->setProtocol("meebo");
-        final->setSelf("myself");
-        final->setSelfAlias("myself");
-        final->setWith("someone");
-        final->setWithAlias("someone");
-        final->setTime($time_cur.toString().toLongLong());
+        final->setProtocol($protocol);
+        qDebug()  << "PROTO: " << final->getProtocol();
+        final->setSelf($account);
+        qDebug()  << "SELF: " << final->getSelf();
+        final->setSelfAlias($account);
+        final->setWith($with);
+        qDebug()  << "WITH: " << final->getWith();
+        final->setWithAlias($with);
+        final->setTime($time_cur.toMSecsSinceEpoch());
 
-        $log_chat_entries = $log_chat.split("<br/>\n");
+        $log_chatrows = $log_entry.split("<br/>\n");
 
         // invalid entries
-        $log_chat_entries.removeFirst();
-        $log_chat_entries.removeLast();
-
-        qDebug()<<"CAME 9";
+        $log_chatrows.removeFirst();
+        $log_chatrows.removeLast();
 
         $count = 0;
-        foreach(QString $log_chat_entry, $log_chat_entries) {
+        foreach(QString $log_chatrow, $log_chatrows) {
 
-            $log_chat_entry.replace("\n","");
+            $log_chatrow.replace("\n","");
 
             // check if an entry is from or to the user
-            $from = $to = false;
-//            qDebug() << "ENTRY: "+$log_chat_entry;
-//            qDebug() << "SEPAR: "+$from_sep;
-            if($log_chat_entry.indexOf($from_sep,0) == 0) {
-                $from = true;
-                $log_chat_entry = $log_chat_entry.mid($from_sep.length());
+            $rece = $send = false;
+            if($log_chatrow.indexOf($rece_sep,0) == 0) {
+                $rece = true;
+                $log_chatrow = $log_chatrow.mid($rece_sep.length());
             }
-            else if($log_chat_entry.indexOf($to_sep,0) == 0) {
-                $to = true;
-                $log_chat_entry = $log_chat_entry.mid($to_sep.length());
+            else if($log_chatrow.indexOf($send_sep,0) == 0) {
+                $send = true;
+                $log_chatrow = $log_chatrow.mid($send_sep.length());
             }
-            //qDebug() << "ENTRY: "+$log_chat_entry;
+
             QRegExp re("^\\[(([0-1][0-9]|[2][0-3]):([0-5][0-9]))\\] ([\\S ]+)</span>: ([\\S ]*)$");
-            //qDebug() << "INDEX: " << re.indexIn($log_chat_entry);
-            if(re.indexIn($log_chat_entry) < 0)
+            if(re.indexIn($log_chatrow) < 0)
                 return;
 
-            qDebug() << "CAPTURES: " << re.captureCount();
             // If entry contains valid Meebo chat log timestamp...
-            if(re.captureCount() == 5) { // consult the documentation at the end of the file
-                $time_cur = QDateTime::fromString($time_cur.toString("dd-MMMM-YYYY"),"dd-MMMM-YYYY amAM");
-                qDebug() << "TIME: "+$time_cur.toString("dd-MMMM-YYYY");
-                // Set Log2Log Timestamp Specificity Index
-                $specificity = 2;
-                // Set Log2Log Message Content Accuracy Index
-                $accuracy = 0;
+            if(re.captureCount() != 5) // consult the documentation at the end of the file
+                return;
 
-                // The first Meebo chat log entry has a Log2Log Timestamp Specificity Index of 0.
-                // It is the same value as the header time.
-                if ($count == 0)
-                {
-                    $time_cur = $times.first();
-                    $specificity = 0;
-                }
+            // Set the time of the current entry
+            $time_cur.setTime(QTime::fromString(re.capturedTexts().takeAt(1),"HH:mm"));
+
+            // Set Log2Log Timestamp Specificity Index
+            $specificity = 2;
+            // Set Log2Log Message Content Accuracy Index
+            $accuracy = 0;
+
+            // The first Meebo chat log entry has a Log2Log Timestamp Specificity Index of 0.
+            // It is the same value as the header time.
+            if ($count == 0)
+            {
+                $time_cur = $times.first();
+                $specificity = 0;
             }
 
-            qDebug()<<"CAME 11";
+//            // Get the sender name and get the entry message.
+//            $log_entry_items = $log_chatrow.split("</span>: ");
+//            //$log_entry_items.removeFirst(); // seems to not be required
+//            $log_chatrow = $log_entry_items.join("</span>: )");
 
-            // Get the sender name and get the entry message.
-            $log_entry_items = $log_chat_entry.split("</span>: ");
-            //$log_entry_items.removeFirst(); // seems to not be required
-            $log_chat_entry = $log_entry_items.join("</span>: )");
+//            // Clean up the sender's name.
+//            $sender = $log_entry_items.first().replace(0, re.capturedTexts().takeAt(4).length(), "").trimmed();
 
-            // Clean up the sender's name.
-            $sender = $log_entry_items.first().replace(0, re.capturedTexts().takeAt(1).length(), "").trimmed();
+            // TODO: Clean up the sender's name.
+            $sender = re.capturedTexts().takeAt(4);
 
             // TODO: Clean up the entry message.
-            $log_chat_entry.replace("<br>", "\n", Qt::CaseInsensitive);
-            //$log_chat_entry = /*htmlspecialchars_decode(html_entity_decode(*/$log_chat_entry/*))*/;
-            $log_chat_entry.replace("&apos;", "'", Qt::CaseInsensitive);
+            $message = re.capturedTexts().takeAt(5);
+
+//            // TODO: Clean up the entry message.
+//            $log_chatrow.replace("<br>", "\n");
+//            //$log_chatrow = /*htmlspecialchars_decode(html_entity_decode(*/$log_chatrow/*))*/;
+//            $log_chatrow.replace("&apos;", "'");
 
             // FINAL CONSTRUCTION
             final->newRow();
             final->setCode(0);
-            final->setTime($time_cur.toString().toLongLong());
-            if ($from)
-            {
-                final->setSender($sender);
-                final->setAlias($sender); //TODO
-            }
-            else if ($to)
-            {
-                final->setSender("myself"); //TODO
-                final->setAlias("myself_alias"); //TODO
-            }
-            else
-            {
-                final->setSender("_unknown"); //TODO
-                final->setAlias("_unknown"); //TODO
-            }
-            final->setContent($log_chat_entry);
-            final->setPrecision($specificity); //TODO IS THIS ONE?
+            final->setTime($time_cur.toMSecsSinceEpoch());
+
+            // TODO: the unknown person of the entry
+            final->setSender($sender);
+            qDebug()  << "SENDER: " << final->getSender();
+            final->setAlias($sender);
+
+            final->setContent($message);
+            final->setPrecision($specificity);
             final->setAccuracy($accuracy);
-            final->setWithAlias("with_alias"); //TODO
+            final->setWithAlias("with_alias");
 
             $count++;
         }
-        qDebug()<<"CAME 13";
         $times.removeFirst();
     }
-    qDebug()<<"CAME 15";
 }
 
 /**
