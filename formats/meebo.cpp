@@ -63,8 +63,6 @@ void Meebo::load(QVariant $log_raw)
     qint8 $accuracy, $specificity;
     qint32 $count;
     //QString $log_chat : contains a a chat log to be processed (usually inside foreachs)
-    //DEBUG
-    QString $test;
     qDebug()<<"CAME 1";
 
     // Fix whitespace characters recognition
@@ -152,24 +150,17 @@ void Meebo::load(QVariant $log_raw)
                 $to = true;
                 $log_chat_entry = $log_chat_entry.mid($to_sep.length());
             }
-            qDebug() << "ENTRY: "+$log_chat_entry;
-            //QRegExp re("/(\\[)((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)(\\])/is");
-            //QRegExp re("\[((1[0-9])|(2[0-3]):[0-5][0-9]\]/)[\S" "][\S" "]*");
-            QRegExp re("\\[((1[0-9])|(2[0-3]):[0-5][0-9]\\]/)[\\S" "][\\S" "]*");
-            qDebug() << "INDEX: " << re.indexIn($log_chat_entry);
-            //$test = "[17:46] deltik</span>: Hi, Al.";
-            //qDebug() << "INDEX: " << re.indexIn($test);
+            //qDebug() << "ENTRY: "+$log_chat_entry;
+            QRegExp re("^\\[(([0-1][0-9]|[2][0-3]):([0-5][0-9]))\\] ([\\S ]+)</span>: ([\\S ]*)$");
+            //qDebug() << "INDEX: " << re.indexIn($log_chat_entry);
             if(re.indexIn($log_chat_entry) < 0)
                 return;
 
+            qDebug() << "CAPTURES: " << re.captureCount();
             // If entry contains valid Meebo chat log timestamp...
-            //qDebug() << "CAPTURES: " << re.captureCount();
-            if(re.captureCount() == 3) { // 1 for the whole + 3 for each captured
+            if(re.captureCount() == 5) { // consult the documentation at the end of the file
                 $time_cur = QDateTime::fromString($time_cur.toString("dd-MMMM-YYYY"),"dd-MMMM-YYYY amAM");
                 qDebug() << "TIME: "+$time_cur.toString("dd-MMMM-YYYY");
-                qDebug() << "TAKEAT 0 " << re.capturedTexts().takeAt(0);
-                qDebug() << "TAKEAT 1 " << re.capturedTexts().takeAt(1);
-                qDebug() << "TAKEAT 2 " << re.capturedTexts().takeAt(2);
                 // Set Log2Log Timestamp Specificity Index
                 $specificity = 2;
                 // Set Log2Log Message Content Accuracy Index
@@ -355,3 +346,19 @@ void Meebo::to(StdFormat* $log)
     data = this->generate($log);
     emit finished();
 }
+
+/**
+
+  A little documentation
+
+  Each chat log entry is composed of 5 parts of data
+  that are captured through a regular expression:
+
+  0: the whole block of data (isn't counted for the capture count)
+  1: time   (HH:mm)
+  2: hour   (HH)
+  3: minute (mm)
+  4: sender
+  5: message
+
+ */
