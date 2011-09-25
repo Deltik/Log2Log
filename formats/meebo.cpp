@@ -47,23 +47,21 @@ void Meebo::load(QVariant $log_raw)
     QString $log_refined; // whitespace fixed and trimmed version of $log_raw
     QString $log_date; // temporarily stores the date of a chatlog
     QStringList $log_entries; // contains all the chatlogs to be processed
-    QByteArray *$log_date_bytes = new QByteArray();
     QList<QDateTime> $times;
     QDateTime $time_cur;
     QStringList $log_chatrows;
-    //QStringList $log_entry_items;
+    QString $row_regex = "^\\[(([0-1][0-9]|[2][0-3]):([0-5][0-9]))\\] ([\\S ]+)</span>: ([\\S ]*)$";
+    QString $date_sep = "</div><hr size=1>"; // entry date separator
     QString $chat_sep = "<br/><hr size=1><div class='ImChatHeader'>"; // chat instance separator
     QString $rece_sep = "<span class='ImReceive'>"; // from separator
     QString $send_sep = "<span class='ImSend'>"; // to separator
     QString $sender;
     QString $message;
     QTextEdit $htmldecoder; // workaround
-    bool $rece, $send;
+    bool $receiving, $sending;
     bool $self_set, $with_set;
     qint8 $accuracy, $specificity;
     qint32 $count;
-    //QString $log_entry : contains a chat log to be processed (inside foreach)
-    // QString $log_chatrow : contains a chat log entry to be processed (inside foreach)
 
     // Fix whitespace characters recognition
     $log_refined = $log_raw.toString()
@@ -92,11 +90,10 @@ void Meebo::load(QVariant $log_raw)
         return;
 
     // Retrieve Meebo log entries' start times
+    // $log_entry : contains a chat log entry to be processed
     foreach(QString $log_entry, $log_entries) {
 
-        $log_date.clear();
-        $log_date_bytes->clear();
-        $log_date = $log_entry.split("</div><hr size=1>").first();
+        $log_date = $log_entry.split($date_sep).first();
 
         // HTML entity decode
         $htmldecoder.setHtml($log_date);
@@ -110,46 +107,45 @@ void Meebo::load(QVariant $log_raw)
     }
 
     // Go through all the Meebo chatlogs
+    // $log_entry : contains a chat log entry to be processed
     foreach(QString $log_entry, $log_entries) {
 
         $self_set = $with_set = false;
         $time_cur = $times.first();
 
-        // TODO: detection
         final->newEntry();
         final->setProtocol($protocol);
-        qDebug()  << "PROTO: " << final->getProtocol();
         final->setSelf($account);
-        qDebug()  << "SELF: " << final->getSelf();
         final->setSelfAlias($account);
         final->setWith($with);
-        qDebug()  << "WITH: " << final->getWith();
         final->setWithAlias($with);
         final->setTime($time_cur.toMSecsSinceEpoch());
 
+        // Fetch all rows from current entry,
         $log_chatrows = $log_entry.split("<br/>\n");
 
-        // invalid entries
+        // Invalid entries
         $log_chatrows.removeFirst();
         $log_chatrows.removeLast();
 
         $count = 0;
+        // $log_chatrow : contains a chat log row to be processed
         foreach(QString $log_chatrow, $log_chatrows) {
 
             $log_chatrow.replace("\n","");
 
-            // check if an entry is from or to the user
-            $rece = $send = false;
+            // Check if an entry is from or to the user
+            $receiving = $sending = false;
             if($log_chatrow.indexOf($rece_sep,0) == 0) {
-                $rece = true;
+                $receiving = true;
                 $log_chatrow = $log_chatrow.mid($rece_sep.length());
             }
             else if($log_chatrow.indexOf($send_sep,0) == 0) {
-                $send = true;
+                $sending = true;
                 $log_chatrow = $log_chatrow.mid($send_sep.length());
             }
 
-            QRegExp re("^\\[(([0-1][0-9]|[2][0-3]):([0-5][0-9]))\\] ([\\S ]+)</span>: ([\\S ]*)$");
+            QRegExp re($row_regex);
             if(re.indexIn($log_chatrow) < 0)
                 return;
 
@@ -173,35 +169,21 @@ void Meebo::load(QVariant $log_raw)
                 $specificity = 0;
             }
 
-//            // Get the sender name and get the entry message.
-//            $log_entry_items = $log_chatrow.split("</span>: ");
-//            //$log_entry_items.removeFirst(); // seems to not be required
-//            $log_chatrow = $log_entry_items.join("</span>: )");
+            $sender = re.capturedTexts().takeAt(4); // Sender alias
+            $message = re.capturedTexts().takeAt(5); // Message content
 
-//            // Clean up the sender's name.
-//            $sender = $log_entry_items.first().replace(0, re.capturedTexts().takeAt(4).length(), "").trimmed();
-
-            // TODO: Clean up the sender's name.
-            $sender = re.capturedTexts().takeAt(4);
-
-            // TODO: Clean up the entry message.
-            $message = re.capturedTexts().takeAt(5);
-
-//            // TODO: Clean up the entry message.
-//            $log_chatrow.replace("<br>", "\n");
-//            //$log_chatrow = /*htmlspecialchars_decode(html_entity_decode(*/$log_chatrow/*))*/;
-//            $log_chatrow.replace("&apos;", "'");
-
-            // FINAL CONSTRUCTION
             final->newRow();
             final->setCode(0);
             final->setTime($time_cur.toMSecsSinceEpoch());
 
-            // TODO: the unknown person of the entry
-            final->setSender($sender);
-            qDebug()  << "SENDER: " << final->getSender();
+            // Set row data
+            if($receiving)
+                final->setSender($with);
+            else if($sending)
+                final->setSender($account);
+            else
+                final->setSender("_unknown");
             final->setAlias($sender);
-
             final->setContent($message);
             final->setPrecision($specificity);
             final->setAccuracy($accuracy);
@@ -277,6 +259,7 @@ void Meebo::setWith(QString with)
  */
 StdFormat* Meebo::from(QHash<QString, QVariant> data)
 {
+    QString filepath;
     // Step 1/3: Fetch the data.
     QMap<QString, QVariant> list;
     if (data["files"].isNull())
@@ -292,10 +275,10 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
         QVariant $raw_item = (i.value());
 
         // Get file path
-        QString filepath = i.key();
+        filepath = i.key();
         // Remove directory path
         QStringList dirs_parts = QDir::fromNativeSeparators(filepath).split("/");
-        QString filepath = dirs_parts.takeLast();
+        filepath = dirs_parts.takeLast();
         // Remove file extension
         QStringList path_parts = filepath.split(".");
         path_parts.pop_back();
@@ -303,6 +286,8 @@ StdFormat* Meebo::from(QHash<QString, QVariant> data)
         // Get Log2Log Meebo metadata
         path_parts = filepath.split("|");
         QString account  = path_parts[0];
+        // Fix whitespace
+        account.replace(0,1,"");
         QString protocol = path_parts[1];
         QString with     = path_parts[2];
 
