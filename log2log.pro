@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     formats/trillian.cpp \
     formats/wlm.cpp \
     formats/aim.cpp \
-    formats/skype.cpp
+    formats/skype.cpp \
+    formats/meeboconnect.cpp
 
 HEADERS  += \
     log2log.h \
@@ -50,7 +51,8 @@ HEADERS  += \
     formats/trillian.h \
     formats/wlm.h \
     formats/aim.h \
-    formats/skype.h
+    formats/skype.h \
+    formats/meeboconnect.h
 
 FORMS    += \
     log2log.ui \
@@ -65,3 +67,5 @@ TRANSLATIONS += en.ts \
 
 OTHER_FILES += \
     resources/formats.xml
+
+

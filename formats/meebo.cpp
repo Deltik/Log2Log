@@ -116,6 +116,7 @@ void Meebo::load(QVariant $log_raw)
         final->newEntry();
         final->setProtocol($protocol);
         final->setSelf($account);
+        qDebug() << $account;
         final->setSelfAlias($account);
         final->setWith($with);
         final->setWithAlias($with);
