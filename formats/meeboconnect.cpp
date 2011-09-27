@@ -36,7 +36,7 @@
 MeeboConnect::MeeboConnect()
 {
     final = new StdFormat();
-    final->setClient("MeeboConnect");
+    final->setClient("Meebo");
 }
 
 QString MeeboConnect::startAPI(QString bcookie)
@@ -75,7 +75,7 @@ void MeeboConnect::infoAPI(QString username_with, QString username_self, MeeboCo
 {
 
 }
-QString MeeboConnect::getChatlogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey, QString clientId)
+QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey, QString clientId)
 {
 
 }
@@ -87,7 +87,7 @@ QStringList* MeeboConnect::parseContacts(QStringList data)
 {
 
 }
-QStringList MeeboConnect::getAllChatlogs(QStringList buddies)
+QStringList MeeboConnect::getAllChatLogs(QStringList buddies)
 {
 
 }

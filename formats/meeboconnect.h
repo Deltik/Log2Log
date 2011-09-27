@@ -121,10 +121,10 @@ public:
     virtual void gwidAPI(QString sessionKey = NULL, QString clientId = NULL, QString username = NULL);
     virtual void dbgAPI(QString data, QString category = "javascript", QString sessionKey = NULL, QString clientId = NULL);
     virtual void infoAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString sessionKey = NULL, QString clientId = NULL);
-    virtual QString getChatlogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey = NULL, QString clientId = NULL);
+    virtual QString getChatLogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey = NULL, QString clientId = NULL);
     virtual QStringList initialize(QString username, QString password, qint32 threshold = 5);
     virtual QStringList* parseContacts(QStringList data);
-    virtual QStringList getAllChatlogs(QStringList buddies);
+    virtual QStringList getAllChatLogs(QStringList buddies);
     virtual QStringList pullExternalSessionEvents(QStringList data);
 
 public slots:
