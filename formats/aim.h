@@ -44,6 +44,11 @@ public slots:
     virtual void to(StdFormat* $log);
 
 private:
+    virtual QDate interpretDate(QString input);
+    virtual QTime interpretTime(QString input);
+    virtual QString html_entity_decode(QString input);
+
+private:
     int total;
     QString accountGuess;
     QString buddyGuess;

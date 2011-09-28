@@ -76,10 +76,118 @@ void Aim::load(QVariant $log_raw)
     // Create HTML reader
     QXmlStreamReader xml($log_raw.toString());
 
-    // $log_raw is AIM chat log. Create new entry.
-    final->newEntry();
+    // Read the HTML file.
+    while (!xml.atEnd())
+    {
+        // Read next item
+        QXmlStreamReader::TokenType token = xml.readNext();
 
-    // TODO
+        // Just some items that might be used in this scope
+        qlonglong               $datetime_base;
+        QDate                   $date_base;
+        QTime                   $time_base;
+
+        // Looking at element beginnings...
+        if (token == QXmlStreamReader::StartElement)
+        {
+            // If token is the chat entry indicator / time indicator
+            if (xml.attributes().value("class").toString() == "time")
+            {
+                // CONSTRUCT: _entry
+                final->newEntry();
+                // CONSTRUCT: _self
+                final->setSelf($self);
+                // CONSTRUCT: _with
+                final->setWith($with);
+                // CONSTRUCT: _protocol
+                final->setProtocol("aim");
+
+                // Point to the datestamp
+                xml.readNext();
+
+                // Reset upper scope variables
+                $datetime_base = NULL;
+                $date_base     = QDate();
+                $time_base     = QTime();
+
+                QString $date_raw = xml.text().toString();
+                $date_base = interpretDate($date_raw);
+            }
+
+            // If token is a chat row
+            if (xml.attributes().value("class").toString() == "local" ||
+                xml.attributes().value("class").toString() == "remote")
+            {
+                // Point to the sender alias and timestamp.
+                xml.readNext();
+
+                QString $meta_raw = html_entity_decode(xml.text().toString());
+                QStringList $meta_split = $meta_raw.split(" (");
+                QString $timestamp = $meta_split.takeLast();
+                QStringList $timestamp_split = $timestamp.split("):");
+                $timestamp = $timestamp_split.takeFirst();
+                QString $sender = $meta_split.join(" (");
+
+                // CONSTRUCT: _sender
+                if (xml.attributes().value("class").toString() == "local")
+                    final->setSender("_self");
+                else if (xml.attributes().value("class").toString() == "remote")
+                    final->setSender("_with");
+                else
+                    final->setSender("_unknown");
+                // CONSTRUCT: _sender_alias
+                final->setAlias($sender);
+            }
+
+            // If token is an event
+            if (xml.attributes().value("class").toString() == "event")
+            {
+                // TODO
+            }
+        }
+    }
+}
+
+/**
+ * AIM_CUSTOM: Try to Comprehend an AIM Datestamp
+ */
+QDate Aim::interpretDate(QString input)
+{
+    QDate attempt;
+    // Try: "Monday, August 08, 2010"
+    attempt.fromString(input, "dddd, MMMM dd, yyyy");
+    // Try: "Monday, August 8, 2010"
+    if (!attempt.isValid())
+        attempt.fromString(input, "dddd, MMMM d, yyyy");
+    // Try: "08 August 2010"
+    if (!attempt.isValid())
+        attempt.fromString(input, "dd MMMM yyyy");
+    // Try: "8 August 2010"
+    if (!attempt.isValid())
+        attempt.fromString(input, "d MMMM yyyy");
+
+    return attempt;
+}
+
+/**
+ * AIM_CUSTOM: Try to Comprehend an AIM Timestamp
+ */
+QTime Aim::interpretTime(QString input)
+{
+    ;
+}
+
+/**
+ * Convert all HTML entities to their applicable characters
+ * @todo Port from PHP (and steal its entity table >:D )
+ * @warning This feature is incomplete.
+ */
+QString Aim::html_entity_decode(QString input)
+{
+    input.replace("&#160;", " ");
+    input.replace("&apos;", "'");
+
+    return input;
 }
 
 /**
