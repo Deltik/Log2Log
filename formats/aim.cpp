@@ -73,8 +73,14 @@ void Aim::load(QVariant $log_raw)
         $with = buddyGuess;
     }
 
+    // Remove more cruft that will interfere with QXmlStreamReader.
+    $log_split = $log_proc.split("</h1>");
+    $log_split.pop_front();
+    $log_proc = $log_split.join("</h1>");
+    $log_proc = "<body>" + $log_proc;
+
     // Create HTML reader
-    QXmlStreamReader xml($log_raw.toString());
+    QXmlStreamReader xml($log_proc);
 
     // Read the HTML file.
     while (!xml.atEnd())
@@ -137,6 +143,60 @@ void Aim::load(QVariant $log_raw)
                     final->setSender("_unknown");
                 // CONSTRUCT: _sender_alias
                 final->setAlias($sender);
+
+                // Entering: </td>
+                xml.readNext();
+                // Entering: <td class="msg" width="100%">
+                xml.readNext();
+
+                // Content variable
+                QString $message;
+                // Grab all message HTML
+                while (xml.tokenType() != QXmlStreamReader::EndElement &&
+                       xml.qualifiedName().toString() != "</td>")
+                {
+                    // Entering next token
+                    token = xml.readNext();
+                    // If: <FONT>
+                    if (token == QXmlStreamReader::StartElement)
+                    {
+                        QXmlStreamAttributes attrs = xml.attributes();
+                        QList<QXmlStreamAttribute> attrs_list = attrs.toList();
+
+                        $message += "<" +
+                                    xml.qualifiedName().toString().toLower();
+
+                        if (attrs_list.size() > 0)
+                        {
+                            $message += " ";
+
+                            for (int i = 0; i < attrs_list.size(); i ++)
+                            {
+                                $message += attrs_list[i].qualifiedName().toString() +
+                                            "=\"" +
+                                            attrs_list[i].value().toString() +
+                                            "\"";
+                                if (i < attrs_list.size() - 1)
+                                    $message += " ";
+                            }
+                            $message += ">";
+                        }
+                    }
+                    // If </FONT>
+                    if (token == QXmlStreamReader::EndElement &&
+                        xml.qualifiedName().toString().toLower() != "td")
+                    {
+                        $message += "</" +
+                                    xml.qualifiedName().toString().toLower() +
+                                    ">";
+                    }
+                    // If message content, the good stuff...
+                    else
+                        $message += xml.text().toString();
+                }
+
+                // CONSTRUCT: _message
+                final->setContent($message);qDebug()<<$message;
             }
 
             // If token is an event
