@@ -7,8 +7,8 @@
 		<icon>:/images/services/Adium.png</icon>
 		<default>~/Library/Application Support/Adium 2.0/Users/Default/Logs</default>
 		<support>
-			<from>true</from>
-			<to>true</to>
+			<from><!--true--></from>
+			<to><!--true--></to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
@@ -49,8 +49,8 @@
 		<icon>:/images/services/Deltik.png</icon>
 		<default>~/Documents/Chat Logs/Deltik</default>
 		<support>
-			<from>true</from>
-			<to>true</to>
+			<from><!--true--></from>
+			<to><!--true--></to>
                         <precision>-1</precision>
 			<accuracy>true</accuracy>
 			<time>yes</time>
@@ -70,7 +70,7 @@
 		<icon>:/images/services/Facebook.png</icon>
 		<default>~/Documents/Chat Logs/Facebook</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
@@ -91,7 +91,7 @@
 		<icon>:/images/services/GChat.png</icon>
 		<default>~/Documents/Chat Logs/Gmail</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>2</precision>
 			<accuracy>false</accuracy>
@@ -112,7 +112,7 @@
 		<icon>:/images/services/GVoice.png</icon>
 		<default>~/Documents/Chat Logs/Google Voice</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>2</precision>
 			<accuracy>false</accuracy>
@@ -133,7 +133,7 @@
 		<icon>:/images/services/imo.png</icon>
 		<default>~/Documents/Chat Logs/imo.im</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
@@ -169,7 +169,7 @@
 		</support>
 	</format>
 	<format id="meeboconnect">
-		<name>Meebo (download)</name>
+		<name>[PRE-ALPHA] Meebo (download)</name>
 		<client>Meebo</client>
 		<class>MeeboConnect</class>
 		<icon>:/images/services/MeeboConnect.png</icon>
@@ -217,8 +217,8 @@
 		<icon>:/images/services/Minecraft.png</icon>
 		<default>~/Documents/Chat Logs/Minecraft</default>
 		<support>
-			<from>true</from>
-			<to>true</to>
+			<from><!--true--></from>
+			<to><!--true--></to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
@@ -253,7 +253,7 @@
 		</support>
 	</format>
 	<format id="pidgin">
-		<name>Pidgin HTML</name>
+		<name>[ALPHA] Pidgin HTML</name>
 		<client>Pidgin</client>
 		<class>Pidgin</class>
 		<icon>:/images/services/Pidgin.png</icon>
@@ -280,7 +280,7 @@
 		<icon>:/images/services/Skype.png</icon>
                 <default>~/.Skype/YOUR_SKYPE_USERNAME</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
@@ -295,7 +295,7 @@
 		</support>
 	</format>
 	<format id="trillian">
-		<name>Trillian</name>
+		<name>[BETA] Trillian</name>
 		<client>Trillian</client>
 		<class>Trillian</class>
 		<icon>:/images/services/Trillian.png</icon>
