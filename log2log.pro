@@ -9,6 +9,8 @@ QT       += core gui xml network
 TARGET = log2log
 TEMPLATE = app
 
+ICON = images/etc/favicon.ico
+win32:RC_FILE += log2log.rc
 
 SOURCES += main.cpp \
     log2log.cpp \
