@@ -281,7 +281,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
                             final->setCode(1);
                             // CONSTRUCT: _sender
                             final->setSender(i.value());
-                            // CONSTRUCT: _alias
+                            // CONSTRUCT: _sender_alias
                             final->setAlias($sender_alias);
 
                             // Exception: File Transfer
