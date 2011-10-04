@@ -43,14 +43,17 @@ QString MeeboConnect::startAPI(QString bcookie)
 {
 
 }
+
 QString MeeboConnect::updateAPI(qint32 rev, QString sessionKey, QString clientId, qint32 focustime)
 {
 
 }
+
 void MeeboConnect::loginAPI(QString username, QString password, QString sessionKey, QString clientId)
 {
 
 }
+
 void MeeboConnect::quitAPI(QString sessionKey, QString clientId)
 {
 
@@ -59,53 +62,119 @@ void MeeboConnect::signOffAPI(QString sessionKey, QString locationId, QString cl
 {
 
 }
+
 void MeeboConnect::mauserlistAPI(QString sessionKey, QString clientId, QString username)
 {
 
 }
+
 void MeeboConnect::gwidAPI(QString sessionKey, QString clientId, QString username)
 {
 
 }
+
 void MeeboConnect::dbgAPI(QString data, QString category, QString sessionKey, QString clientId)
 {
 
 }
+
 void MeeboConnect::infoAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString sessionKey, QString clientId)
 {
 
 }
+
 QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey, QString clientId)
 {
 
 }
+
 QStringList MeeboConnect::initialize(QString username, QString password, qint32 threshold)
 {
 
 }
+
 QStringList* MeeboConnect::parseContacts(QStringList data)
 {
 
 }
+
 QStringList MeeboConnect::getAllChatLogs(QStringList buddies)
 {
 
 }
+
 QStringList MeeboConnect::pullExternalSessionEvents(QStringList data)
 {
 
 }
-QString MeeboConnect::accessMCMD(QString func, QStringList params, QNetworkAccessManager::Operation op, bool https, bool mcmd)
-{
 
-}
-QString MeeboConnect::accessMeebo(QString func, QStringList params, QNetworkAccessManager::Operation op, bool https)
-{
 
+/**
+ * ##################################
+ * # Meebo API Raw Access Functions #
+ * ##################################
+ */
+
+/**
+ * Top-level API accessor commands
+ * @param QString func API's function
+ * @param QMap<QString, QString> params Parameters to set in the API function
+ * @param QNetworkAccessManager::Operation Operation of QNetworkAccessManager
+ * @param bool https Set to TRUE for HTTPS access mode
+ * @param bool mcmd Whether to use Meebo's MCMD or CMD API
+ */
+QString MeeboConnect::accessCMD(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd)
+{
+    if (mcmd)
+        func += "mcmd/";
+    else
+        func += "cmd/";
+
+    return this->accessMeebo(func, params, op, https);
 }
+
+/**
+ * Accesses an JSON-API functions through this,
+ * processes data for accessing the API,
+ * accesses the API,
+ * and returns the output.
+ */
+QString MeeboConnect::accessMeebo(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https)
+{
+    if (op == QNetworkAccessManager::PostOperation)
+    {
+        QMapIterator<QString, QString> i(params);
+        while (i.hasNext())
+        {
+            i.next();
+
+            api.addPost(i.key(), i.value());
+        }
+    }
+    else
+    {
+        QUrl get;
+        QMapIterator<QString, QString> i(params);
+        while (i.hasNext())
+        {
+            i.next();
+            get.addQueryItem(i.key(), i.value());
+        }
+        func += "?" + get.encodedQuery();
+    }
+}
+
+/**
+ * Accesses the Meebo API directly.
+ */
 QString MeeboConnect::accessAPI(QString command, bool https, QString context)
 {
-
+    QString url;
+    QString s = "";
+    if (https == true)
+        s = "s";
+    url = "http"+s+"://www.meebo.com/" + command;
+    api.setURL(url);
 }
 
 /**

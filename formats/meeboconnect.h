@@ -28,6 +28,8 @@
 
 #include "formats/stdformat.h"
 #include "formats/stdconverter.h"
+#include "api.h"
+#include "json.h"
 #include <QVariant>
 #include <QNetworkAccessManager>
 
@@ -131,14 +133,15 @@ public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
 
 private:
-    virtual QString accessMCMD(QString func, QStringList params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
-    virtual QString accessMeebo(QString func, QStringList params, QNetworkAccessManager::Operation op, bool https = false);
+    virtual QString accessCMD(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
+    virtual QString accessMeebo(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false);
     virtual QString accessAPI(QString command, bool https = false, QString context = NULL);
     void setAccount(QString account);
     void setProtocol(QString protocol);
     void setWith(QString with);
 
 private:
+    Api api;
     int total;
     QString $account;
     QString $protocol;

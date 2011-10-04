@@ -54,6 +54,7 @@ void Api::run()
 void Api::setURL(QUrl url)
 {
     $url = url;
+    request = QNetworkRequest($url);
 }
 /// Alias
 void Api::setURL(QString url)
@@ -62,11 +63,30 @@ void Api::setURL(QString url)
 }
 
 /**
+ * Add HTTP Query Property
+ * @param string index Index of the query property
+ * @param string data Content of the query property
+ */
+void Api::addPost(QString index, QString data)
+{
+    params.addQueryItem(index, data);
+    $_POST = params.encodedQuery();
+}
+
+/**
  * Get URL using QNetworkRequest
  */
 void Api::getURL()
 {
-    netHandler->get(QNetworkRequest($url));
+    if (!$_POST.isEmpty())
+    {
+        netHandler->post(request, $_POST);
+    }
+    else
+    {
+        netHandler->get(request);
+    }
+    $_POST.clear();
 }
 
 void Api::replyFinished(QNetworkReply* pReply)

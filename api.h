@@ -39,6 +39,7 @@ public:
     void fetch();
     void setURL(QUrl $url);
     void setURL(QString $url);
+    void addPost(QString index, QString data);
     QString getReply();
 
 protected:
@@ -52,8 +53,16 @@ public slots:
     void replyFinished(QNetworkReply *);
 
 private:
+    // Qt Network Access Manager
     QNetworkAccessManager* netHandler;
+    // Qt Network Request (POST data)
+    QNetworkRequest request;
+    // URL (set by call to setURL())
     QUrl $url;
+    // HTTP POST data
+    QUrl params;
+    QByteArray $_POST;
+    // Reply (fetched by getURL())
     QString str;
 };
 
