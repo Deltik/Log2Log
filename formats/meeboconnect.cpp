@@ -413,10 +413,10 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
     params.insert("muser", username_meebo);
     params.insert("p", protocol);
     params.insert("sessionKey", sessionKey);
-    params.insert("u", username_self);qDebug()<<params;
+    params.insert("u", username_self);
 
     // Access API!
-    this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);//qDebug()<<"LOGDATA: "+response;
+    this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);qDebug()<<"LOGDATASTARTSWITH: "+response.left(128);
 
     // Return the response
     return response;
@@ -462,8 +462,12 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
     for (int i = 2; i <= threshold; i ++) //while (stillListingBuddies)
     {
         // Trickery and deception
-        this->mauserlistAPI();
-        this->gwidAPI();
+        if (i == 3)
+        {
+            //this->gwidAPI();
+            //this->dbgAPI();
+            /*XXX: EXPERIMENTAL*/this->quitAPI();
+        }
         // Get next update.
         QMap<QString, QVariant> temp = this->updateAPI();
 
