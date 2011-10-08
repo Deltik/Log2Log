@@ -38,15 +38,13 @@ public:
     Meebo();
     virtual void load(QVariant $log_raw);
     virtual QVariant generate(StdFormat* $log);
+    void setAccount(QString account);
+    void setProtocol(QString protocol);
+    void setWith(QString with);
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void to(StdFormat* $log);
-
-private:
-    void setAccount(QString account);
-    void setProtocol(QString protocol);
-    void setWith(QString with);
 
 private:
     int total;

@@ -50,6 +50,7 @@ public slots:
     void convertTo();
     void save();
     void setProgressProto(int meter, QString description);
+    void error(QString text);
 
 private:
     // Variables: Main UI

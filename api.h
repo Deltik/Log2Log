@@ -41,6 +41,8 @@ public:
     void setURL(QString $url);
     void addPost(QString index, QString data);
     QString getReply();
+    // Reply (fetched by getURL())
+    QString str;
 
 protected:
     void run();
@@ -62,8 +64,6 @@ private:
     // HTTP POST data
     QUrl params;
     QByteArray $_POST;
-    // Reply (fetched by getURL())
-    QString str;
 };
 
 #endif // API_H

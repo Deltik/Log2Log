@@ -4,6 +4,7 @@
  *   Meebo (download)
  *    Header File
  *
+ * @author Deltik
  * @author igordcard
  *
  * License:
@@ -27,13 +28,13 @@
 #define MEEBOC_H
 
 #include "formats/stdformat.h"
-#include "formats/stdconverter.h"
+#include "formats/meebo.h"
 #include "api.h"
 #include "json.h"
 #include <QVariant>
 #include <QNetworkAccessManager>
 
-class MeeboConnect : public StdConverter
+class MeeboConnect : public Meebo
 {
     Q_OBJECT
 
@@ -114,38 +115,52 @@ public:
     };
 
     MeeboConnect();
-    virtual QString startAPI(QString bcookie = NULL);
-    virtual QString updateAPI(qint32 rev = -1, QString sessionKey = NULL, QString clientId = NULL, qint32 focustime = -1);
-    virtual void loginAPI(QString username, QString password, QString sessionKey = NULL, QString clientId = NULL);
-    virtual void quitAPI(QString sessionKey = NULL, QString clientId = NULL);
-    virtual void signOffAPI(QString sessionKey = NULL, QString locationId = NULL, QString clientId = NULL);
-    virtual void mauserlistAPI(QString sessionKey = NULL, QString clientId = NULL, QString username = NULL);
-    virtual void gwidAPI(QString sessionKey = NULL, QString clientId = NULL, QString username = NULL);
-    virtual void dbgAPI(QString data, QString category = "javascript", QString sessionKey = NULL, QString clientId = NULL);
-    virtual void infoAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString sessionKey = NULL, QString clientId = NULL);
-    virtual QString getChatLogAPI(QString username_with, QString username_self, MeeboConnect::Protocol, QString username, QString sessionKey = NULL, QString clientId = NULL);
-    virtual QStringList initialize(QString username, QString password, qint32 threshold = 5);
-    virtual QStringList* parseContacts(QStringList data);
-    virtual QStringList getAllChatLogs(QStringList buddies);
-    virtual QStringList pullExternalSessionEvents(QStringList data);
+    virtual QMap<QString, QVariant> startAPI(QString bcookie = "");
+    virtual QMap<QString, QVariant> updateAPI(qint32 rev = NULL, QString sessionKey = "", qint64 clientId = NULL, qint32 focustime = NULL);
+    virtual void loginAPI(QString username, QString password, QString sessionKey = "", qint64 clientId = NULL);
+    virtual void quitAPI(QString sessionKey = "", qint64 clientId = NULL);
+    virtual void signOffAPI(QString sessionKey = "", qint64 locationId = NULL, qint64 clientId = NULL, bool clearSLT = false);
+    virtual void mauserlistAPI(QString sessionKey = "", qint64 clientId = NULL, QString username_meebo = "");
+    virtual void gwidAPI(QString sessionKey = "", qint64 clientId = NULL, QString username_meebo = "");
+    virtual void dbgAPI(QString data = "wallpapers-unbranded=stock/null", QString category = "javascript", QString sessionKey = "", qint64 clientId = NULL);
+    virtual void infoAPI(QString username_with, QString username_self, QString protocol, QString sessionKey = "", qint64 clientId = NULL);
+    virtual QString getChatLogAPI(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString sessionKey = "", qint64 clientId = NULL);
+    virtual void initialize(QString username, QString password, qint32 threshold = 5);
+    virtual void parseContacts(QMap<QString, QVariant> data);
+    virtual void getAllChatLogs();
+    virtual QMap<QString, QVariant> pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success);
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
+    virtual void interpretReply(QString reply);
 
 private:
-    virtual QString accessCMD(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
-    virtual QString accessMeebo(QString func, QMap<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false);
-    virtual QString accessAPI(QString command, bool https = false, QString context = NULL);
-    void setAccount(QString account);
-    void setProtocol(QString protocol);
-    void setWith(QString with);
+    virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
+    virtual void accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false);
+    virtual void accessAPI(QString command, bool https = false, QString context = "");
+
+signals:
+    void apiReply(QString);
 
 private:
-    Api api;
+    // API Handler
+    Api *api;
+    // API Response
+    QString response;
+    // Use TBD
     int total;
-    QString $account;
-    QString $protocol;
-    QString $with;
+    // Session Variables
+    QString sessionKey;
+    qint64 sessionId;
+    qint64 clientId;
+    int revision;
+    // Authentication Variables
+    QString username;
+    QString password;
+    bool authenticated;
+    // Storage Variables
+    QMap<QString, QVariant> accounts;
+    QList<QMap<QString, QVariant> > contacts;
 };
 
 #endif // MEEBOC_H

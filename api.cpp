@@ -94,6 +94,8 @@ void Api::replyFinished(QNetworkReply* pReply)
     QByteArray data = pReply->readAll();
     str = QVariant(data).toString();
     emit requestComplete(str);
+    emit finished();
+    this->quit();
 }
 
 QString Api::getReply()

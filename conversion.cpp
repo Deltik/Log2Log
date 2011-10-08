@@ -32,6 +32,7 @@
 #include "formats/omegle.h"
 #include "formats/pidgin.h"
 #include "formats/meebo.h"
+#include "formats/meeboconnect.h"
 #include "formats/stdjson.h"
 #include "formats/trillian.h"
 #include "formats/wlm.h"
@@ -116,6 +117,8 @@ void Conversion::collectData()
         $FROM = new Pidgin();
     if (from_name == "Meebo")
         $FROM = new Meebo();
+    if (from_name == "MeeboConnect")
+        $FROM = new MeeboConnect();
     if (from_name == "StdJson")
         $FROM = new StdJson();
     if (from_name == "Trillian")
@@ -138,6 +141,8 @@ void Conversion::collectData()
         $TO = new Pidgin();
     if (to_name == "Meebo")
         $TO = new Meebo();
+    if (to_name == "MeeboConnect")
+        $TO = new MeeboConnect();
     if (to_name == "StdJson")
         $TO = new StdJson();
     if (to_name == "Trillian")
@@ -156,12 +161,13 @@ void Conversion::collectData()
     }
 
     // Go!
-    connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
+    connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
+    connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
     $FROM->setMode("from");
     $FROM->setInput(QVariant(from));
     $FROM->start();
 
-    connect($FROM, SIGNAL(finished()), this, SLOT(convertTo()), Qt::QueuedConnection);
+    connect($FROM, SIGNAL(finished()), this, SLOT(convertTo()));
 
     emit done();
 }
@@ -180,14 +186,14 @@ void Conversion::convertFrom()
 void Conversion::convertTo()
 {
     // Go!
-    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
+    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
 
     final = $FROM->getData(new StdFormat);
     $TO->setMode("to");
     $TO->setInput(final);
     $TO->start();
 
-    connect($TO, SIGNAL(finished()), this, SLOT(save()), Qt::QueuedConnection);
+    connect($TO, SIGNAL(finished()), this, SLOT(save()));
 
     emit done();
 }
@@ -327,4 +333,16 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
 void Conversion::setProgressProto(int meter, QString description)
 {
     emit updateProgress(meter, description);
+}
+
+/**
+ * Error Handler
+ */
+void Conversion::error(QString text)
+{
+    if (!text.isEmpty())
+        updateProgress(NULL, text);
+
+    $FROM->terminate();
+    $TO->terminate();
 }

@@ -458,7 +458,11 @@ QVariant Json::parseNumber(const QString &json, int &index)
 
         index = lastIndex + 1;
 
-        return QVariant(numberStr.toDouble(NULL));
+        /// START - LARGE NUMBER PATCH by Deltik
+        return QVariant(numberStr.toLongLong(NULL));
+        /// STOP - LARGE NUMBER PATCH by Deltik
+
+        //return QVariant(numberStr.toDouble(NULL));
 }
 
 /**

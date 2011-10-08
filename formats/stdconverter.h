@@ -65,6 +65,9 @@ public slots:
 signals:
     void updateProgress(int meter, QString description);
     void finished();
+    void error(QString text = "");
+    void warning(QString text = "");
+    void notice(QString text = "");
 };
 
 #endif // STDCONVERTER_H
