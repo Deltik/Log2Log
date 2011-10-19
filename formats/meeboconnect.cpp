@@ -469,28 +469,24 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
             /*XXX: EXPERIMENTAL*/this->quitAPI();
         }
         // Get next update.
-        QMap<QString, QVariant> temp = this->updateAPI();
+        QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
 
         // Detect incorrect authentication.
         if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":1,\"description\":\"Username does not exist\"}}}"))
         {
-            this->updateProgress(0, "<span style=\"color: red;\"><strong>FATAL ERROR:</strong> Incorrect username</span>");
-            emit error(); break;
+            errorText = "Incorrect username"; return;
         }
         else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect password\"}}}"))
         {
-            this->updateProgress(0, "<span style=\"color: red;\"><strong>FATAL ERROR:</strong> Incorrect password</span>");
-            emit error(); break;
+            errorText = "Incorrect password"; return;
         }
         else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect username or password.\"}}}"))
         {
-            this->updateProgress(0, "<span style=\"color: red;\"><strong>FATAL ERROR:</strong> Incorrect username or password</span>");
-            emit error(); break;
+            errorText = "Incorrect username or password"; return;
         }
         else if (response.contains("\"data\":{\"stat\":\"fail\",\"msg\":\"Invalid request\",\"errorcode\":3}"))
         {
-            this->updateProgress(0, "<span style=\"color: red;\"><strong>FATAL ERROR:</strong> Bad login information</span>");
-            emit error(); break;
+            errorText = "Bad login information"; return;
         }
 
         // Parse contacts from a Meebo "events".
@@ -648,6 +644,11 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     username = data["username"].toString();
     password = data["password"].toString();
     this->initialize(username, password);
+    if (!errorText.isNull())
+    {
+        emit error(errorText);
+        return new StdFormat();
+    }
     this->getAllChatLogs();
     updateProgress(25, "Signing off...");
     this->signOffAPI();

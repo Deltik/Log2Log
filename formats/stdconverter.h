@@ -56,6 +56,10 @@ public:
     StdFormat* final;
     QString mode;
     QVariant data;
+    /* ERROR HANDLER DATA */
+    QString errorText;
+    QString warningText;
+    QString noticeText;
 
 public slots:
     /* FUNCTIONS */

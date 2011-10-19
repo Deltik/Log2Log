@@ -340,9 +340,9 @@ void Conversion::setProgressProto(int meter, QString description)
  */
 void Conversion::error(QString text)
 {
-    if (!text.isEmpty())
-        updateProgress(NULL, text);
-
     $FROM->terminate();
     $TO->terminate();
+
+    if (!text.isEmpty())
+        updateProgress(NULL, "<span style=\"color: red;\"><strong>ERROR:</strong> " + text + "</span>");
 }
