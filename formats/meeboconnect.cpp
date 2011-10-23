@@ -660,7 +660,7 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     //  Launch event cycler
     updateCycler = new QTimer;
     updateCycler->setInterval(0);
-    connect(updateCycler, SIGNAL(timeout()), SLOT(updateCycle()));
+    connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
     updateCycler->start();
     //  Get all the chat logs
     this->getAllChatLogs();

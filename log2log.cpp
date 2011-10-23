@@ -44,13 +44,25 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->setupUi(this);
 
     // Connect UI signals to local slots
+    //  Format converter select boxes
     connect(ui->srcProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
     connect(ui->dstProtoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateFields()));
+    //  Path input boxes
     connect(ui->srcPathEdit, SIGNAL(textEdited(QString)), this, SLOT(determineSrcDefault(QString)));
     connect(ui->dstPathEdit, SIGNAL(textEdited(QString)), this, SLOT(determineDstDefault(QString)));
+    //  Path selection UI buttons
     connect(ui->srcPathButton, SIGNAL(clicked()), this, SLOT(setSrcPath()));
     connect(ui->dstPathButton, SIGNAL(clicked()), this, SLOT(setDstPath()));
+    //  Enter key detection for path and authentication fields
+    connect(ui->srcPathEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    connect(ui->dstPathEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    connect(ui->srcUserEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    connect(ui->srcPassEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    connect(ui->dstUserEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    connect(ui->dstPassEdit, SIGNAL(returnPressed()), this, SLOT(startConversion()));
+    //  `Go` button
     connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(toggleConversion()));
+    //  Menu bar items
     connect(ui->actionUpdates, SIGNAL(triggered()), this, SLOT(menuUpdates()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(menuAbout()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(quit()));
