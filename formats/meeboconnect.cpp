@@ -216,6 +216,12 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
     // Return the response
     return data;
 }
+/// Looping Update
+void MeeboConnect::updateCycle()
+{
+    //this->updateAPI();
+    qDebug() << "Update Cycle!";
+}
 
 /**
  * Log in to Meebo account
@@ -436,7 +442,7 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
  * @param int threshold (optional) Data capture threshold
  *                       Higher : Slower, captures more data
  *                       Lower  : Faster, captures less data
- *                       null   : Default capture threshold of 5
+ *                       null   : Default capture threshold of 10
  * @returns array Collected data
  */
 void MeeboConnect::initialize(QString username, QString password, qint32 threshold)
@@ -643,15 +649,25 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
     password = data["password"].toString();
+    //  Authentication
     this->initialize(username, password);
+    //  Catch error during authentication
     if (!errorText.isNull())
     {
         emit error(errorText);
         return new StdFormat();
     }
+    //  Launch event cycler
+    updateCycler = new QTimer;
+    updateCycler->setInterval(0);
+    connect(updateCycler, SIGNAL(timeout()), SLOT(updateCycle()));
+    updateCycler->start();
+    //  Get all the chat logs
     this->getAllChatLogs();
+    //  Bail out of Meebo
     updateProgress(25, "Signing off...");
     this->signOffAPI();
+    updateCycler->stop();
 
     // Step 2/3: Process the data through the format converter "Meebo".
     //           (This class extends the "Meebo" class.)

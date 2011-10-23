@@ -64,7 +64,9 @@ public:
 public slots:
     /* FUNCTIONS */
     virtual StdFormat* from(QHash<QString, QVariant> data);
+    virtual StdFormat* from();
     virtual void to(StdFormat* $log);
+    virtual void to();
 
 signals:
     void updateProgress(int meter, QString description);

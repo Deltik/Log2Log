@@ -103,6 +103,10 @@ StdFormat* StdConverter::from(QHash<QString, QVariant> data)
 {
     return final;
 }
+StdFormat* StdConverter::from()
+{
+    return from(data.toHash());
+}
 
 /**
  * Process "To" Request
@@ -110,16 +114,21 @@ StdFormat* StdConverter::from(QHash<QString, QVariant> data)
 void StdConverter::to(StdFormat* $log)
 {
 }
+void StdConverter::to()
+{
+    to(final);
+}
 
 /**
  * Thread Runner
  */
 void StdConverter::run()
 {
+    QTimer *runner;
     if (mode == "from")
-        from(data.toHash());
+        runner->singleShot(0, this, SLOT(from()));
     else if (mode == "to")
-        to(final);
+        runner->singleShot(0, this, SLOT(to()));
 
     exec();
 }

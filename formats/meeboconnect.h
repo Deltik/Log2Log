@@ -125,7 +125,7 @@ public:
     virtual void dbgAPI(QString data = "wallpapers-unbranded=stock/null", QString category = "javascript", QString sessionKey = "", qint64 clientId = NULL);
     virtual void infoAPI(QString username_with, QString username_self, QString protocol, QString sessionKey = "", qint64 clientId = NULL);
     virtual QString getChatLogAPI(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString sessionKey = "", qint64 clientId = NULL);
-    virtual void initialize(QString username, QString password, qint32 threshold = 5);
+    virtual void initialize(QString username, QString password, qint32 threshold = 10);
     virtual void parseContacts(QMap<QString, QVariant> data);
     virtual void getAllChatLogs();
     virtual QMap<QString, QVariant> pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success);
@@ -133,6 +133,7 @@ public:
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void interpretReply(QString reply);
+    void updateCycle();
 
 private:
     virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
@@ -145,6 +146,7 @@ signals:
 private:
     // API Handler
     Api *api;
+    QTimer *updateCycler;
     // API Response
     QString response;
     // Use TBD
