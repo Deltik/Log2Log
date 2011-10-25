@@ -501,9 +501,10 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
     }
     //  Launch event cycler
     updateCycler = new QTimer();
-    updateCycler->setInterval(0);
+    //updateCycler->setInterval(0);
     connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
     updateCycler->start();
+    /*DEBUG*/qDebug() << "updateCycler should have started!";
 }
 
 
