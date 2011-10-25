@@ -114,7 +114,7 @@ void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNe
 /**
  * Accesses the Meebo API directly.
  */
-void MeeboConnect::accessAPI(QString command, bool https, QString context)
+void MeeboConnect::accessAPI(QString command, bool https)
 {
     QString url;
     QString s = "";

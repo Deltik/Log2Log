@@ -39,81 +39,6 @@ class MeeboConnect : public Meebo
     Q_OBJECT
 
 public:
-    // TODO: build enum from XML
-    enum Protocol {
-        AIM,
-        AujourdhuiCom,
-        BasilMarket,
-        Batanga,
-        Bebo,
-        CafeMom,
-        ChessCom,
-        DailyStrength,
-        DanceTrippin,
-        Decayenne,
-        Dhingana,
-        Digzibit,
-        EBaumsWorld,
-        ExperienceProject,
-        Fabulously40,
-        Fanpop,
-        Flirtbox,
-        Flixster,
-        FootPets,
-        Footytube,
-        FunnelBrain,
-        Fupa,
-        GaiaOnline,
-        Gamevance,
-        GGL,
-        GirlsAskGuys,
-        GoogleTalk,
-        Ibeatyou,
-        ICQ,
-        ImageChef,
-        Indianelement,
-        Jabber,
-        JacketFlap,
-        JamLegend,
-        JustinTV,
-        Klikot,
-        MingleVille,
-        MixPod,
-        MuchGames,
-        Multiply,
-        MySpace,
-        MyWorkster,
-        MyYearbook,
-        ObesityHelp,
-        OperationSports,
-        Outspark,
-        Packed,
-        PlayedOnline,
-        Playfire,
-        Playlist,
-        PrisonBlock,
-        Quepasa,
-        SharedReviews,
-        SocialSplash,
-        Sonico,
-        Sparkteens,
-        Tehkseven,
-        TrailBlazers,
-        Ukstream,
-        UltimateGuitar,
-        UrFooz,
-        Wadja,
-        Wattpad,
-        WeightLossBuddy,
-        WindowsLive,
-        Wixi,
-        Xomba,
-        Yahoo,
-        Yonja,
-        Zinch,
-        Zorpia
-    };
-
     MeeboConnect();
     virtual QMap<QString, QVariant> startAPI(QString bcookie = "");
     virtual QMap<QString, QVariant> updateAPI(qint32 rev = NULL, QString sessionKey = "", qint64 clientId = NULL, qint32 focustime = NULL);
@@ -138,7 +63,7 @@ public slots:
 private:
     virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
     virtual void accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false);
-    virtual void accessAPI(QString command, bool https = false, QString context = "");
+    virtual void accessAPI(QString command, bool https = false);
 
 signals:
     void apiReply(QString);
