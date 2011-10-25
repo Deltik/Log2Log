@@ -59,6 +59,7 @@ public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void interpretReply(QString reply);
     void updateCycle();
+    void gotAllChatLogs();
 
 private:
     virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);

@@ -219,7 +219,7 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
 /// Looping Update
 void MeeboConnect::updateCycle()
 {
-    //this->updateAPI();
+    this->updateAPI();
     qDebug() << "Update Cycle!";
 }
 
@@ -501,10 +501,10 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
     }
     //  Launch event cycler
     updateCycler = new QTimer();
-    //updateCycler->setInterval(0);
+    updateCycler->setInterval(1000);
     connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
     updateCycler->start();
-    /*DEBUG*/qDebug() << "updateCycler should have started!";
+    /*DEBUG*/qDebug() << "updateCycler should have started! [with 1 second interval]";
 }
 
 
@@ -647,28 +647,16 @@ QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QV
     return QVariantMap();
 }
 
-/**
- * Process "From" Request
- */
-StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
+/********/
+// All the chat logs have been fetched, stop the timer and finish the work
+void MeeboConnect::gotAllChatLogs()
 {
-    // Step 1/3: Fetch the data.
-    username = data["username"].toString();
-    password = data["password"].toString();
-    //  Authentication
-    this->initialize(username, password);
-    //  Catch error during authentication
-    if (!errorText.isNull())
-    {
-        emit error(errorText);
-        return new StdFormat();
-    }
-    //  Get all the chat logs
-    this->getAllChatLogs();
+    updateCycler->stop();
+
     //  Bail out of Meebo
     updateProgress(25, "Signing off...");
     this->signOffAPI();
-    updateCycler->stop();
+    //updateCycler->stop();
 
     // Step 2/3: Process the data through the format converter "Meebo".
     //           (This class extends the "Meebo" class.)
@@ -686,5 +674,36 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     emit finished();
-    return this->final;
+}
+/********/
+
+/**
+ * Process "From" Request
+ */
+StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
+{
+    // Step 1/3: Fetch the data.
+    username = data["username"].toString();
+    password = data["password"].toString();
+    //  Authentication
+    this->initialize(username, password);
+    //  Catch error during authentication
+    if (!errorText.isNull())
+    {
+        emit error(errorText);
+        return new StdFormat();
+    }
+
+    QFuture<void> *future = new QFuture<void>();
+    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
+
+    // Create a new thread dedicated to get all the chat logs
+    // While that happens, the timer will keep running, ensuring connectivity with Meebo
+    *future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
+    watcher->setFuture(*future);
+    // When all the chat logs are fetched, send a signal advising so
+    connect(watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+
+    // TODO: this architecture needs to be adapted to the new getAllChatLogs() thread and the gotAllChatLogs() slot
+    return this->final; //
 }
