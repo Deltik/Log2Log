@@ -167,7 +167,7 @@ void Conversion::collectData()
     $FROM->setInput(QVariant(from));
     $FROM->start();
 
-    connect($FROM, SIGNAL(finished()), this, SLOT(convertTo()));
+    connect($FROM, SIGNAL(finished()), this, SLOT(convertTo()), Qt::QueuedConnection);
 
     emit done();
 }
@@ -186,7 +186,7 @@ void Conversion::convertFrom()
 void Conversion::convertTo()
 {
     // Go!
-    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
+    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
 
     final = $FROM->getData(new StdFormat);
     $TO->setMode("to");

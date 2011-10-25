@@ -499,6 +499,11 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
         this->parseContacts(temp);
         updateProgress(NULL, "Cycle #" + QVariant(i).toString() + ", counted " + QVariant(contacts.size()).toString() + " buddies");
     }
+    //  Launch event cycler
+    updateCycler = new QTimer();
+    updateCycler->setInterval(0);
+    connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
+    updateCycler->start();
 }
 
 
@@ -657,11 +662,6 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
         emit error(errorText);
         return new StdFormat();
     }
-    //  Launch event cycler
-    updateCycler = new QTimer;
-    updateCycler->setInterval(0);
-    connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
-    updateCycler->start();
     //  Get all the chat logs
     this->getAllChatLogs();
     //  Bail out of Meebo
