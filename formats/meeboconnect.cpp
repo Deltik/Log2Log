@@ -66,14 +66,14 @@ MeeboConnect::MeeboConnect()
  * @param bool https Set to TRUE for HTTPS access mode
  * @param bool mcmd Whether to use Meebo's MCMD or CMD API
  */
-void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd)
+void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd, Api *apporter)
 {
     if (mcmd)
         func = "mcmd/" + func;
     else
         func = "cmd/" + func;
 
-    return this->accessMeebo(func, params, op, https);
+    return this->accessMeebo(func, params, op, https, apporter);
 }
 
 /**
@@ -82,7 +82,7 @@ void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetw
  * accesses the API,
  * and returns the output.
  */
-void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https)
+void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, Api *apporter)
 {
     if (op == QNetworkAccessManager::PostOperation)
     {
@@ -108,26 +108,30 @@ void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNe
         func += "?" + get.encodedQuery();
     }
 
-    this->accessAPI(func, https);
+    this->accessAPI(func, https, apporter);
 }
 
 /**
  * Accesses the Meebo API directly.
  */
-void MeeboConnect::accessAPI(QString command, bool https)
+void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
 {
+    // Set default API handler
+    if (apporter == NULL)
+        apporter = api;
+
     QString url;
     QString s = "";
     if (https == true)
         s = "s";
     url = "http"+s+"://www.meebo.com/" + command;
-    api->setURL(url);
+    apporter->setURL(url);
 
     //connect(api, SIGNAL(requestComplete(QString)), this, SLOT(interpretReply(QString)));
 
-    api->start();
-    api->wait();
-    interpretReply(api->str);
+    apporter->start();
+    apporter->wait();
+    interpretReply(apporter->str);
 }
 
 /**
@@ -205,8 +209,9 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
 
     //connect(this, SIGNAL(apiReply(QString)), SLOT(updateAPIReply(QString)));
 
-    // Access API!
-    this->accessCMD("events", params, QNetworkAccessManager::GetOperation, true, true);
+    // Access API! (Important: Use the updateApi API handler for asynchronism.)
+    updateApi = new Api();
+    this->accessCMD("events", params, QNetworkAccessManager::GetOperation, true, true, updateApi);
 
     // Get reply
     QMap<QString, QVariant> data = Json::parse(response).toMap();
@@ -219,8 +224,12 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
 /// Looping Update
 void MeeboConnect::updateCycle()
 {
-    this->updateAPI();
+    qint64 temp = QDateTime::currentMSecsSinceEpoch();
     qDebug() << "Update Cycle!";
+    this->updateAPI();
+    qint64 temp2 = QDateTime::currentMSecsSinceEpoch();
+    qint64 timetook = temp2 - temp;
+    qDebug() << "Update Cycle Complete! Took: " + QVariant((double)timetook/1000).toString() + "s";
 }
 
 /**

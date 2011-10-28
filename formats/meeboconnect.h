@@ -62,9 +62,9 @@ public slots:
     void gotAllChatLogs();
 
 private:
-    virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false);
-    virtual void accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false);
-    virtual void accessAPI(QString command, bool https = false);
+    virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false, Api* apporter = NULL);
+    virtual void accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, Api* apporter = NULL);
+    virtual void accessAPI(QString command, bool https = false, Api* apporter = NULL);
 
 signals:
     void apiReply(QString);
@@ -72,6 +72,7 @@ signals:
 private:
     // API Handler
     Api *api;
+    Api *updateApi;
     QTimer *updateCycler;
     // API Response
     QString response;
