@@ -39,6 +39,7 @@ public:
     void fetch();
     void setURL(QUrl $url);
     void setURL(QString $url);
+    void setHeader(QString key, QString value);
     void addPost(QString index, QString data);
     QString getReply();
     // Reply (fetched by getURL())
