@@ -70,4 +70,11 @@ TRANSLATIONS += en.ts \
 OTHER_FILES += \
     resources/formats.xml
 
-
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+    binaries.path = $$PREFIX/bin
+    binaries.files = $$TARGET
+    INSTALLS += binaries
+}
