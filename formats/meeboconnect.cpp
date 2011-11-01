@@ -463,10 +463,6 @@ void MeeboConnect::initialize(QString username, QString password)
     this->updateProgress(0, "Asking Meebo for a session key...");
     this->startAPI();
 
-    // Start a connection with Meebo.
-    this->updateProgress(0, "Connecting to Meebo...");
-    this->updateAPI();
-
     // Log in.
     this->updateProgress(0, "Logging in...");
     this->loginAPI(username, password);
