@@ -123,7 +123,7 @@ void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
 
     QString url;
     QString s = "";
-    if (https == true/*DEBUG*/&&false)
+    if (https == true)
         s = "s";
     url = "http"+s+"://www.meebo.com/" + command;
     apporter->setURL(url);
