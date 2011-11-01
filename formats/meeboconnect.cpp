@@ -65,6 +65,7 @@ MeeboConnect::MeeboConnect()
  * @param QNetworkAccessManager::Operation Operation of QNetworkAccessManager
  * @param bool https Set to TRUE for HTTPS access mode
  * @param bool mcmd Whether to use Meebo's MCMD or CMD API
+ * @param Api apporter The API handler to use
  */
 void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd, Api *apporter)
 {
@@ -122,10 +123,12 @@ void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
 
     QString url;
     QString s = "";
-    if (https == true)
+    if (https == true/*DEBUG*/&&false)
         s = "s";
     url = "http"+s+"://www.meebo.com/" + command;
     apporter->setURL(url);
+
+    // Fake Web browser settings
 
     //connect(api, SIGNAL(requestComplete(QString)), this, SLOT(interpretReply(QString)));
 
@@ -448,13 +451,9 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
  * Collect Initial Meebo Account Data
  * @param QString username Meebo ID
  * @param QString password The password required to connect to a Meebo ID
- * @param int threshold (optional) Data capture threshold
- *                       Higher : Slower, captures more data
- *                       Lower  : Faster, captures less data
- *                       null   : Default capture threshold of 10
  * @returns array Collected data
  */
-void MeeboConnect::initialize(QString username, QString password, qint32 threshold)
+void MeeboConnect::initialize(QString username, QString password)
 {
     // Parameter Defaults
     if (username.isEmpty()) username = this->username;
@@ -474,14 +473,15 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
 
     // Here's where it gets difficult.
     // Capture data.
-    for (int i = 2; i <= threshold; i ++) //while (stillListingBuddies)
+    bool accountsAreStillConnecting = true;
+    while (accountsAreStillConnecting || revision < 3)
     {
         // Trickery and deception
-        if (i == 3)
+        if (revision == 3)
         {
-            //this->gwidAPI();
-            //this->dbgAPI();
-            /*XXX: EXPERIMENTAL*/this->quitAPI();
+            this->gwidAPI();
+            this->dbgAPI();
+            /*XXX: EXPERIMENTAL*///this->quitAPI();
         }
         // Get next update.
         QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
@@ -506,7 +506,11 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
 
         // Parse contacts from a Meebo "events".
         this->parseContacts(temp);
-        updateProgress(NULL, "Cycle #" + QVariant(i).toString() + ", counted " + QVariant(contacts.size()).toString() + " buddies");
+        updateProgress(NULL, "Cycle #" + QVariant(revision).toString() + ", " + QVariant(num_of_accounts_left).toString() + " left, counted " + QVariant(contacts.size()).toString() + " buddies");
+
+        // Break out if accounts are no longer connecting.
+        if (num_of_accounts_left <= 0)
+            accountsAreStillConnecting = false;
     }
     //  Launch event cycler
     updateCycler = new QTimer();
@@ -530,6 +534,9 @@ void MeeboConnect::initialize(QString username, QString password, qint32 thresho
 void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
 {
     QList<QVariant> updates = data["events"].toList();
+
+    // Reset statistics
+    num_of_accounts_left = 0;
 
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
@@ -556,6 +563,16 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
             {
                 this->parseContacts(data_ext);
                 break;
+            }
+        }
+
+        // # Extract User Information #
+        //   (for Statistics)
+        if (event_category == "user")
+        {
+            if (event_type == "connecting")
+            {
+                num_of_accounts_left ++;
             }
         }
 
@@ -611,6 +628,9 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
             }
         }
     }
+
+    // Statistics
+    num_of_accounts_left = accounts.size() - num_of_accounts_left;
 }
 
 /**

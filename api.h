@@ -39,11 +39,14 @@ public:
     void fetch();
     void setURL(QUrl $url);
     void setURL(QString $url);
-    void setHeader(QString key, QString value);
     void addPost(QString index, QString data);
+    void applyCookies();
     QString getReply();
+    QString getHeaders();
     // Reply (fetched by getURL())
     QString str;
+    QHash<QString, QString> hed;
+    QNetworkCookieJar* jar;
 
 protected:
     void run();

@@ -74,10 +74,23 @@ void Api::addPost(QString index, QString data)
 }
 
 /**
+ * Apply Collected Cookies
+ */
+void Api::applyCookies()
+{
+    ;
+}
+
+/**
  * Get URL using QNetworkRequest
  */
 void Api::getURL()
 {
+    jar = new QNetworkCookieJar();
+    if (this->hed.contains("Set-Cookie"))
+        jar->setCookiesFromUrl(QNetworkCookie::parseCookies(this->hed["Set-Cookie"].toAscii()), this->$url);
+    netHandler->setCookieJar(jar);
+
     if (!$_POST.isEmpty())
     {
         netHandler->post(request, $_POST);
@@ -92,6 +105,15 @@ void Api::getURL()
 void Api::replyFinished(QNetworkReply* pReply)
 {
     QByteArray data = pReply->readAll();
+    // Store header
+    hed = QHash<QString, QString>();
+    QList<QPair<QByteArray, QByteArray> > hedPair = pReply->rawHeaderPairs();
+    for (int i = 0; i < hedPair.size(); i ++)
+    {
+        QPair<QByteArray, QByteArray> temp = hedPair[i];
+        hed[QString(temp.first)] = QString(temp.second);
+    }
+    // Store content
     str = QVariant(data).toString();
     emit requestComplete(str);
     emit finished();

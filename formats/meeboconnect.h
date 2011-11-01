@@ -50,7 +50,7 @@ public:
     virtual void dbgAPI(QString data = "wallpapers-unbranded=stock/null", QString category = "javascript", QString sessionKey = "", qint64 clientId = NULL);
     virtual void infoAPI(QString username_with, QString username_self, QString protocol, QString sessionKey = "", qint64 clientId = NULL);
     virtual QString getChatLogAPI(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString sessionKey = "", qint64 clientId = NULL);
-    virtual void initialize(QString username, QString password, qint32 threshold = 10);
+    virtual void initialize(QString username, QString password);
     virtual void parseContacts(QMap<QString, QVariant> data);
     virtual void getAllChatLogs();
     virtual QMap<QString, QVariant> pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success);
@@ -76,8 +76,10 @@ private:
     QTimer *updateCycler;
     // API Response
     QString response;
-    // Use TBD
+    // Statistics Variables
     int total;
+    int num_of_accounts;
+    int num_of_accounts_left;
     // Session Variables
     QString sessionKey;
     qint64 sessionId;
