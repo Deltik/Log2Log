@@ -381,6 +381,30 @@ void MeeboConnect::dbgAPI(QString data, QString category, QString sessionKey, qi
 }
 
 /**
+ * Make a Request for Meebo Preferences
+ */
+void MeeboConnect::prefgetAPI(QList<QVariant> items, QString sessionKey, qint64 clientId)
+{
+    // Parameter Defaults
+    if (sessionKey.isEmpty()) sessionKey = this->sessionKey;
+    if (!clientId) clientId = this->clientId;
+    if (items.isEmpty()) { for (int i = 0; i <= 4; i ++) items << "wallpaper" + QVariant(i).toString(); }
+
+    // Set up parameters to send with the function
+    QHash<QString, QString> params;
+    params.insert("clientId", QVariant(clientId).toString());
+    for (int i = 0; i < items.size(); i ++)
+    {
+        params.insert("name" + QVariant(i).toString(), items[i].toString());
+    }
+    params.insert("num", QVariant(items.size()).toString());
+    params.insert("sessionKey", sessionKey);
+
+    // Access API!
+    this->accessCMD("prefget", params, QNetworkAccessManager::PostOperation, true, true);
+}
+
+/**
  * Load into the Server some Buddy Information
  * @param QString username_with The other chatter's username
  * @param QString username_self Account to which the contact is assigned
@@ -440,6 +464,44 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
     return response;
 }
 
+/**
+ * Alternate Get Chat Log (for Meebo Mobile Phone App)
+ * @param QString username_with The other chatter's username
+ * @param QString username_self Account to which the log is assigned
+ * @param QString protocol Protocol to which the log is assigned
+ * @param QString username_meebo Meebo username associated with sessionKey
+ * @param QString timePeriod Conversation entry ID, defaults to "latest"
+ * @param QString sessionKey (optional) Meebo's generated unique session ID
+ * @returns QString An HTML representation of a chat log entry for the Meebo mobile phone app
+ */
+QString MeeboConnect::getChatLogAlt(QString username_with, QString username_self, QString protocol, QString username_meebo, QString timePeriod, QString sessionKey)
+{
+    // Parameter Defaults
+    if (username_meebo.isEmpty()) username_meebo = this->username;
+    if (sessionKey.isEmpty()) sessionKey = this->sessionKey;
+    if (timePeriod.isEmpty()) timePeriod = "latest";
+
+    // Access Logs Stash!
+    api->setURL("https://logs.meebo.com/chatlogs/" +
+                QUrl::toPercentEncoding(username_meebo) +
+                "/" +
+                QUrl::toPercentEncoding(protocol) +
+                "/" +
+                QUrl::toPercentEncoding(username_self) +
+                "/" +
+                QUrl::toPercentEncoding(username_with) +
+                "/" +
+                QUrl::toPercentEncoding(timePeriod) +
+                "/?k=" +
+                sessionKey);
+    api->start();
+    api->wait();
+    interpretReply(api->str);qDebug()<<"LOGDATASTARTSWITH: "+response;
+
+    // Return the response
+    return response;
+}
+
 
 /**
  * ############################################
@@ -478,15 +540,14 @@ void MeeboConnect::initialize(QString username, QString password)
 
     // Here's where it gets difficult.
     // Capture data.
-    bool accountsAreStillConnecting = true;
-    while (accountsAreStillConnecting || revision < 3)
+    while (revision < 5)
     {
         // Trickery and deception
         if (revision == 3)
         {
             this->gwidAPI();
             this->dbgAPI();
-            /*XXX: EXPERIMENTAL*///this->quitAPI();
+            this->prefgetAPI();
         }
         // Get next update.
         QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
@@ -512,17 +573,13 @@ void MeeboConnect::initialize(QString username, QString password)
         // Parse contacts from a Meebo "events".
         this->parseContacts(temp);
         updateProgress(NULL, "Cycle #" + QVariant(revision).toString() + ", counted " + QVariant(contacts.size()).toString() + " buddies");
-
-        // Break out if accounts are no longer connecting.
-        if (revision == 5)
-            accountsAreStillConnecting = false;
     }
+
     //  Launch event cycler
     updateCycler = new QTimer();
-    updateCycler->setInterval(1000);
+    updateCycler->setInterval(0);
     connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
     updateCycler->start();
-    /*DEBUG*/qDebug() << "updateCycler should have started! [with 1 second interval]";
 }
 
 

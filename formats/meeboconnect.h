@@ -48,8 +48,10 @@ public:
     virtual void mauserlistAPI(QString sessionKey = "", qint64 clientId = NULL, QString username_meebo = "");
     virtual void gwidAPI(QString sessionKey = "", qint64 clientId = NULL, QString username_meebo = "");
     virtual void dbgAPI(QString data = "wallpapers-unbranded=stock/null", QString category = "javascript", QString sessionKey = "", qint64 clientId = NULL);
+    virtual void prefgetAPI(QList<QVariant> items = QVariant().toList(), QString sessionKey = "", qint64 clientId = NULL);
     virtual void infoAPI(QString username_with, QString username_self, QString protocol, QString sessionKey = "", qint64 clientId = NULL);
     virtual QString getChatLogAPI(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString sessionKey = "", qint64 clientId = NULL);
+    virtual QString getChatLogAlt(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString timePeriod = "", QString sessionKey = "");
     virtual void initialize(QString username, QString password);
     virtual void parseContacts(QMap<QString, QVariant> data);
     virtual void getAllChatLogs();
