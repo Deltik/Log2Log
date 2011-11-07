@@ -182,6 +182,7 @@ QMap<QString, QVariant> MeeboConnect::startAPI(QString bcookie)
     this->sessionKey = data["sessionKey"].toString();
     this->sessionId  = data["sessionId"] .toLongLong();
     this->clientId   = data["clientId"]  .toLongLong();
+    this->revision   = 0;
 
     // Return the response, just to be nice. ;)
     return data;
@@ -197,7 +198,6 @@ QMap<QString, QVariant> MeeboConnect::startAPI(QString bcookie)
 QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, qint64 clientId, qint32 focustime)
 {
     // Parameter Defaults
-    /*DEBUG*/ revision = 0;
     if (!rev) rev = this->revision;
     if (sessionKey.isEmpty()) sessionKey = this->sessionKey;
     if (!clientId) clientId = this->clientId;
@@ -206,7 +206,7 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
     // Set up parameters to send with the function
     QHash<QString, QString> params;
     params.insert("sessionKey", sessionKey);
-    params.insert("rev", QVariant(revision).toString());
+    params.insert("rev", QVariant(rev).toString());
     params.insert("clientId", QVariant(clientId).toString());
     params.insert("focustime", QVariant(focustime).toString());
 
@@ -467,6 +467,15 @@ void MeeboConnect::initialize(QString username, QString password)
     this->updateProgress(0, "Logging in...");
     this->loginAPI(username, password);
 
+    // Collect from info::attached
+    this->updateProgress(0, "Getting a list of your accounts...");
+    QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
+    this->parseContacts(temp);
+
+    // cmd/gwid and mcmd/dbg (I don't know what those do.)
+    this->gwidAPI();
+    this->dbgAPI();
+
     // Here's where it gets difficult.
     // Capture data.
     bool accountsAreStillConnecting = true;
@@ -502,10 +511,10 @@ void MeeboConnect::initialize(QString username, QString password)
 
         // Parse contacts from a Meebo "events".
         this->parseContacts(temp);
-        updateProgress(NULL, "Cycle #" + QVariant(revision).toString() + ", " + QVariant(num_of_accounts_left).toString() + " left, counted " + QVariant(contacts.size()).toString() + " buddies");
+        updateProgress(NULL, "Cycle #" + QVariant(revision).toString() + ", counted " + QVariant(contacts.size()).toString() + " buddies");
 
         // Break out if accounts are no longer connecting.
-        if (num_of_accounts_left <= 0)
+        if (revision == 5)
             accountsAreStillConnecting = false;
     }
     //  Launch event cycler
@@ -530,9 +539,6 @@ void MeeboConnect::initialize(QString username, QString password)
 void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
 {
     QList<QVariant> updates = data["events"].toList();
-
-    // Reset statistics
-    num_of_accounts_left = 0;
 
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
@@ -559,16 +565,6 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
             {
                 this->parseContacts(data_ext);
                 break;
-            }
-        }
-
-        // # Extract User Information #
-        //   (for Statistics)
-        if (event_category == "user")
-        {
-            if (event_type == "connecting")
-            {
-                num_of_accounts_left ++;
             }
         }
 
@@ -624,9 +620,6 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
             }
         }
     }
-
-    // Statistics
-    num_of_accounts_left = accounts.size() - num_of_accounts_left;
 }
 
 /**

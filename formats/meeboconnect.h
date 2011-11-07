@@ -78,8 +78,6 @@ private:
     QString response;
     // Statistics Variables
     int total;
-    int num_of_accounts;
-    int num_of_accounts_left;
     // Session Variables
     QString sessionKey;
     qint64 sessionId;
