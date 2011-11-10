@@ -60,8 +60,11 @@ public:
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void interpretReply(QString reply);
+    virtual void updateAPIHandler(QMap<QString, QVariant> data);
     void updateCycle();
     void gotAllChatLogs();
+    void startDownloadingChatLogs();
+    void abort(QString msg = "");
 
 private:
     virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false, Api* apporter = NULL);
@@ -70,6 +73,11 @@ private:
 
 signals:
     void apiReply(QString);
+    void updateAPIReply(QMap<QString, QVariant>);
+    void updateAPIError(QString);
+    void updateAPIStatusAccounts();
+    void updateAPIStatusBuddies();
+    void updateAPIStatusConnected();
 
 private:
     // API Handler

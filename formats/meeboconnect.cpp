@@ -227,12 +227,39 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
 /// Looping Update
 void MeeboConnect::updateCycle()
 {
-    qint64 temp = QDateTime::currentMSecsSinceEpoch();
-    qDebug() << "Update Cycle!";
-    this->updateAPI();
-    qint64 temp2 = QDateTime::currentMSecsSinceEpoch();
-    qint64 timetook = temp2 - temp;
-    qDebug() << "Update Cycle Complete! Took: " + QVariant((double)timetook/1000).toString() + "s";
+    // This is where it gets difficult.
+    // Capture data.
+
+    // Trickery and deception
+    if (revision == 3)
+    {
+        this->gwidAPI();
+        this->dbgAPI();
+        this->prefgetAPI();
+    }
+    // Get next update.
+    QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
+
+    // Detect incorrect authentication.
+    if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":1,\"description\":\"Username does not exist\"}}}"))
+    {
+        emit updateAPIError("Incorrect username");
+    }
+    else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect password\"}}}"))
+    {
+        emit updateAPIError("Incorrect password");
+    }
+    else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect username or password.\"}}}"))
+    {
+        emit updateAPIError("Incorrect username or password");
+    }
+    else if (response.contains("\"data\":{\"stat\":\"fail\",\"msg\":\"Invalid request\",\"errorcode\":3}"))
+    {
+        emit updateAPIError("Bad login information");
+    }
+
+    // Broadcast the Meebo "events" data.
+    emit updateAPIReply(temp);
 }
 
 /**
@@ -496,7 +523,7 @@ QString MeeboConnect::getChatLogAlt(QString username_with, QString username_self
                 sessionKey);
     api->start();
     api->wait();
-    interpretReply(api->str);qDebug()<<"LOGDATASTARTSWITH: "+response;
+    interpretReply(api->str);
 
     // Return the response
     return response;
@@ -529,53 +556,8 @@ void MeeboConnect::initialize(QString username, QString password)
     this->updateProgress(0, "Logging in...");
     this->loginAPI(username, password);
 
-    // Collect from info::attached
-    this->updateProgress(0, "Getting a list of your accounts...");
-    QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
-    this->parseContacts(temp);
-
-    // cmd/gwid and mcmd/dbg (I don't know what those do.)
-    this->gwidAPI();
-    this->dbgAPI();
-
-    // Here's where it gets difficult.
-    // Capture data.
-    while (revision < 5)
-    {
-        // Trickery and deception
-        if (revision == 3)
-        {
-            this->gwidAPI();
-            this->dbgAPI();
-            this->prefgetAPI();
-        }
-        // Get next update.
-        QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
-
-        // Detect incorrect authentication.
-        if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":1,\"description\":\"Username does not exist\"}}}"))
-        {
-            errorText = "Incorrect username"; return;
-        }
-        else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect password\"}}}"))
-        {
-            errorText = "Incorrect password"; return;
-        }
-        else if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect username or password.\"}}}"))
-        {
-            errorText = "Incorrect username or password"; return;
-        }
-        else if (response.contains("\"data\":{\"stat\":\"fail\",\"msg\":\"Invalid request\",\"errorcode\":3}"))
-        {
-            errorText = "Bad login information"; return;
-        }
-
-        // Parse contacts from a Meebo "events".
-        this->parseContacts(temp);
-        updateProgress(NULL, "Cycle #" + QVariant(revision).toString() + ", counted " + QVariant(contacts.size()).toString() + " buddies");
-    }
-
     //  Launch event cycler
+    this->updateProgress(0, "Lauching keep-alive cycler...");
     updateCycler = new QTimer();
     updateCycler->setInterval(0);
     connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
@@ -588,6 +570,76 @@ void MeeboConnect::initialize(QString username, QString password)
  * # Log2Log Functions #
  * #####################
  */
+
+/**
+ * Handle Meebo "events"
+ * @param QVariantMap data "events" from Meebo, JSON-parsed
+ */
+void MeeboConnect::updateAPIHandler(QMap<QString, QVariant> data)
+{
+    // Always try to parse contacts, even if there are none in this update.
+    this->parseContacts(data);
+
+    QList<QVariant> updates = data["events"].toList();
+
+    // For each update event...
+    for (int i = 0; i < updates.size(); i ++)
+    {
+        // Extract update
+        QMap<QString, QVariant> update = updates.at(i).toMap();
+        QMap<QString, QVariant> data   = update["data"].toMap();
+
+        // Process the type of event
+        QStringList type_split = update["type"].toString().split("::");
+        QString event_category, event_type = "";
+        if (!type_split.isEmpty())
+            event_category = type_split.takeFirst();
+        if (!type_split.isEmpty())
+            event_type     = type_split.takeLast();
+
+        // # Extract External Session? #
+        if (event_category == "info" &&
+            event_type     == "external_session")
+        {
+            bool thereIsAnExternalSession = false;
+            QMap<QString, QVariant> data_ext = this->pullExternalSessionEvents(data, thereIsAnExternalSession);
+            if (thereIsAnExternalSession)
+            {
+                this->parseContacts(data_ext);
+                emit updateAPIStatusAccounts();
+                emit updateAPIStatusBuddies();
+                break;
+            }
+        }
+
+        // # Successfully Logged In #
+        if (event_category == "info" &&
+            event_type     == "attached")
+        {
+            emit updateAPIStatusConnected();
+        }
+
+        // # Receiving Accounts List #
+        if (event_category == "account")
+        {
+            if (event_type == "info" ||
+                event_type == "connecting" ||
+                event_type == "alias_changed" ||
+                event_type == "online")
+            {
+                this->parseContacts(data);
+                emit updateAPIStatusAccounts();
+            }
+        }
+
+        // # Receiving Buddies List #
+        if (event_category == "buddy")
+        {
+            this->parseContacts(data);
+            emit updateAPIStatusBuddies();
+        }
+    }
+}
 
 /**
  * Filter to Buddy List
@@ -753,22 +805,10 @@ void MeeboConnect::gotAllChatLogs()
 /********/
 
 /**
- * Process "From" Request
+ * Start Downloading Chat Logs
  */
-StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
+void MeeboConnect::startDownloadingChatLogs()
 {
-    // Step 1/3: Fetch the data.
-    username = data["username"].toString();
-    password = data["password"].toString();
-    //  Authentication
-    this->initialize(username, password);
-    //  Catch error during authentication
-    if (!errorText.isNull())
-    {
-        emit error(errorText);
-        return new StdFormat();
-    }
-
     QFuture<void> *future = new QFuture<void>();
     QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
 
@@ -778,6 +818,45 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     watcher->setFuture(*future);
     // When all the chat logs are fetched, send a signal advising so
     connect(watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+}
+
+/**
+ * Abort Log2Log Meebo Downloader!!!
+ * @param QString msg (optional) Message associated with the abortion
+ */
+void MeeboConnect::abort(QString msg)
+{
+    updateCycler->stop();
+
+    if (!msg.isEmpty())
+    {
+        emit error(msg);
+    }
+
+    this->terminate();
+}
+
+/**
+ * Process "From" Request
+ */
+StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
+{
+    // Step 0/3: Setup.
+    //  Process each Meebo "events" with the handler
+    connect(this, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
+    //  Abort conversion
+    connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
+    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
+
+    // Step 1/3: Fetch the data.
+    username = data["username"].toString();
+    password = data["password"].toString();
+    //  Authentication
+    this->initialize(username, password);
+
+    QEventLoop waiter;
+    connect(this, SIGNAL(finished()), &waiter, SLOT(quit()));
+    waiter.exec();
 
     // TODO: this architecture needs to be adapted to the new getAllChatLogs() thread and the gotAllChatLogs() slot
     return this->final; //
