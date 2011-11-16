@@ -736,9 +736,6 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
  */
 void MeeboConnect::getAllChatLogs()
 {
-    // Localize contacts variable (unless you want a corrupted double-linked list)
-    //QList<QMap<QString, QVariant> > contacts = this->contacts;
-
     for (int i = 0; i < contacts.size(); i ++)
     {qDebug()<<"CONTACTO NUMERO: "<<i<<" DE "<<contacts.size();
         // Extract
@@ -769,13 +766,10 @@ void MeeboConnect::getAllChatLogs()
 
         // Mark that this contact has already been processed.
         contact["done"]   = true;
-        contacts[i] = contact;
-        //this->contacts[i] = contact;
-    }
 
-    // Check to see if more contacts were acquired.
-    //if (contacts.size() != this->contacts.size())
-        //this->getAllChatLogs();
+        // Save downloaded chat log
+        contacts[i]       = contact;
+    }
 }
 
 /**
