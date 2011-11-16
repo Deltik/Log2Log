@@ -88,6 +88,7 @@ private:
     QString response;
     // Statistics Variables
     int total;
+    bool chatLogsAreDownloadingAlready;
     // Session Variables
     QString sessionKey;
     qint64 sessionId;

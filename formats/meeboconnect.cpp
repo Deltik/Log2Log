@@ -736,12 +736,24 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
  */
 void MeeboConnect::getAllChatLogs()
 {
+    // Localize contacts variable (unless you want a corrupted double-linked list)
+    //QList<QMap<QString, QVariant> > contacts = this->contacts;
+
     for (int i = 0; i < contacts.size(); i ++)
-    {
+    {qDebug()<<"CONTACTO NUMERO: "<<i<<" DE "<<contacts.size();
+        // Extract
         QMap<QString, QVariant> contact = contacts[i];
         QString alias = contact["alias"].toString();
+
+        // Skip if current contact is already processed
+        if (contact["done"].toBool())
+            continue;
+
+        // Default alias to username
         if (alias.trimmed().isEmpty())
             alias = contact["username"].toString();
+
+        // Display progress
         updateProgress((25 * i / contacts.size()),
                        "Downloading chat log " +
                        QVariant(i+1).toString() +
@@ -751,9 +763,19 @@ void MeeboConnect::getAllChatLogs()
                        " on " +
                        contact["protocol"].toString() +
                        ")");
+
+        // Get chat log with the contact
         contact["rawlog"] = this->getChatLogAPI(contact["username"].toString(), contact["account_assoc"].toString(), contact["protocol"].toString());
+
+        // Mark that this contact has already been processed.
+        contact["done"]   = true;
         contacts[i] = contact;
+        //this->contacts[i] = contact;
     }
+
+    // Check to see if more contacts were acquired.
+    //if (contacts.size() != this->contacts.size())
+        //this->getAllChatLogs();
 }
 
 /**
@@ -809,6 +831,13 @@ void MeeboConnect::gotAllChatLogs()
  */
 void MeeboConnect::startDownloadingChatLogs()
 {
+    // If this function has been called once before, refuse to run again.
+    if (chatLogsAreDownloadingAlready)
+        return;
+
+    // Lock this function so that it can only execute once.
+    chatLogsAreDownloadingAlready = true;
+
     QFuture<void> *future = new QFuture<void>();
     QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
 
