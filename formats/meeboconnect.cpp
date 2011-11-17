@@ -258,6 +258,12 @@ void MeeboConnect::updateCycle()
         emit updateAPIError("Bad login information");
     }
 
+    // Detect update failures.
+    else if (response.contains("<html>\n<head><title>502 Bad Gateway</title></head>\n<body bgcolor=\"white\">\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/0.7.62</center>\n</body>\n</html>"))
+    {
+        emit updateAPIError("Connection broke");
+    }
+
     // Broadcast the Meebo "events" data.
     emit updateAPIReply(temp);
 }
