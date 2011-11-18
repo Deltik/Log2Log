@@ -129,6 +129,7 @@ void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
     apporter->setURL(url);
 
     // Fake Web browser settings
+    apporter->setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:3.6.24) Gecko/20100101 Firefox/3.6.24");
 
     //connect(api, SIGNAL(requestComplete(QString)), this, SLOT(interpretReply(QString)));
 
@@ -489,6 +490,12 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
     params.insert("p", protocol);
     params.insert("sessionKey", sessionKey);
     params.insert("u", username_self);
+
+    api->setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+    api->setHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+    api->setHeader("Accept-Encoding", "gzip, deflate");
+    api->setHeader("Connection", "keep-alive");
+    api->setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     // Access API!
     this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);qDebug()<<"LOGDATASTARTSWITH: "+response.left(128);

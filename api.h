@@ -40,7 +40,7 @@ public:
     void setURL(QUrl $url);
     void setURL(QString $url);
     void addPost(QString index, QString data);
-    void applyCookies();
+    void setHeader(QString key, QString value);
     QString getReply();
     QString getHeaders();
     // Reply (fetched by getURL())

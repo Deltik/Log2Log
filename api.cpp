@@ -74,11 +74,11 @@ void Api::addPost(QString index, QString data)
 }
 
 /**
- * Apply Collected Cookies
+ * Set Header
  */
-void Api::applyCookies()
+void Api::setHeader(QString key, QString value)
 {
-    ;
+    request.setRawHeader(key.toAscii(), value.toAscii());
 }
 
 /**
@@ -93,18 +93,21 @@ void Api::getURL()
 
     if (!$_POST.isEmpty())
     {
-        netHandler->post(request, $_POST);
+        netHandler->post(request, $_POST);qDebug()<<"POST IS: "<<$_POST;
     }
     else
     {
         netHandler->get(request);
     }
+    params.clear();
     $_POST.clear();
 }
 
 void Api::replyFinished(QNetworkReply* pReply)
 {
+    // Localize reply into a variable
     QByteArray data = pReply->readAll();
+
     // Store header
     hed = QHash<QString, QString>();
     QList<QPair<QByteArray, QByteArray> > hedPair = pReply->rawHeaderPairs();
@@ -113,9 +116,11 @@ void Api::replyFinished(QNetworkReply* pReply)
         QPair<QByteArray, QByteArray> temp = hedPair[i];
         hed[QString(temp.first)] = QString(temp.second);
     }
+
     // Store content
     str = QVariant(data).toString();
     emit requestComplete(str);
+
     emit finished();
     this->quit();
 }
