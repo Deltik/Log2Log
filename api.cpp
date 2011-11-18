@@ -93,7 +93,7 @@ void Api::getURL()
 
     if (!$_POST.isEmpty())
     {
-        netHandler->post(request, $_POST);qDebug()<<"POST IS: "<<$_POST;
+        netHandler->post(request, $_POST);
     }
     else
     {

@@ -260,7 +260,8 @@ void MeeboConnect::updateCycle()
     }
 
     // Detect update failures.
-    else if (response.contains("<html>\n<head><title>502 Bad Gateway</title></head>\n<body bgcolor=\"white\">\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/0.7.62</center>\n</body>\n</html>"))
+    else if (response.contains("<title>400 Bad Request</title>") ||
+             response.contains("<title>502 Bad Gateway</title>"))
     {
         emit updateAPIError("Connection broke");
     }
@@ -592,66 +593,6 @@ void MeeboConnect::updateAPIHandler(QMap<QString, QVariant> data)
 {
     // Always try to parse contacts, even if there are none in this update.
     this->parseContacts(data);
-
-    QList<QVariant> updates = data["events"].toList();
-
-    // For each update event...
-    for (int i = 0; i < updates.size(); i ++)
-    {
-        // Extract update
-        QMap<QString, QVariant> update = updates.at(i).toMap();
-        QMap<QString, QVariant> data   = update["data"].toMap();
-
-        // Process the type of event
-        QStringList type_split = update["type"].toString().split("::");
-        QString event_category, event_type = "";
-        if (!type_split.isEmpty())
-            event_category = type_split.takeFirst();
-        if (!type_split.isEmpty())
-            event_type     = type_split.takeLast();
-
-        // # Extract External Session? #
-        if (event_category == "info" &&
-            event_type     == "external_session")
-        {
-            bool thereIsAnExternalSession = false;
-            QMap<QString, QVariant> data_ext = this->pullExternalSessionEvents(data, thereIsAnExternalSession);
-            if (thereIsAnExternalSession)
-            {
-                this->parseContacts(data_ext);
-                emit updateAPIStatusAccounts();
-                emit updateAPIStatusBuddies();
-                break;
-            }
-        }
-
-        // # Successfully Logged In #
-        if (event_category == "info" &&
-            event_type     == "attached")
-        {
-            emit updateAPIStatusConnected();
-        }
-
-        // # Receiving Accounts List #
-        if (event_category == "account")
-        {
-            if (event_type == "info" ||
-                event_type == "connecting" ||
-                event_type == "alias_changed" ||
-                event_type == "online")
-            {
-                this->parseContacts(data);
-                emit updateAPIStatusAccounts();
-            }
-        }
-
-        // # Receiving Buddies List #
-        if (event_category == "buddy")
-        {
-            this->parseContacts(data);
-            emit updateAPIStatusBuddies();
-        }
-    }
 }
 
 /**
@@ -662,6 +603,18 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
 {
     QList<QVariant> updates = data["events"].toList();
 
+    /**
+     *  _______ ____  _____   ____
+     * |__   __/ __ \|  __ \ / __ \
+     *    | | | |  | | |  | | |  | |
+     *    | | | |  | | |  | | |  | |
+     *    | | | |__| | |__| | |__| |
+     *    |_|  \____/|_____/ \____/
+     *
+     * Fix the broadcast system because MeeboConnect isn't recognizing where it
+     * is getting a list of buddies.
+     */
+
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
     {
@@ -676,6 +629,14 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
             event_category = type_split.takeFirst();
         if (!type_split.isEmpty())
             event_type     = type_split.takeLast();
+
+        // # Successfully Logged In #
+        if (event_category == "info" &&
+            event_type     == "attached")
+        {
+            // Broadcast: "Logged In"
+            emit updateAPIStatusConnected();
+        }
 
         // # Extract External Session? #
         if (event_category == "info" &&
@@ -709,6 +670,9 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 account["protocol"] = $_account_protocol;
                 account["alias"]    = $_account_alias;
                 accounts[$_account_username] = account;
+
+                // Broadcast: "Account Found"
+                emit updateAPIStatusAccounts();
             }
         }
 
@@ -739,9 +703,30 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 buddy["alias"]         = $_buddy_alias;
                 buddy["protocol"]      = $_buddy_protocol;
                 contacts << buddy;
+
+                // Broadcast: "Contact Found"
+                emit updateAPIStatusBuddies();
             }
         }
     }
+}
+
+/**
+ * Pull Data from External Session If Necessary
+ *  AKA Log2Log Compatibility When Logged In Elsewhere
+ *  AKA Meebo Events Loaded from another Session
+ * @param QVariantMap data Data collected by this->initialize()
+ * @param bool &success The Boolean to indicate if there are external events
+ * @returns QVariantMap The pulled data from the external session
+ */
+QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success)
+{
+    if (!data.value("data").isNull())
+    {
+        success = true;
+        return data["data"].toMap();
+    }
+    return QVariantMap();
 }
 
 /**
@@ -749,8 +734,15 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
  */
 void MeeboConnect::getAllChatLogs()
 {
+    // If this function has been called once before, refuse to run again.
+    if (chatLogsAreDownloadingAlready)
+        return;
+
+    // Lock this function so that it can only execute once.
+    chatLogsAreDownloadingAlready = true;
+
     for (int i = 0; i < contacts.size(); i ++)
-    {qDebug()<<"CONTACTO NUMERO: "<<i<<" DE "<<contacts.size();
+    {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
         // Extract
         QMap<QString, QVariant> contact = contacts[i];
         QString alias = contact["alias"].toString();
@@ -783,28 +775,14 @@ void MeeboConnect::getAllChatLogs()
         // Save downloaded chat log
         contacts[i]       = contact;
     }
+
+    updateProgress(25, "Logs downloaded. Starting interpretation...");
+    gotAllChatLogs();
 }
 
 /**
- * Pull Data from External Session If Necessary
- *  AKA Log2Log Compatibility When Logged In Elsewhere
- *  AKA Meebo Events Loaded from another Session
- * @param QVariantMap data Data collected by this->initialize()
- * @param bool &success The Boolean to indicate if there are external events
- * @returns QVariantMap The pulled data from the external session
+ * All the chat logs have been fetched, stop the timer and finish the work
  */
-QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success)
-{
-    if (!data.value("data").isNull())
-    {
-        success = true;
-        return data["data"].toMap();
-    }
-    return QVariantMap();
-}
-
-/********/
-// All the chat logs have been fetched, stop the timer and finish the work
 void MeeboConnect::gotAllChatLogs()
 {
     updateCycler->stop();
@@ -831,45 +809,28 @@ void MeeboConnect::gotAllChatLogs()
     // Step 3/3: Submit the Log2Log-standardized chat log array.
     emit finished();
 }
-/********/
-
-/**
- * Start Downloading Chat Logs
- */
-void MeeboConnect::startDownloadingChatLogs()
-{
-    // If this function has been called once before, refuse to run again.
-    if (chatLogsAreDownloadingAlready)
-        return;
-
-    // Lock this function so that it can only execute once.
-    chatLogsAreDownloadingAlready = true;
-
-    QFuture<void> *future = new QFuture<void>();
-    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
-
-    // Create a new thread dedicated to get all the chat logs
-    // While that happens, the timer will keep running, ensuring connectivity with Meebo
-    *future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
-    watcher->setFuture(*future);
-    // When all the chat logs are fetched, send a signal advising so
-    connect(watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
-}
 
 /**
  * Abort Log2Log Meebo Downloader!!!
  * @param QString msg (optional) Message associated with the abortion
  */
+void MeeboConnect::terminate()
+{
+    this->abort();
+}
 void MeeboConnect::abort(QString msg)
 {
+    // Stop update cycler
     updateCycler->stop();
+    // Tell all remaining processes to stop
+    suicide = true;
 
     if (!msg.isEmpty())
     {
         emit error(msg);
     }
 
-    this->terminate();
+    this->quit();
 }
 
 /**
@@ -882,7 +843,7 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     connect(this, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
     //  Abort conversion
     connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
-    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
+    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(getAllChatLogs()));
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
@@ -894,6 +855,6 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     connect(this, SIGNAL(finished()), &waiter, SLOT(quit()));
     waiter.exec();
 
-    // TODO: this architecture needs to be adapted to the new getAllChatLogs() thread and the gotAllChatLogs() slot
-    return this->final; //
+    // Step 3/3: Submit the Log2Log-standardized chat log array.
+    return this->final;
 }

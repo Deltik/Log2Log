@@ -54,17 +54,17 @@ public:
     virtual QString getChatLogAlt(QString username_with, QString username_self, QString protocol, QString username_meebo = "", QString timePeriod = "", QString sessionKey = "");
     virtual void initialize(QString username, QString password);
     virtual void parseContacts(QMap<QString, QVariant> data);
-    virtual void getAllChatLogs();
     virtual QMap<QString, QVariant> pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success);
+    virtual void terminate();
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void interpretReply(QString reply);
     virtual void updateAPIHandler(QMap<QString, QVariant> data);
-    void updateCycle();
-    void gotAllChatLogs();
-    void startDownloadingChatLogs();
-    void abort(QString msg = "");
+    virtual void updateCycle();
+    virtual void getAllChatLogs();
+    virtual void gotAllChatLogs();
+    virtual void abort(QString msg = "");
 
 private:
     virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false, Api* apporter = NULL);
@@ -89,6 +89,7 @@ private:
     // Statistics Variables
     int total;
     bool chatLogsAreDownloadingAlready;
+    bool suicide;
     // Session Variables
     QString sessionKey;
     qint64 sessionId;
