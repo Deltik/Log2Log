@@ -614,7 +614,7 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
      * Fix the broadcast system because MeeboConnect isn't recognizing where it
      * is getting a list of buddies.
      */
-
+qDebug()<<"I'M GETTING A BIG, FAT, UGLY UPDATE WITH SIZE: "<<updates.size();
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
     {
@@ -672,7 +672,7 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 accounts[$_account_username] = account;
 
                 // Broadcast: "Account Found"
-                emit updateAPIStatusAccounts();
+                emit updateAPIStatusAccounts();qDebug()<<"FOUND ACCOUNTS!!!";
             }
         }
 
@@ -705,7 +705,7 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 contacts << buddy;
 
                 // Broadcast: "Contact Found"
-                emit updateAPIStatusBuddies();
+                emit updateAPIStatusBuddies();qDebug()<<"FOUND BUDDIES!!!";
             }
         }
     }
@@ -740,6 +740,13 @@ void MeeboConnect::getAllChatLogs()
 
     // Lock this function so that it can only execute once.
     chatLogsAreDownloadingAlready = true;
+
+    // Delay download
+    for (int i = 5; i <= 1; i --)
+    {
+        updateProgress(0, "Download starting in " + QVariant(i).toString() + " seconds...");
+        wait(1000);
+    }
 
     for (int i = 0; i < contacts.size(); i ++)
     {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
@@ -814,10 +821,6 @@ void MeeboConnect::gotAllChatLogs()
  * Abort Log2Log Meebo Downloader!!!
  * @param QString msg (optional) Message associated with the abortion
  */
-void MeeboConnect::terminate()
-{
-    this->abort();
-}
 void MeeboConnect::abort(QString msg)
 {
     // Stop update cycler

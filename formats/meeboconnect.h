@@ -55,7 +55,6 @@ public:
     virtual void initialize(QString username, QString password);
     virtual void parseContacts(QMap<QString, QVariant> data);
     virtual QMap<QString, QVariant> pullExternalSessionEvents(QMap<QString, QVariant> data, bool &success);
-    virtual void terminate();
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
