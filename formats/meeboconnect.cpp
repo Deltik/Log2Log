@@ -49,6 +49,7 @@ MeeboConnect::MeeboConnect()
     final = new StdFormat();
     final->setClient("Meebo");
     api = new Api();
+    chatLogsAreDownloadingAlready = false;
 }
 
 
@@ -705,7 +706,7 @@ qDebug()<<"I'M GETTING A BIG, FAT, UGLY UPDATE WITH SIZE: "<<updates.size();
                 contacts << buddy;
 
                 // Broadcast: "Contact Found"
-                emit updateAPIStatusBuddies();qDebug()<<"FOUND BUDDIES!!!";
+                emit updateAPIStatusBuddies();qDebug()<<"FOUND BUDDIES!!! NOW AT: "<<contacts.size();
             }
         }
     }
@@ -733,7 +734,7 @@ QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QV
  * Collect All Chat Logs based on "contacts" list
  */
 void MeeboConnect::getAllChatLogs()
-{
+{qDebug()<<"TRIED TO CALL getAllChatLogs()";
     // If this function has been called once before, refuse to run again.
     if (chatLogsAreDownloadingAlready)
         return;
@@ -742,11 +743,11 @@ void MeeboConnect::getAllChatLogs()
     chatLogsAreDownloadingAlready = true;
 
     // Delay download
-    for (int i = 5; i <= 1; i --)
+    for (int i = 5; i >= 1; i --)
     {
         updateProgress(0, "Download starting in " + QVariant(i).toString() + " seconds...");
-        wait(1000);
-    }
+        this->sleep(1);
+    }qDebug()<<"WAITED DA TIMER";
 
     for (int i = 0; i < contacts.size(); i ++)
     {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
@@ -846,7 +847,7 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     connect(this, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
     //  Abort conversion
     connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
-    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(getAllChatLogs()));
+    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(getAllChatLogs()), Qt::QueuedConnection);
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
