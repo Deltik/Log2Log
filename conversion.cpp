@@ -160,6 +160,14 @@ void Conversion::collectData()
         from["files"] = files_get_contents(from["path"].toString());
     }
 
+    convertFrom();
+}
+
+/**
+ * Convert "From"
+ */
+void Conversion::convertFrom()
+{
     // Go!
     connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
     connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
@@ -173,18 +181,13 @@ void Conversion::collectData()
 }
 
 /**
- * Convert "From"
- */
-void Conversion::convertFrom()
-{
-    // Not Used
-}
-
-/**
  * Convert "To"
  */
 void Conversion::convertTo()
 {
+    // Destroy $FROM thread
+    $FROM->quit();
+
     // Go!
     connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
 
@@ -271,12 +274,13 @@ void Conversion::save()
 
 /**
  * Destructor
+ * @deprecated This is not used.
  */
 void Conversion::terminate_all()
 {
-    $FROM->terminate();
-    $TO->terminate();
-    this->terminate();
+    $FROM->quit();
+    $TO->quit();
+    this->quit();
 }
 
 /**

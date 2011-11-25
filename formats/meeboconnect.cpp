@@ -266,6 +266,10 @@ void MeeboConnect::updateCycle()
     {
         emit updateAPIError("Connection broke");
     }
+    else if (temp.value("events").toList().size() == 0)
+    {
+        emit updateAPIError("Looks like you're IP-banned... :(");
+    }
 
     // Broadcast the Meebo "events" data.
     emit updateAPIReply(temp);
@@ -572,7 +576,7 @@ void MeeboConnect::initialize(QString username, QString password)
     this->loginAPI(username, password);
 
     //  Launch event cycler
-    this->updateProgress(0, "Lauching keep-alive cycler...");
+    this->updateProgress(0, "Eagerly waiting for data...");
     updateCycler = new QTimer();
     updateCycler->setInterval(0);
     connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
@@ -734,21 +738,7 @@ QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QV
  * Collect All Chat Logs based on "contacts" list
  */
 void MeeboConnect::getAllChatLogs()
-{qDebug()<<"TRIED TO CALL getAllChatLogs()";
-    // If this function has been called once before, refuse to run again.
-    if (chatLogsAreDownloadingAlready)
-        return;
-
-    // Lock this function so that it can only execute once.
-    chatLogsAreDownloadingAlready = true;
-
-    // Delay download
-    for (int i = 5; i >= 1; i --)
-    {
-        updateProgress(0, "Download starting in " + QVariant(i).toString() + " seconds...");
-        this->sleep(1);
-    }qDebug()<<"WAITED DA TIMER";
-
+{
     for (int i = 0; i < contacts.size(); i ++)
     {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
         // Extract
@@ -783,9 +773,6 @@ void MeeboConnect::getAllChatLogs()
         // Save downloaded chat log
         contacts[i]       = contact;
     }
-
-    updateProgress(25, "Logs downloaded. Starting interpretation...");
-    gotAllChatLogs();
 }
 
 /**
@@ -819,6 +806,29 @@ void MeeboConnect::gotAllChatLogs()
 }
 
 /**
+ * Start Downloading Chat Logs
+ */
+void MeeboConnect::startDownloadingChatLogs()
+{
+    // If this function has been called once before, refuse to run again.
+    if (chatLogsAreDownloadingAlready)
+        return;
+
+    // Lock this function so that it can only execute once.
+    chatLogsAreDownloadingAlready = true;
+
+    QFuture<void> *future = new QFuture<void>();
+    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
+
+    // Create a new thread dedicated to get all the chat logs
+    // While that happens, the timer will keep running, ensuring connectivity with Meebo
+    *future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
+    watcher->setFuture(*future);
+    // When all the chat logs are fetched, send a signal advising so
+    connect(watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+}
+
+/**
  * Abort Log2Log Meebo Downloader!!!
  * @param QString msg (optional) Message associated with the abortion
  */
@@ -847,7 +857,7 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     connect(this, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
     //  Abort conversion
     connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
-    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(getAllChatLogs()), Qt::QueuedConnection);
+    connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();

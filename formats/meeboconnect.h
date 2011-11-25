@@ -61,6 +61,7 @@ public slots:
     virtual void interpretReply(QString reply);
     virtual void updateAPIHandler(QMap<QString, QVariant> data);
     virtual void updateCycle();
+    virtual void startDownloadingChatLogs();
     virtual void getAllChatLogs();
     virtual void gotAllChatLogs();
     virtual void abort(QString msg = "");
