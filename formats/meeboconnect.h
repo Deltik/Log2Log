@@ -78,6 +78,7 @@ signals:
     void updateAPIStatusAccounts();
     void updateAPIStatusBuddies();
     void updateAPIStatusConnected();
+    void chatLogsDownloaded();
 
 private:
     // API Handler
@@ -86,6 +87,9 @@ private:
     QTimer *updateCycler;
     // API Response
     QString response;
+    // Threading Variables
+    QFuture<void> future;
+    QFutureWatcher<void> watcher;
     // Statistics Variables
     int total;
     bool chatLogsAreDownloadingAlready;

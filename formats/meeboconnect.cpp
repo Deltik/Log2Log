@@ -607,18 +607,6 @@ void MeeboConnect::updateAPIHandler(QMap<QString, QVariant> data)
 void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
 {
     QList<QVariant> updates = data["events"].toList();
-
-    /**
-     *  _______ ____  _____   ____
-     * |__   __/ __ \|  __ \ / __ \
-     *    | | | |  | | |  | | |  | |
-     *    | | | |  | | |  | | |  | |
-     *    | | | |__| | |__| | |__| |
-     *    |_|  \____/|_____/ \____/
-     *
-     * Fix the broadcast system because MeeboConnect isn't recognizing where it
-     * is getting a list of buddies.
-     */
 qDebug()<<"I'M GETTING A BIG, FAT, UGLY UPDATE WITH SIZE: "<<updates.size();
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
@@ -773,13 +761,15 @@ void MeeboConnect::getAllChatLogs()
         // Save downloaded chat log
         contacts[i]       = contact;
     }
+
+    emit chatLogsDownloaded();qDebug()<<"CONFIRMED COMPLETED DOWNLOADING!!!";
 }
 
 /**
  * All the chat logs have been fetched, stop the timer and finish the work
  */
 void MeeboConnect::gotAllChatLogs()
-{
+{qDebug()<<"STARTING INTERPRETATION...";
     updateCycler->stop();
 
     //  Bail out of Meebo
@@ -817,15 +807,13 @@ void MeeboConnect::startDownloadingChatLogs()
     // Lock this function so that it can only execute once.
     chatLogsAreDownloadingAlready = true;
 
-    QFuture<void> *future = new QFuture<void>();
-    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
+    // When all the chat logs are fetched, send a signal advising so
+    //connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
 
     // Create a new thread dedicated to get all the chat logs
     // While that happens, the timer will keep running, ensuring connectivity with Meebo
-    *future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
-    watcher->setFuture(*future);
-    // When all the chat logs are fetched, send a signal advising so
-    connect(watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+    future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
+    watcher.setFuture(future);
 }
 
 /**
@@ -858,6 +846,8 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     //  Abort conversion
     connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
     connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
+    //  Interpret upon successful download
+    connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
