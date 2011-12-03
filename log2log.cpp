@@ -295,10 +295,8 @@ void Log2Log::stopConversion()
  */
 void Log2Log::setProgress(int meter, QString description)
 {
-    /*DEBUG*/qDebug() << "SETTING PROGRESS: " << meter << " - " << description;
     progress.setValue(meter);
     proginfo.setText(description);
-    /*DEBUG*/qDebug() << "SET-TED PROGRESS: " << meter << " - " << description;
 }
 
 /**
