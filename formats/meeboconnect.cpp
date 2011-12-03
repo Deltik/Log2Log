@@ -763,6 +763,11 @@ void MeeboConnect::getAllChatLogs()
     }
 
     emit chatLogsDownloaded();qDebug()<<"CONFIRMED COMPLETED DOWNLOADING!!!";
+
+    /* DEBUG */
+    // Since the signal-slot relationship doesn't work,
+    // invoke gotAllChatLogs() ourselves!
+    gotAllChatLogs();
 }
 
 /**
@@ -846,8 +851,8 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     //  Abort conversion
     connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
     connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
-    //  Interpret upon successful download
-    connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+    //  Interpret upon successful download (does not work for unknown reason!)
+    //connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
