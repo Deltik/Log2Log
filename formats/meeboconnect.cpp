@@ -836,8 +836,6 @@ void MeeboConnect::abort(QString msg)
     {
         emit error(msg);
     }
-
-    this->quit();
 }
 
 /**

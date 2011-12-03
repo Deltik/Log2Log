@@ -71,6 +71,7 @@ private:
 signals:
     void done();
     void updateProgress(int meter, QString description);
+    void conversionError(QString description);
 };
 
 #endif // CONVERSION_H

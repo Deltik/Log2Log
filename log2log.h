@@ -62,6 +62,7 @@ private slots:
     void startConversion();
     void stopConversion();
     void setProgress(int meter, QString description);
+    void handleConversionError(QString description);
     void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:

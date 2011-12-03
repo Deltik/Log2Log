@@ -263,6 +263,7 @@ void Log2Log::startConversion()
     /* ### GO!!! ### */
     cvHandler = new Conversion(ui);
     connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
+    connect(cvHandler, SIGNAL(conversionError(QString)), this, SLOT(handleConversionError(QString)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(finished()), this, SLOT(stopConversion()), Qt::QueuedConnection);
 
     cvHandler->start();
@@ -283,7 +284,7 @@ void Log2Log::stopConversion()
     if (proginfo.text() != "Conversion complete!")
     {
         progress.hide();
-        proginfo.hide();
+        //proginfo.hide();
     }
     
     /* STOP */
@@ -296,6 +297,19 @@ void Log2Log::stopConversion()
 void Log2Log::setProgress(int meter, QString description)
 {
     progress.setValue(meter);
+    proginfo.setText(description);
+}
+
+/**
+ * Handle Conversion Error
+ */
+void Log2Log::handleConversionError(QString description)
+{
+    // Abort conversion immediately
+    this->stopConversion();
+
+    // Display the error
+    proginfo.show();
     proginfo.setText(description);
 }
 

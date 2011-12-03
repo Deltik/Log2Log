@@ -348,5 +348,7 @@ void Conversion::error(QString text)
     $TO->terminate();
 
     if (!text.isEmpty())
-        updateProgress(NULL, "<span style=\"color: red;\"><strong>ERROR:</strong> " + text + "</span>");
+        emit conversionError("<span style=\"color: red;\"><strong>ERROR:</strong> " + text + "</span>");
+    else
+        emit conversionError("");
 }
