@@ -287,7 +287,7 @@ void Log2Log::stopConversion()
     }
     
     /* STOP */
-    cvHandler->quit();
+    cvHandler->terminate();
 }
 
 /**

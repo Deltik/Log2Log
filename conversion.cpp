@@ -186,7 +186,7 @@ void Conversion::convertFrom()
 void Conversion::convertTo()
 {
     // Destroy $FROM thread
-    $FROM->quit();
+    $FROM->terminate();
 
     // Go!
     connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
@@ -278,9 +278,9 @@ void Conversion::save()
  */
 void Conversion::terminate_all()
 {
-    $FROM->quit();
-    $TO->quit();
-    this->quit();
+    $FROM->terminate();
+    $TO->terminate();
+    this->terminate();
 }
 
 /**
