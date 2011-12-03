@@ -169,7 +169,7 @@
 		</support>
 	</format>
 	<format id="meeboconnect">
-		<name>[PRE-ALPHA] Meebo (download)</name>
+                <name>[ALPHA] Meebo (download)</name>
 		<client>Meebo</client>
 		<class>MeeboConnect</class>
 		<icon>:/images/services/MeeboConnect.png</icon>
