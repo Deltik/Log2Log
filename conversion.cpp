@@ -189,7 +189,8 @@ void Conversion::convertTo()
     $FROM->terminate();
 
     // Go!
-    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)), Qt::QueuedConnection);
+    connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
+    connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     final = $FROM->getData(new StdFormat);
     $TO->setMode("to");
@@ -350,5 +351,5 @@ void Conversion::error(QString text)
     if (!text.isEmpty())
         emit conversionError("<span style=\"color: red;\"><strong>ERROR:</strong> " + text + "</span>");
     else
-        emit conversionError("");
+        emit conversionError("<span style=\"color: red;\"><strong>ERROR:</strong> Conversion failed</span>");
 }

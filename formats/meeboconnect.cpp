@@ -718,7 +718,18 @@ QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QV
  */
 void MeeboConnect::getAllChatLogs()
 {
-    for (int i = 0; i < contacts.size(); i ++)
+    // Create the downloader instance.
+    downloader = new MeeboConnectDownloader(this);
+
+    // Link signals from the downloader.
+    connect(downloader, SIGNAL(updateProgress(int, QString)), this, SLOT(passProgressProto(int, QString)));
+    connect(downloader, SIGNAL(chatLogsDownloaded()), waiter, SLOT(quit()));
+
+    // Start downloading all chat logs
+    downloader->start();
+
+    // Implementation below removed
+    /*for (int i = 0; i < contacts.size(); i ++)
     {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
         // Extract
         QMap<QString, QVariant> contact = contacts[i];
@@ -754,41 +765,16 @@ void MeeboConnect::getAllChatLogs()
     }
 
     emit chatLogsDownloaded();qDebug()<<"CONFIRMED COMPLETED DOWNLOADING!!!";
-
-    /* DEBUG */
-    // Since the signal-slot relationship doesn't work,
-    // invoke gotAllChatLogs() ourselves!
-    gotAllChatLogs();
+    waiter->exit();*/
 }
 
 /**
  * All the chat logs have been fetched, stop the timer and finish the work
+ * @deprecated Implementation moved to MeeboConnect::from()
  */
 void MeeboConnect::gotAllChatLogs()
-{qDebug()<<"STARTING INTERPRETATION...";
-    updateCycler->stop();
-
-    //  Bail out of Meebo
-    updateProgress(25, "Signing off...");
-    this->signOffAPI();
-    //updateCycler->stop();
-
-    // Step 2/3: Process the data through the format converter "Meebo".
-    //           (This class extends the "Meebo" class.)
-    for (int i = 0; i < contacts.size(); i ++)
-    {
-        QMap<QString, QVariant> contact = contacts[i];
-
-        this->setAccount(contact.value("account_assoc").toString());
-        this->setProtocol(contact.value("protocol").toString());
-        this->setWith(contact.value("username").toString());
-
-        this->load(contact.value("rawlog"));
-        updateProgress((25 * (i+1) / contacts.size()) + 25, "Interpreted " + QVariant(i+1).toString() + "/" + QVariant(contacts.size()).toString() + " logs...");
-    }
-
-    // Step 3/3: Submit the Log2Log-standardized chat log array.
-    emit finished();
+{
+    // Implementation removed
 }
 
 /**
@@ -803,6 +789,10 @@ void MeeboConnect::startDownloadingChatLogs()
     // Lock this function so that it can only execute once.
     chatLogsAreDownloadingAlready = true;
 
+    getAllChatLogs();
+
+    // Implementation below removed
+    /*
     // When all the chat logs are fetched, send a signal advising so
     //connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
 
@@ -810,6 +800,7 @@ void MeeboConnect::startDownloadingChatLogs()
     // While that happens, the timer will keep running, ensuring connectivity with Meebo
     future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
     watcher.setFuture(future);
+    */
 }
 
 /**
@@ -827,6 +818,23 @@ void MeeboConnect::abort(QString msg)
     {
         emit error(msg);
     }
+}
+
+/**
+ * Getter: Pointer to Contacts List
+ * @returns QList<QMap<QString, QVariant> >* Contacts list
+ */
+QList<QMap<QString, QVariant> >* MeeboConnect::getContacts()
+{
+    return &contacts;
+}
+
+/**
+ * Setter: Pass Progress UI
+ */
+void MeeboConnect::passProgressProto(int meter, QString description)
+{
+    emit updateProgress(meter, description);
 }
 
 /**
@@ -849,10 +857,34 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
     //  Authentication
     this->initialize(username, password);
 
-    QEventLoop waiter;
-    connect(this, SIGNAL(finished()), &waiter, SLOT(quit()));
-    waiter.exec();
+    //  Wait for the chat logs to finish downloading...
+    waiter = new QEventLoop();
+    /* IMPLEMENTATION REMOVED: *///connect(this, SIGNAL(chatLogsDownloaded()), waiter, SLOT(quit()));
+    waiter->exec();
+
+    qDebug()<<"STARTING INTERPRETATION...";
+    updateCycler->stop();
+
+    //  Bail out of Meebo
+    updateProgress(25, "Signing off...");
+    this->signOffAPI();
+
+    // Step 2/3: Process the data through the format converter "Meebo".
+    //           (This class extends the "Meebo" class.)
+    for (int i = 0; i < contacts.size(); i ++)
+    {
+        QMap<QString, QVariant> contact = contacts[i];
+
+        this->setAccount(contact.value("account_assoc").toString());
+        this->setProtocol(contact.value("protocol").toString());
+        this->setWith(contact.value("username").toString());
+
+        if (!contact.value("rawlog").toString().isEmpty())
+            this->load(contact.value("rawlog"));
+        updateProgress((25 * (i+1) / contacts.size()) + 25, "Interpreted " + QVariant(i+1).toString() + "/" + QVariant(contacts.size()).toString() + " logs...");
+    }
 
     // Step 3/3: Submit the Log2Log-standardized chat log array.
+    emit finished();
     return this->final;
 }
