@@ -44,6 +44,12 @@ Meebo::Meebo()
  */
 void Meebo::load(QVariant $log_raw)
 {
+    // If File Not Meebo Chat Log
+    if ($log_raw.toString().indexOf("<br/><hr size=1><div class='ImChatHeader'>") == -1)
+    {
+        return;
+    }
+
     QString $log_refined; // whitespace fixed and trimmed version of $log_raw
     QString $log_date; // temporarily stores the date of a chatlog
     QStringList $log_entries; // contains all the chatlogs to be processed
@@ -57,7 +63,7 @@ void Meebo::load(QVariant $log_raw)
     QString $send_sep = "<span class='ImSend'>"; // to separator
     QString $sender;
     QString $message;
-    QTextEdit $htmldecoder; // workaround
+    QTextDocument $htmldecoder; // workaround
     bool $receiving, $sending;
     bool $self_set, $with_set;
     qint8 $accuracy, $specificity;

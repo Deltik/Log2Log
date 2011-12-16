@@ -495,7 +495,7 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
     params.insert("u", username_self);
 
     // Access API!
-    this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);qDebug()<<"LOGDATASTARTSWITH: "+response.left(128);
+    this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);qDebug()<<"LOGDATASTARTSWITH: "+response.left(512);
 
     // Return the response
     return response;
