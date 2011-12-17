@@ -66,7 +66,7 @@ public:
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     /* Meebo API Raw Access Functions */
-    virtual void interpretReply(QString reply);
+    virtual QString interpretReply(QString reply);
     /* Meebo API Normal Access Functions */
     virtual void updateCycle();
     /* Log2Log Functions */
@@ -80,9 +80,9 @@ public slots:
 
 private:
     /* Meebo API Raw Access Functions */
-    virtual void accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false, Api* apporter = NULL);
-    virtual void accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, Api* apporter = NULL);
-    virtual void accessAPI(QString command, bool https = false, Api* apporter = NULL);
+    virtual QString accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, bool mcmd = false, Api* apporter = NULL);
+    virtual QString accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https = false, Api* apporter = NULL);
+    virtual QString accessAPI(QString command, bool https = false, Api* apporter = NULL);
 
 signals:
     void apiReply(QString);

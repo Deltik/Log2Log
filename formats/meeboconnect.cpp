@@ -68,7 +68,7 @@ MeeboConnect::MeeboConnect()
  * @param bool mcmd Whether to use Meebo's MCMD or CMD API
  * @param Api apporter The API handler to use
  */
-void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd, Api *apporter)
+QString MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd, Api *apporter)
 {
     if (mcmd)
         func = "mcmd/" + func;
@@ -84,7 +84,7 @@ void MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetw
  * accesses the API,
  * and returns the output.
  */
-void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, Api *apporter)
+QString MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, Api *apporter)
 {
     if (op == QNetworkAccessManager::PostOperation)
     {
@@ -110,13 +110,14 @@ void MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNe
         func += "?" + get.encodedQuery();
     }
 
-    this->accessAPI(func, https, apporter);
+    return this->accessAPI(func, https, apporter);
 }
 
 /**
  * Accesses the Meebo API directly.
+ * @return The interpreted API result
  */
-void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
+QString MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
 {
     // Set default API handler
     if (apporter == NULL)
@@ -133,16 +134,18 @@ void MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
 
     apporter->start();
     apporter->wait();
-    interpretReply(apporter->str);
+    return interpretReply(apporter->str);
 }
 
 /**
  * Interpret API reply
+ * @returns The downloaded API content
  */
-void MeeboConnect::interpretReply(QString reply)
+QString MeeboConnect::interpretReply(QString reply)
 {
     response = reply;
     emit apiReply(reply);
+    return reply;
 }
 
 
