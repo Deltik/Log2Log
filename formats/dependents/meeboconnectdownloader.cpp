@@ -25,6 +25,9 @@
 
 #include "meeboconnectdownloader.h"
 
+/**
+ * Constructor
+ */
 MeeboConnectDownloader::MeeboConnectDownloader(MeeboConnect* mommy)
 {
     // Link the parent locally.
@@ -35,6 +38,9 @@ MeeboConnectDownloader::MeeboConnectDownloader(MeeboConnect* mommy)
     moveToThread(this);
 }
 
+/**
+ * Thread Runner
+ */
 void MeeboConnectDownloader::run()
 {
     QTimer::singleShot(0, this, SLOT(getAllChatLogs()));
@@ -42,10 +48,15 @@ void MeeboConnectDownloader::run()
     exec();
 }
 
+/**
+ * Download All Chat Logs in the Contacts List
+ */
 void MeeboConnectDownloader::getAllChatLogs()
 {
     for (int i = 0; i < contacts->size(); i ++)
-    {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts->size();
+    {
+        /* DEBUG */qDebug() << "DOWNLOADING CONTACT NUMBER: " << i+1 << " OF " << contacts->size();
+
         // Make sure there was no terminate request.
         if (!parent->isRunning())
         {
@@ -86,5 +97,6 @@ void MeeboConnectDownloader::getAllChatLogs()
         contacts->operator [](i) = contact;
     }
 
-    emit chatLogsDownloaded();qDebug()<<"CONFIRMED COMPLETED DOWNLOADING!!!";
+    emit chatLogsDownloaded();
+    /* DEBUG */qDebug() << "CONFIRMING COMPLETION OF CHAT LOG DOWNLOADING";
 }

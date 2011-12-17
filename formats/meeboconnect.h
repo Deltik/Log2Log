@@ -69,13 +69,9 @@ public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     /* Meebo API Raw Access Functions */
     virtual QString interpretReply(QString reply);
-    /* Meebo API Normal Access Functions */
-    virtual void updateCycle();
     /* Log2Log Functions */
     virtual void updateAPIHandler(QMap<QString, QVariant> data);
     virtual void startDownloadingChatLogs();
-    virtual void getAllChatLogs();
-    virtual void gotAllChatLogs();
     virtual void abort(QString msg = "");
     int* getRevision();
     QList<QMap<QString, QVariant> >* getContacts();
@@ -89,8 +85,6 @@ private:
 
 signals:
     void apiReply(QString);
-    void updateAPIReply(QMap<QString, QVariant>);
-    void updateAPIError(QString);
     void updateAPIStatusAccounts();
     void updateAPIStatusBuddies();
     void updateAPIStatusConnected();

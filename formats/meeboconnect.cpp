@@ -130,8 +130,6 @@ QString MeeboConnect::accessAPI(QString command, bool https, Api *apporter)
     url = "http"+s+"://www.meebo.com/" + command;
     apporter->setURL(url);
 
-    //connect(api, SIGNAL(requestComplete(QString)), this, SLOT(interpretReply(QString)));
-
     apporter->start();
     apporter->wait();
     return interpretReply(apporter->str);
@@ -173,8 +171,6 @@ QMap<QString, QVariant> MeeboConnect::startAPI(QString bcookie)
     params.insert("bcookie", bcookie);
     params.insert("ts", QVariant(QDateTime::currentMSecsSinceEpoch()).toString());
 
-    //connect(this, SIGNAL(apiReply(QString)), SLOT(startAPIReply(QString)));
-
     // Access API!
     QString result = this->accessCMD("start", params, QNetworkAccessManager::GetOperation, true, true);
 
@@ -213,8 +209,6 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
     params.insert("clientId", QVariant(clientId).toString());
     params.insert("focustime", QVariant(focustime).toString());
 
-    //connect(this, SIGNAL(apiReply(QString)), SLOT(updateAPIReply(QString)));
-
     // Access API! (Important: Use the updateApi API handler for asynchronism.)
     updateApi = new Api();
     updateApi->hed = api->hed;
@@ -229,57 +223,6 @@ QMap<QString, QVariant> MeeboConnect::updateAPI(qint32 rev, QString sessionKey, 
 
     // Return the response
     return data;
-}
-/// Looping Update
-void MeeboConnect::updateCycle()
-{
-    // This is where it gets difficult.
-    // Capture data.
-
-    // Trickery and deception
-    if (revision == 3)
-    {
-        this->gwidAPI();
-        this->dbgAPI();
-        this->prefgetAPI();
-    }
-    // Get next update.
-    QMap<QString, QVariant> temp = this->updateAPI();
-    QString result = temp.value("raw").toString();
-
-    /* DEBUG */qDebug()<<"BLATANT UPDATE CYCLE!!!"<<result;
-
-    // Detect incorrect authentication.
-    if (result.contains("\"protocol\":\"meebo\",\"data\":{\"type\":1,\"description\":\"Username does not exist\"}}}"))
-    {
-        emit updateAPIError("Incorrect username");
-    }
-    else if (result.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect password\"}}}"))
-    {
-        emit updateAPIError("Incorrect password");
-    }
-    else if (result.contains("\"protocol\":\"meebo\",\"data\":{\"type\":2,\"description\":\"Incorrect username or password.\"}}}"))
-    {
-        emit updateAPIError("Incorrect username or password");
-    }
-    else if (result.contains("\"data\":{\"stat\":\"fail\",\"msg\":\"Invalid request\",\"errorcode\":3}"))
-    {
-        emit updateAPIError("Bad login information");
-    }
-
-    // Detect update failures.
-    else if (result.contains("<title>400 Bad Request</title>") ||
-             result.contains("<title>502 Bad Gateway</title>"))
-    {
-        emit updateAPIError("Connection broke");
-    }
-    else if (temp.value("events").toList().size() == 0)
-    {
-        emit updateAPIError("Looks like you're IP-banned... :(");
-    }
-
-    // Broadcast the Meebo "events" data.
-    emit updateAPIReply(temp);
 }
 
 /**
@@ -505,7 +448,8 @@ QString MeeboConnect::getChatLogAPI(QString username_with, QString username_self
     params.insert("u", username_self);
 
     // Access API!
-    QString result = this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);qDebug()<<"LOGDATASTARTSWITH: "+result.left(512);
+    QString result = this->accessCMD("cl_proxy", params, QNetworkAccessManager::PostOperation, true, false);
+    /* DEBUG */qDebug() << "LOGDATASTARTSWITH: " + result.left(512);
 
     // Return the raw chat log
     return result;
@@ -582,12 +526,6 @@ void MeeboConnect::initialize(QString username, QString password)
     connect(updater, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
     connect(updater, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
     updater->start();
-
-    // Implementation removed: old timer
-    /*updateCycler = new QTimer();
-    updateCycler->setInterval(0);
-    connect(updateCycler, SIGNAL(timeout()), this, SLOT(updateCycle()));
-    updateCycler->start();*/
 }
 
 
@@ -614,8 +552,6 @@ void MeeboConnect::updateAPIHandler(QMap<QString, QVariant> data)
 void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
 {
     QList<QVariant> updates = data["events"].toList();
-
-    /* DEBUG */qDebug()<<"I'M GETTING A BIG, FAT, UGLY UPDATE WITH SIZE: "<<updates.size();
 
     // For each update event...
     for (int i = 0; i < updates.size(); i ++)
@@ -674,7 +610,7 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 accounts[$_account_username] = account;
 
                 // Broadcast: "Account Found"
-                emit updateAPIStatusAccounts();qDebug()<<"FOUND ACCOUNTS!!!";
+                emit updateAPIStatusAccounts();
             }
         }
 
@@ -707,7 +643,7 @@ void MeeboConnect::parseContacts(QMap<QString, QVariant> data)
                 contacts << buddy;
 
                 // Broadcast: "Contact Found"
-                emit updateAPIStatusBuddies();qDebug()<<"FOUND BUDDIES!!! NOW AT: "<<contacts.size();
+                emit updateAPIStatusBuddies();
             }
         }
     }
@@ -733,70 +669,6 @@ QMap<QString, QVariant> MeeboConnect::pullExternalSessionEvents(QMap<QString, QV
 }
 
 /**
- * Collect All Chat Logs based on "contacts" list
- */
-void MeeboConnect::getAllChatLogs()
-{
-    // Create the downloader instance.
-    downloader = new MeeboConnectDownloader(this);
-
-    // Link signals from the downloader.
-    connect(downloader, SIGNAL(updateProgress(int, QString)), this, SLOT(passProgressProto(int, QString)));
-    connect(downloader, SIGNAL(chatLogsDownloaded()), waiter, SLOT(quit()));
-
-    // Start downloading all chat logs
-    downloader->start();
-
-    // Implementation below removed
-    /*for (int i = 0; i < contacts.size(); i ++)
-    {qDebug()<<"CONTACTO NUMERO: "<<i+1<<" DE "<<contacts.size();
-        // Extract
-        QMap<QString, QVariant> contact = contacts[i];
-        QString alias = contact["alias"].toString();
-
-        // Skip if current contact is already processed
-        if (contact["done"].toBool())
-            continue;
-
-        // Default alias to username
-        if (alias.trimmed().isEmpty())
-            alias = contact["username"].toString();
-
-        // Display progress
-        updateProgress((25 * i / contacts.size()),
-                       "Downloading chat log " +
-                       QVariant(i+1).toString() +
-                       "/" + QVariant(contacts.size()).toString() +
-                       "... (" +
-                       alias +
-                       " on " +
-                       contact["protocol"].toString() +
-                       ")");
-
-        // Get chat log with the contact
-        contact["rawlog"] = this->getChatLogAPI(contact["username"].toString(), contact["account_assoc"].toString(), contact["protocol"].toString());
-
-        // Mark that this contact has already been processed.
-        contact["done"]   = true;
-
-        // Save downloaded chat log
-        contacts[i]       = contact;
-    }
-
-    emit chatLogsDownloaded();qDebug()<<"CONFIRMED COMPLETED DOWNLOADING!!!";
-    waiter->exit();*/
-}
-
-/**
- * All the chat logs have been fetched, stop the timer and finish the work
- * @deprecated Implementation moved to MeeboConnect::from()
- */
-void MeeboConnect::gotAllChatLogs()
-{
-    // Implementation removed
-}
-
-/**
  * Start Downloading Chat Logs
  */
 void MeeboConnect::startDownloadingChatLogs()
@@ -811,19 +683,17 @@ void MeeboConnect::startDownloadingChatLogs()
     // Announce to the client that the download is starting.
     updateProgress(0, "If this message persists, the download failed to start.");
 
-    // Get all chat logs! :D
-    getAllChatLogs();
+    /// Get all chat logs! :D
 
-    // Implementation below removed
-    /*
-    // When all the chat logs are fetched, send a signal advising so
-    //connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
+    // Create the downloader instance.
+    downloader = new MeeboConnectDownloader(this);
 
-    // Create a new thread dedicated to get all the chat logs
-    // While that happens, the timer will keep running, ensuring connectivity with Meebo
-    future = QtConcurrent::run(this, &MeeboConnect::getAllChatLogs);
-    watcher.setFuture(future);
-    */
+    // Link signals from the downloader.
+    connect(downloader, SIGNAL(updateProgress(int, QString)), this, SLOT(passProgressProto(int, QString)));
+    connect(downloader, SIGNAL(chatLogsDownloaded()), waiter, SLOT(quit()));
+
+    // Start downloading all chat logs
+    downloader->start();
 }
 
 /**
@@ -832,14 +702,17 @@ void MeeboConnect::startDownloadingChatLogs()
  */
 void MeeboConnect::abort(QString msg)
 {
-    // Stop update cycler
-    //updateCycler->stop();
     // Tell all remaining processes to stop
+    //  (Implementation removed. The suicide variable is not used.)
     suicide = true;
 
     if (!msg.isEmpty())
     {
         emit error(msg);
+    }
+    else
+    {
+        emit error("Failed to download chat logs");
     }
 }
 
@@ -875,13 +748,8 @@ void MeeboConnect::passProgressProto(int meter, QString description)
 StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
 {
     // Step 0/3: Setup.
-    //  Process each Meebo "events" with the handler
-    //connect(this, SIGNAL(updateAPIReply(QMap<QString,QVariant>)), SLOT(updateAPIHandler(QMap<QString,QVariant>)));
-    //  Abort conversion
-    //connect(this, SIGNAL(updateAPIError(QString)), SLOT(abort(QString)));
+    //  When buddies have been acquired, start downloading chat logs from them.
     connect(this, SIGNAL(updateAPIStatusBuddies()), SLOT(startDownloadingChatLogs()));
-    //  Interpret upon successful download (does not work for unknown reason!)
-    //connect(&watcher, SIGNAL(finished()), this, SLOT(gotAllChatLogs()));
 
     // Step 1/3: Fetch the data.
     username = data["username"].toString();
@@ -891,13 +759,13 @@ StdFormat* MeeboConnect::from(QHash<QString, QVariant> data)
 
     //  Wait for the chat logs to finish downloading...
     waiter = new QEventLoop(this);
-    /* IMPLEMENTATION REMOVED: *///connect(this, SIGNAL(chatLogsDownloaded()), waiter, SLOT(quit()));
     waiter->exec();
 
-    qDebug()<<"STARTING INTERPRETATION...";
-    //updateCycler->stop();
-
     //  Bail out of Meebo
+    if (updater)
+        updater->exit();
+    if (downloader)
+        downloader->exit();
     updateProgress(25, "Signing off...");
     this->signOffAPI();
 
