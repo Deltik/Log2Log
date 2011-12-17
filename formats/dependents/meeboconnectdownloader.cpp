@@ -31,6 +31,8 @@ MeeboConnectDownloader::MeeboConnectDownloader(MeeboConnect* mommy)
     parent = mommy;
     // Link the parent MeeboConnect's contacts list locally.
     this->contacts = parent->getContacts();
+    // Move to thread
+    moveToThread(this);
 }
 
 void MeeboConnectDownloader::run()
@@ -64,15 +66,15 @@ void MeeboConnectDownloader::getAllChatLogs()
             alias = contact["username"].toString();
 
         // Display progress
-        updateProgress((25 * i / contacts->size()),
-                       "Downloading chat log " +
-                       QVariant(i+1).toString() +
-                       "/" + QVariant(contacts->size()).toString() +
-                       "... (" +
-                       alias +
-                       " on " +
-                       contact["protocol"].toString() +
-                       ")");
+        emit updateProgress((25 * i / contacts->size()),
+                            "Downloading chat log " +
+                            QVariant(i+1).toString() +
+                            "/" + QVariant(contacts->size()).toString() +
+                            "... (" +
+                            alias +
+                            " on " +
+                            contact["protocol"].toString() +
+                            ")");
 
         // Get chat log with the contact
         contact["rawlog"] = parent->getChatLogAPI(contact["username"].toString(), contact["account_assoc"].toString(), contact["protocol"].toString());

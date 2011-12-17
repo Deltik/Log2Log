@@ -49,8 +49,8 @@ public slots:
     void getAllChatLogs();
 
 private:
-    MeeboConnect* parent;
-    QList<QMap<QString, QVariant> >* contacts;
+    MeeboConnect *parent;
+    QList<QMap<QString, QVariant> > *contacts;
     
 };
 

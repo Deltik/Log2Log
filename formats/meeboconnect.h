@@ -29,13 +29,15 @@
 
 #include "formats/stdformat.h"
 #include "formats/meebo.h"
+#include "formats/dependents/meeboconnectkeepalive.h"
 #include "formats/dependents/meeboconnectdownloader.h"
 #include "api.h"
 #include "json.h"
 #include <QVariant>
 #include <QNetworkAccessManager>
 
-// An object of this class is needed in MeeboConnect
+// An object of each of these classes is needed in MeeboConnect
+class MeeboConnectKeepAlive;
 class MeeboConnectDownloader;
 
 class MeeboConnect : public Meebo
@@ -75,6 +77,7 @@ public slots:
     virtual void getAllChatLogs();
     virtual void gotAllChatLogs();
     virtual void abort(QString msg = "");
+    int* getRevision();
     QList<QMap<QString, QVariant> >* getContacts();
     void passProgressProto(int meter, QString description);
 
@@ -101,7 +104,8 @@ private:
     // API Response
     QString response;
     // Threading Variables
-    MeeboConnectDownloader* downloader;
+    MeeboConnectKeepAlive *updater;
+    MeeboConnectDownloader *downloader;
     QFuture<void> future;
     QFutureWatcher<void> watcher;
     QEventLoop *waiter;

@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     formats/aim.cpp \
     formats/skype.cpp \
     formats/meeboconnect.cpp \
-    formats/dependents/meeboconnectdownloader.cpp
+    formats/dependents/meeboconnectdownloader.cpp \
+    formats/dependents/meeboconnectkeepalive.cpp
 
 HEADERS  += \
     log2log.h \
@@ -56,7 +57,8 @@ HEADERS  += \
     formats/aim.h \
     formats/skype.h \
     formats/meeboconnect.h \
-    formats/dependents/meeboconnectdownloader.h
+    formats/dependents/meeboconnectdownloader.h \
+    formats/dependents/meeboconnectkeepalive.h
 
 FORMS    += \
     log2log.ui \
