@@ -186,6 +186,7 @@ void Conversion::convertFrom()
 void Conversion::convertTo()
 {
     // Destroy $FROM thread
+    $FROM->disconnect();
     $FROM->terminate();
 
     // Go!
@@ -268,6 +269,8 @@ void Conversion::save()
         updateProgress((10 * c / log.count()) + 90, "Saved "+QVariant(c).toString()+"/"+QVariant(log.count()).toString()+" files...");
     }
 
+    $TO->disconnect();
+
     // ### DONE! ###
     updateProgress(100, "Conversion complete!");
     emit finished();
@@ -279,6 +282,8 @@ void Conversion::save()
  */
 void Conversion::terminate_all()
 {
+    $FROM->disconnect();
+    $TO->disconnect();
     $FROM->terminate();
     $TO->terminate();
     this->terminate();

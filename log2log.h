@@ -75,7 +75,6 @@ private:
     bool convertMode;
     QProgressBar progress;
     QLabel proginfo;
-    QMutex mutex;
     bool error;
     // Variables: Conversion
     Conversion *cvHandler;

@@ -283,13 +283,11 @@ void Log2Log::stopConversion()
     // Hide Progress UI
     if (proginfo.text() != "Conversion complete!")
     {
-        mutex.lock();
         progress.hide();
         if (error)
             error = false;
         else
             proginfo.hide();
-        mutex.unlock();
     }
     
     /* STOP */
@@ -301,10 +299,8 @@ void Log2Log::stopConversion()
  */
 void Log2Log::setProgress(int meter, QString description)
 {
-    mutex.lock();
     progress.setValue(meter);
     proginfo.setText(description);
-    mutex.unlock();
 }
 
 /**
@@ -316,10 +312,8 @@ void Log2Log::handleConversionError(QString description)
     this->stopConversion();
 
     // Display the error
-    mutex.lock();
     proginfo.show();
     proginfo.setText(description);
-    mutex.unlock();
 
     // Lock error message
     error = true;
