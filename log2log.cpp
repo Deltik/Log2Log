@@ -285,7 +285,10 @@ void Log2Log::stopConversion()
     {
         mutex.lock();
         progress.hide();
-        proginfo.hide();
+        if (error)
+            error = false;
+        else
+            proginfo.hide();
         mutex.unlock();
     }
     
@@ -317,6 +320,9 @@ void Log2Log::handleConversionError(QString description)
     proginfo.show();
     proginfo.setText(description);
     mutex.unlock();
+
+    // Lock error message
+    error = true;
 }
 
 /**

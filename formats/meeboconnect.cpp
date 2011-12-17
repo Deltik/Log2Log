@@ -237,7 +237,7 @@ void MeeboConnect::updateCycle()
         this->prefgetAPI();
     }
     // Get next update.
-    QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<response;
+    QMap<QString, QVariant> temp = this->updateAPI();qDebug()<<"BLATANT UPDATE CYCLE!!!"<<response;
 
     // Detect incorrect authentication.
     if (response.contains("\"protocol\":\"meebo\",\"data\":{\"type\":1,\"description\":\"Username does not exist\"}}}"))
