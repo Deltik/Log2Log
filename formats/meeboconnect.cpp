@@ -515,6 +515,11 @@ void MeeboConnect::initialize(QString username, QString password)
     // Get a session key from Meebo.
     this->updateProgress(0, "Asking Meebo for a session key...");
     this->startAPI();
+    // Check for errors.
+    if (this->sessionKey.isEmpty() ||
+            !this->sessionId       ||
+            !this->clientId)
+        emit error("Couldn't connect to Meebo");
 
     // Log in.
     this->updateProgress(0, "Logging in...");
