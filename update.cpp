@@ -274,9 +274,9 @@ bool Update::dig_the_information_out(QXmlStreamReader &reader)
             updateInfo["name"] = reader.text().toString();
         if (currentElement == "version" && (currentAttributes.value("type") == "stable" || !currentAttributes.hasAttribute("type")))
             updateInfo["version"] = reader.text().toString();
-        if (currentElement == "version" && currentAttributes.value("type") == "stable")
+        if (currentElement == "version" && currentAttributes.value("type") == "beta")
             updateInfo["version-beta"] = reader.text().toString();
-        if (currentElement == "version" && currentAttributes.value("type") == "stable")
+        if (currentElement == "version" && currentAttributes.value("type") == "dev")
             updateInfo["version-dev"] = reader.text().toString();
         if (currentElement == "summary")
             updateInfo["summary"] = reader.text().toString();
