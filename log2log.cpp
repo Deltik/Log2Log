@@ -369,9 +369,8 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     // Precision Index not as precise in destination
     if (srcFI->getTime() > 0 && dstFI->getTime() > 0 && srcFI->getPrecision() < dstFI->getPrecision())
     {
-        Helper* helper = new Helper();
-        QString srcPrecisionReadable = helper->whatPrecision(srcFI->getPrecision());
-        QString dstPrecisionReadable = helper->whatPrecision(dstFI->getPrecision());
+        QString srcPrecisionReadable = Helper::whatPrecision(srcFI->getPrecision());
+        QString dstPrecisionReadable = Helper::whatPrecision(dstFI->getPrecision());
         html += hError +
                 "Times are not as accurately saved. " +
                 srcFI->getName("display") +
@@ -388,7 +387,6 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     // Timezone handling
     if (dstFI->getTime() > 0 && dstFI->getTimezone() < srcFI->getTimezone())
     {
-        Helper* helper = new Helper();
         if (dstFI->getTimezone() == 1)
         {
             html += hWarn;
@@ -402,11 +400,11 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
         html += "In " +
                 srcFI->getName("display") +
                 ", timezones are <b>" +
-                helper->whatTrinary(srcFI->getTimezone()) +
+                Helper::whatTrinary(srcFI->getTimezone()) +
                 "</b>, but in " +
                 dstFI->getName("display") +
                 ", timezones are <b>" +
-                helper->whatTrinary(dstFI->getTimezone()) +
+                Helper::whatTrinary(dstFI->getTimezone()) +
                 "</b>.";
         if (dstFI->getTimezone() == 1)
             html += " Log2Log will split conversations to fit timezones together.";
