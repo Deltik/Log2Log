@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml network
+QT       += core gui declarative xml network
 
 TARGET = log2log
 TEMPLATE = app
@@ -34,7 +34,8 @@ SOURCES += main.cpp \
     formats/skype.cpp \
     formats/meeboconnect.cpp \
     formats/dependents/meeboconnectdownloader.cpp \
-    formats/dependents/meeboconnectkeepalive.cpp
+    formats/dependents/meeboconnectkeepalive.cpp \
+    formats/devconverter.cpp
 
 HEADERS  += \
     log2log.h \
@@ -58,7 +59,8 @@ HEADERS  += \
     formats/skype.h \
     formats/meeboconnect.h \
     formats/dependents/meeboconnectdownloader.h \
-    formats/dependents/meeboconnectkeepalive.h
+    formats/dependents/meeboconnectkeepalive.h \
+    formats/devconverter.h
 
 FORMS    += \
     log2log.ui \

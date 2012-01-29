@@ -27,10 +27,15 @@
 #ifndef CONVERSION_H
 #define CONVERSION_H
 
+#include "log2log.h"
 #include "ui_log2log.h"
 #include "formats/stdformat.h"
 #include "formats/stdconverter.h"
 #include <QtCore>
+
+// An object of each of these classes is needed in Conversion
+class Log2Log;
+class StdConverter;
 
 class Conversion : public QThread
 {
@@ -38,7 +43,7 @@ class Conversion : public QThread
 
 public:
     Conversion(QHash<QString, QVariant> import);
-    Conversion(Ui::Log2Log *ui);
+    Conversion(Log2Log *mommy);
     void terminate_all();
 
 protected:
@@ -50,10 +55,12 @@ public slots:
     void convertTo();
     void save();
     void setProgressProto(int meter, QString description);
+    void setDoGuiProto(QHash<QString, QVariant> doGuiParameters);
     void error(QString text);
 
 private:
-    // Variables: Main UI
+    // Variables: Parent Pointers
+    Log2Log *parent;
     Ui::Log2Log *ui;
     // Variables: Data Collection
     QString from_name;
@@ -71,6 +78,7 @@ private:
 signals:
     void done();
     void updateProgress(int meter, QString description);
+    void updateGui(QHash<QString, QVariant> doGuiParameters);
     void conversionError(QString description);
 };
 

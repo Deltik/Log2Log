@@ -1,5 +1,26 @@
 <?xml version="1.0" ?>
 <formats>
+	<format id="_dev">
+		<name>Log2Log Developer Test Format Converter</name>
+		<client>Log2Log-Dev</client>
+		<class>DevConverter</class>
+		<icon>:/images/services/Log2Log.png</icon>
+		<default>~/Documents/Chat Logs/BombShed</default>
+		<support>
+			<from>true</from>
+			<to>true</to>
+			<precision>0</precision>
+			<accuracy>false</accuracy>
+			<time>false</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>false</aliases>
+			<group>false</group>
+			<frominfo>This converter doesn't do anything practical. Don't use it if you don't know what this is!</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
 	<format id="adium">
 		<name>Adium</name>
 		<client>Adium</client>
@@ -185,7 +206,7 @@
 			<system>false</system>
 			<aliases>true</aliases>
 			<group>false</group>
-			<frominfo>Enter your Meebo username and password.</frominfo>
+			<frominfo>THIS CURRENTLY ONLY WORKS ON MAC AND LINUX!!! Enter your Meebo username and password.</frominfo>
 			<toinfo></toinfo>
 		</support>
 	</format>

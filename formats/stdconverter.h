@@ -30,7 +30,12 @@
 #define STDCONVERTER_H
 
 #include "formats/stdformat.h"
+#include "log2log.h"
+#include <QtGui>
 #include <QtCore>
+
+// An object of each of these classes is needed in StdConverter
+class Log2Log;
 
 class StdConverter : public QThread
 {
@@ -53,6 +58,7 @@ public:
     virtual StdFormat* getData(StdFormat*);
     virtual void run();
     /* VARIABLES */
+    Log2Log *boss;
     StdFormat* final;
     QString mode;
     QVariant data;
@@ -67,9 +73,11 @@ public slots:
     virtual StdFormat* from();
     virtual void to(StdFormat* $log);
     virtual void to();
+    virtual void setBoss(Log2Log *grandma);
 
 signals:
     void updateProgress(int meter, QString description);
+    void updateGui(QHash<QString, QVariant> doGuiParameters);
     void error(QString text = "");
     void warning(QString text = "");
     void notice(QString text = "");

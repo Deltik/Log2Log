@@ -120,6 +120,14 @@ void StdConverter::to()
 }
 
 /**
+ * Set Log2Log Grandparent
+ */
+void StdConverter::setBoss(Log2Log *grandma)
+{
+    this->boss = grandma;
+}
+
+/**
  * Thread Runner
  */
 void StdConverter::run()

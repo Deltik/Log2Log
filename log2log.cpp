@@ -261,8 +261,9 @@ void Log2Log::startConversion()
     proginfo.show();
 
     /* ### GO!!! ### */
-    cvHandler = new Conversion(ui);
+    cvHandler = new Conversion(this);
     connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
+    connect(cvHandler, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(doGui(QHash<QString,QVariant>)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(conversionError(QString)), this, SLOT(handleConversionError(QString)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(finished()), this, SLOT(stopConversion()), Qt::QueuedConnection);
 
@@ -518,4 +519,74 @@ void Log2Log::menuAbout()
 {
     About *w = new About(this);
     w->show();
+}
+
+/**
+ * Get Ui::Log2Log Pointer
+ */
+Ui::Log2Log* Log2Log::getUi()
+{
+    return ui;
+}
+
+/**
+ * Flexible GUI Control
+ */
+QVariant Log2Log::doGui(QHash<QString, QVariant> instructions)
+{
+    int     id     = instructions.value("id")    .toInt();
+    QString action = instructions.value("action").toString();
+    QString qml    = instructions.value("qml")   .toString();
+    QString data   = instructions.value("data")  .toString();
+
+    if (action == "make")
+    {
+        QDeclarativeView *newbie = new QDeclarativeView();
+        if (!qml.isEmpty())
+        {
+            QTemporaryFile *cowFile = new QTemporaryFile();
+            cowFile->open();
+            cowFile->write(qml.toAscii());
+            cowFile->close();
+            newbie->setSource(QUrl(cowFile->fileName()));
+        }
+        newbie->show();
+        widgets << newbie;
+        return widgets.indexOf(newbie);
+    }
+
+    if (!id)
+        return false;
+
+    QDeclarativeView *widget = widgets.at(id);
+
+    if (action == "source")
+    {
+        if (!qml.isEmpty())
+        {
+            QTemporaryFile *cowFile = new QTemporaryFile();
+            cowFile->open();
+            cowFile->write(QVariant(qml).toByteArray());
+            widget->setSource(QUrl(cowFile->fileName()));
+            return true;
+        }
+        return false;
+    }
+
+    if (action == "show")
+    {
+        widget->show();
+    }
+
+    if (action == "hide")
+    {
+        widget->hide();
+    }
+
+    if (action == "setTitle")
+    {
+        widget->setWindowTitle(data);
+    }
+
+    return false;
 }

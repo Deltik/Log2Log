@@ -39,6 +39,10 @@
 #include "formats/aim.h"
 #include "formats/skype.h"
 
+/*DEV DEBUG*/
+#include "formats/devconverter.h"
+/*DEV DEBUG*/
+
 
 /**
  * Constructor for ConversionConsole
@@ -66,9 +70,10 @@ Conversion::Conversion(QHash<QString, QVariant> import)
 /**
  * Constructor for Ui::Log2Log
  */
-Conversion::Conversion(Ui::Log2Log *parentUi)
+Conversion::Conversion(Log2Log *mommy)
 {
-    ui = parentUi;
+    parent = mommy;
+    ui = parent->getUi();
     // Data Collection
     emit updateProgress(0, "Reading Form Data...");
     int srcIndex = ui->srcProtoBox->currentIndex();
@@ -129,6 +134,8 @@ void Conversion::collectData()
         $FROM = new Aim();
     if (from_name == "Skype")
         $FROM = new Skype();
+    if (from_name == "DevConverter")
+        $FROM = new DevConverter();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -153,6 +160,11 @@ void Conversion::collectData()
         $TO = new Aim();
     if (to_name == "Skype")
         $TO = new Skype();
+    if (to_name == "DevConverter")
+        $TO = new DevConverter();
+
+    $FROM->setBoss(parent);
+    $TO->setBoss(parent);
 
     // Generously (and prettily) run files_get_contents, if applicable
     if (!from["path"].toString().isEmpty())
@@ -170,6 +182,7 @@ void Conversion::convertFrom()
 {
     // Go!
     connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
+    connect($FROM, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(setDoGuiProto(QHash<QString,QVariant>)));
     connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
     $FROM->setMode("from");
     $FROM->setInput(QVariant(from));
@@ -191,7 +204,8 @@ void Conversion::convertTo()
 
     // Go!
     connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
-    connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
+    connect($TO, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(setDoGuiProto(QHash<QString,QVariant>)));
+    connect($TO, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     final = $FROM->getData(new StdFormat);
     $TO->setMode("to");
@@ -343,6 +357,14 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
 void Conversion::setProgressProto(int meter, QString description)
 {
     emit updateProgress(meter, description);
+}
+
+/**
+ * Pass Do-GUI Parameters
+ */
+void Conversion::setDoGuiProto(QHash<QString, QVariant> doGuiParameters)
+{
+    emit updateGui(doGuiParameters);
 }
 
 /**

@@ -28,11 +28,13 @@
 #ifndef LOG2LOG_H
 #define LOG2LOG_H
 
-#include <QMainWindow>
-#include <QLayoutItem>
-#include <QProgressBar>
-#include <QLabel>
+#include <QtCore>
+#include <QtGui>
+#include <QDeclarativeView>
 #include "conversion.h"
+
+// An object of each of these classes is needed in class Log2Log
+class Conversion;
 
 namespace Ui {
     class Log2Log;
@@ -48,6 +50,10 @@ public:
 
 protected:
     void updateVisibleFields(int arg1, int arg2);
+
+public slots:
+    Ui::Log2Log* getUi();
+    QVariant doGui(QHash<QString, QVariant> instructions);
 
 private slots:
     void quit();
@@ -66,6 +72,7 @@ private slots:
     void whatsWrong(int srcIndex = NULL, int dstIndex = NULL);
 
 private:
+    // Variables: Main Interface
     Ui::Log2Log *ui;
     bool dontDefaultSrcPath;
     bool dontDefaultDstPath;
@@ -78,6 +85,8 @@ private:
     bool error;
     // Variables: Conversion
     Conversion *cvHandler;
+    // Variables: Other UI
+    QList<QDeclarativeView*> widgets;
 };
 
 #endif // WIZARD_H
