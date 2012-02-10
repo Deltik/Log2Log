@@ -17,6 +17,7 @@ public:
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void to(StdFormat* $log);
+    virtual QVariant guiCallback(QVariant data);
 
 private:
     int total;

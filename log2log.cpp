@@ -263,7 +263,7 @@ void Log2Log::startConversion()
     /* ### GO!!! ### */
     cvHandler = new Conversion(this);
     connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
-    connect(cvHandler, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(doGui(QHash<QString,QVariant>)), Qt::QueuedConnection);
+    connect(cvHandler, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(doGui(QString, StdConverter*)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(conversionError(QString)), this, SLOT(handleConversionError(QString)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(finished()), this, SLOT(stopConversion()), Qt::QueuedConnection);
 
@@ -532,61 +532,15 @@ Ui::Log2Log* Log2Log::getUi()
 /**
  * Flexible GUI Control
  */
-QVariant Log2Log::doGui(QHash<QString, QVariant> instructions)
+QWidget* Log2Log::doGui(QString item, StdConverter *callback_object)
 {
-    int     id     = instructions.value("id")    .toInt();
-    QString action = instructions.value("action").toString();
-    QString qml    = instructions.value("qml")   .toString();
-    QString data   = instructions.value("data")  .toString();
+    QWidget *widget;
 
-    if (action == "make")
-    {
-        QDeclarativeView *newbie = new QDeclarativeView();
-        if (!qml.isEmpty())
-        {
-            QTemporaryFile *cowFile = new QTemporaryFile();
-            cowFile->open();
-            cowFile->write(qml.toAscii());
-            cowFile->close();
-            newbie->setSource(QUrl(cowFile->fileName()));
-        }
-        newbie->show();
-        widgets << newbie;
-        return widgets.indexOf(newbie);
-    }
+    if (item == "MeeboConnectView")
+        widget = new MeeboConnectView();
 
-    if (!id)
-        return false;
+    QVariant result = callback_object->guiCallback(QVariant());
 
-    QDeclarativeView *widget = widgets.at(id);
-
-    if (action == "source")
-    {
-        if (!qml.isEmpty())
-        {
-            QTemporaryFile *cowFile = new QTemporaryFile();
-            cowFile->open();
-            cowFile->write(QVariant(qml).toByteArray());
-            widget->setSource(QUrl(cowFile->fileName()));
-            return true;
-        }
-        return false;
-    }
-
-    if (action == "show")
-    {
-        widget->show();
-    }
-
-    if (action == "hide")
-    {
-        widget->hide();
-    }
-
-    if (action == "setTitle")
-    {
-        widget->setWindowTitle(data);
-    }
-
-    return false;
+    widget->show();
+    return widget;
 }

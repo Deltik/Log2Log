@@ -128,6 +128,14 @@ void StdConverter::setBoss(Log2Log *grandma)
 }
 
 /**
+ * GUI Callback Function
+ */
+QVariant StdConverter::guiCallback(QVariant data)
+{
+    ;
+}
+
+/**
  * Thread Runner
  */
 void StdConverter::run()

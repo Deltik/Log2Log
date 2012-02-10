@@ -55,7 +55,7 @@ public slots:
     void convertTo();
     void save();
     void setProgressProto(int meter, QString description);
-    void setDoGuiProto(QHash<QString, QVariant> doGuiParameters);
+    void setDoGuiProto(QString item, StdConverter *callback_object = NULL);
     void error(QString text);
 
 private:
@@ -78,7 +78,7 @@ private:
 signals:
     void done();
     void updateProgress(int meter, QString description);
-    void updateGui(QHash<QString, QVariant> doGuiParameters);
+    void updateGui(QString item, StdConverter *callback_object = NULL);
     void conversionError(QString description);
 };
 

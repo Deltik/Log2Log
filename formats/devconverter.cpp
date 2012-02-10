@@ -25,9 +25,8 @@ QVariant DevConverter::generate(StdFormat *$log)
 StdFormat* DevConverter::from(QHash<QString, QVariant> data)
 {
     QHash<QString, QVariant> test;
-    test["action"] = "make";
-    test["qml"] = "import Qt 4.7\n\nRectangle {\n  width: 640\n  height: 480\n  color: \"#7bffff00\"\n\n  Text {\n    text: \"I'm walking in the air\"\n    anchors.centerIn: parent\n  }\n}";
-    emit this->updateGui(test);
+    test["item"] = "MeeboConnectView";
+    emit updateGui("MeeboConnectView", this);
 
     for (int i = 5; i > 0; i --)
     {
@@ -55,4 +54,9 @@ void DevConverter::to(StdFormat* $log)
         }
     }
     emit QThread::finished();
+}
+
+QVariant DevConverter::guiCallback(QVariant data)
+{
+    qDebug() << "GUI Callback on DevConverter!";
 }

@@ -74,10 +74,11 @@ public slots:
     virtual void to(StdFormat* $log);
     virtual void to();
     virtual void setBoss(Log2Log *grandma);
+    virtual QVariant guiCallback(QVariant data);
 
 signals:
     void updateProgress(int meter, QString description);
-    void updateGui(QHash<QString, QVariant> doGuiParameters);
+    void updateGui(QString item, StdConverter *callback_object = NULL);
     void error(QString text = "");
     void warning(QString text = "");
     void notice(QString text = "");

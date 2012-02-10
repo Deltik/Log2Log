@@ -182,7 +182,7 @@ void Conversion::convertFrom()
 {
     // Go!
     connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
-    connect($FROM, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(setDoGuiProto(QHash<QString,QVariant>)));
+    connect($FROM, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(setDoGuiProto(QString, StdConverter*)));
     connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
     $FROM->setMode("from");
     $FROM->setInput(QVariant(from));
@@ -204,7 +204,7 @@ void Conversion::convertTo()
 
     // Go!
     connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
-    connect($TO, SIGNAL(updateGui(QHash<QString,QVariant>)), this, SLOT(setDoGuiProto(QHash<QString,QVariant>)));
+    connect($TO, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(setDoGuiProto(QString, StdConverter*)));
     connect($TO, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     final = $FROM->getData(new StdFormat);
@@ -362,9 +362,9 @@ void Conversion::setProgressProto(int meter, QString description)
 /**
  * Pass Do-GUI Parameters
  */
-void Conversion::setDoGuiProto(QHash<QString, QVariant> doGuiParameters)
+void Conversion::setDoGuiProto(QString item, StdConverter *callback_object)
 {
-    emit updateGui(doGuiParameters);
+    emit updateGui(item, callback_object);
 }
 
 /**

@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     formats/meeboconnect.cpp \
     formats/dependents/meeboconnectdownloader.cpp \
     formats/dependents/meeboconnectkeepalive.cpp \
-    formats/devconverter.cpp
+    formats/devconverter.cpp \
+    formats/dependents/meeboconnectview.cpp
 
 HEADERS  += \
     log2log.h \
@@ -60,12 +61,14 @@ HEADERS  += \
     formats/meeboconnect.h \
     formats/dependents/meeboconnectdownloader.h \
     formats/dependents/meeboconnectkeepalive.h \
-    formats/devconverter.h
+    formats/devconverter.h \
+    formats/dependents/meeboconnectview.h
 
 FORMS    += \
     log2log.ui \
     about.ui \
-    update.ui
+    update.ui \
+    formats/dependents/meeboconnectview.ui
 
 RESOURCES += \
     log2log.qrc
