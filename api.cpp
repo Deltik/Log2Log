@@ -42,7 +42,7 @@ void Api::run()
 {
     netHandler = new QNetworkAccessManager(this);
     connect(netHandler, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-    QTimer::singleShot(0, this, SLOT(getURL()));
+    getURL();
 
     exec();
 }
