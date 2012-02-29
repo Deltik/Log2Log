@@ -538,6 +538,7 @@ QWidget* Log2Log::doGui(QString item, StdConverter *callback_object)
 
     if (item == "MeeboConnectView")
         widget = new MeeboConnectView();
+    else return new QWidget();
 
     QVariant result = callback_object->guiCallback(QVariant());
 

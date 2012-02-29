@@ -70,6 +70,11 @@ MeeboConnect::MeeboConnect()
  */
 QString MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, bool mcmd, Api *apporter)
 {
+    // Set default API handler
+    if (apporter == NULL)
+        apporter = api;
+
+    // Select command interface to use
     if (mcmd)
         func = "mcmd/" + func;
     else
@@ -86,6 +91,11 @@ QString MeeboConnect::accessCMD(QString func, QHash<QString, QString> params, QN
  */
 QString MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, QNetworkAccessManager::Operation op, bool https, Api *apporter)
 {
+    // Set default API handler
+    if (apporter == NULL)
+        apporter = api;
+
+    // POST request
     if (op == QNetworkAccessManager::PostOperation)
     {
         QHashIterator<QString, QString> i(params);
@@ -94,9 +104,10 @@ QString MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, 
         {
             i.previous();
 
-            api->addPost(i.key(), i.value());
+            apporter->addPost(i.key(), i.value());
         }
     }
+    // GET request
     else
     {
         QUrl get;
