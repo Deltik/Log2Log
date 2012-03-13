@@ -24,9 +24,16 @@ QVariant DevConverter::generate(StdFormat *$log)
  */
 StdFormat* DevConverter::from(QHash<QString, QVariant> data)
 {
-    QHash<QString, QVariant> test;
-    test["item"] = "MeeboConnectView";
     emit updateGui("MeeboConnectView", this);
+
+    Api *test = new Api();
+    connect(test, SIGNAL(progress(qint64,qint64)), this, SLOT(progressBarTest(qint64,qint64)));
+    test->setURL("http://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb");
+
+    test->start();
+    //QWaitCondition waiter;
+    //waiter.wait(test->lck);
+    test->wait();
 
     for (int i = 5; i > 0; i --)
     {
@@ -59,4 +66,9 @@ void DevConverter::to(StdFormat* $log)
 QVariant DevConverter::guiCallback(QVariant data)
 {
     qDebug() << "GUI Callback on DevConverter!";
+}
+
+void DevConverter::progressBarTest(qint64 a, qint64 b)
+{
+    updateProgress((a*100)/(b*100), QVariant(a).toString()+"/"+QVariant(b).toString());
 }

@@ -532,16 +532,15 @@ Ui::Log2Log* Log2Log::getUi()
 /**
  * Flexible GUI Control
  */
-QWidget* Log2Log::doGui(QString item, StdConverter *callback_object)
+void Log2Log::doGui(QString item, StdConverter *callback_object)
 {
     QWidget *widget;
 
     if (item == "MeeboConnectView")
         widget = new MeeboConnectView();
-    else return new QWidget();
+    else return;
 
     QVariant result = callback_object->guiCallback(QVariant());
 
     widget->show();
-    return widget;
 }

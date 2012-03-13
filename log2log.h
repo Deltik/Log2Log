@@ -56,7 +56,7 @@ protected:
 
 public slots:
     Ui::Log2Log* getUi();
-    QWidget* doGui(QString item, StdConverter *callback_object = NULL);
+    void doGui(QString item, StdConverter *callback_object = NULL);
 
 private slots:
     void quit();

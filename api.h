@@ -44,25 +44,35 @@ public:
     QString getReply();
     QString getHeaders();
     // Reply (fetched by getURL())
+    QByteArray replyData;
     QString str;
     QHash<QString, QString> hed;
-    QNetworkCookieJar* jar;
+    QNetworkCookieJar *jar;
+    QMutex *lck;
 
 protected:
     void run();
 
 signals:
     void requestComplete(QString);
+    void progress(qint64, qint64);
+    void newSession();
 
 public slots:
     void getURL();
     void replyFinished(QNetworkReply *);
+    void readOn();
+    void passProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void passError(QNetworkReply::NetworkError e);
+    void cleanUp();
 
 private:
     // Qt Network Access Manager
-    QNetworkAccessManager* netHandler;
+    QNetworkAccessManager *netHandler;
     // Qt Network Request (POST data)
     QNetworkRequest request;
+    // Qt Network Reply
+    QNetworkReply *reply;
     // URL (set by call to setURL())
     QUrl $url;
     // HTTP POST data

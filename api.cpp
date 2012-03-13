@@ -33,6 +33,7 @@ Api::Api()
 {
     netHandler = new QNetworkAccessManager(this);
     moveToThread(this);
+    connect(this, SIGNAL(newSession()), this, SLOT(cleanUp()));
 }
 
 /**
@@ -86,19 +87,30 @@ void Api::setHeader(QString key, QString value)
  */
 void Api::getURL()
 {
+    // Consolidate cookies
     jar = new QNetworkCookieJar();
     if (this->hed.contains("Set-Cookie"))
         jar->setCookiesFromUrl(QNetworkCookie::parseCookies(this->hed["Set-Cookie"].toAscii()), this->$url);
     netHandler->setCookieJar(jar);
 
+    // Do either a POST or GET request
     if (!$_POST.isEmpty())
     {
-        netHandler->post(request, $_POST);
+        reply = netHandler->post(request, $_POST);
     }
     else
     {
-        netHandler->get(request);
+        reply = netHandler->get(request);
     }
+
+    // Watch things go! :D
+    emit newSession();
+    connect(reply, SIGNAL(readyRead()), this, SLOT(readOn()));
+    connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(passProgress(qint64,qint64)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(passError(QNetworkReply::NetworkError)));
+
+    // Clean up
     params.clear();
     $_POST.clear();
 }
@@ -128,4 +140,27 @@ void Api::replyFinished(QNetworkReply* pReply)
 QString Api::getReply()
 {
     return str;
+}
+
+void Api::passProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    qDebug() << ((double)bytesReceived/(double)bytesTotal) * 100;
+    emit progress(bytesReceived, bytesTotal);
+}
+
+void Api::passError(QNetworkReply::NetworkError e)
+{
+    qDebug() << "Api Error!!!";
+}
+
+void Api::readOn()
+{
+    QByteArray newBytes = reply->read(65535);
+    replyData.append(newBytes);
+    str = QVariant(replyData).toString();
+}
+
+void Api::cleanUp()
+{
+    replyData.clear();
 }

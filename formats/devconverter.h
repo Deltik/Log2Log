@@ -3,6 +3,7 @@
 
 #include "formats/stdformat.h"
 #include "formats/stdconverter.h"
+#include "api.h"
 #include <QtCore>
 
 class DevConverter : public StdConverter
@@ -18,6 +19,7 @@ public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
     virtual void to(StdFormat* $log);
     virtual QVariant guiCallback(QVariant data);
+    void progressBarTest(qint64 a, qint64 b);
 
 private:
     int total;
