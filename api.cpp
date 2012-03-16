@@ -130,7 +130,7 @@ void Api::replyFinished(QNetworkReply* pReply)
     }
 
     // Store content
-    str = QVariant(data).toString();
+    //str = QVariant(data).toString();
     emit requestComplete(str);
 
     emit finished();
@@ -150,7 +150,7 @@ void Api::passProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void Api::passError(QNetworkReply::NetworkError e)
 {
-    qDebug() << "Api Error!!!";
+    qDebug() << "Api Error!!!:" << e;
 }
 
 void Api::readOn()
