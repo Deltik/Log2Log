@@ -72,7 +72,7 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
     bool $receiving, $sending;
     bool $self_set, $with_set;
     qint8 $accuracy, $specificity;
-    qint32 $count;
+    qint32 $count = 0;
 
     // Import the chat log.
     QString $log_proc = $log_raw.toString();
@@ -147,9 +147,10 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
             continue;
 
         // Set the time of the current entry
+        $time_cur = QDateTime();
         $time_cur.setTime(QTime::fromString(re.capturedTexts().takeAt(1),"HH:mm"));
         // Check for time travel
-        if ($time_cur.toMSecsSinceEpoch() > LAITY.toMSecsSinceEpoch())
+        if ($time_cur.toMSecsSinceEpoch() < LAITY.toMSecsSinceEpoch())
             ADDY ++;
         LAITY = $time_cur;
 
