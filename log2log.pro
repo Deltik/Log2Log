@@ -36,7 +36,9 @@ SOURCES += main.cpp \
     formats/dependents/meeboconnectdownloader.cpp \
     formats/dependents/meeboconnectkeepalive.cpp \
     formats/devconverter.cpp \
-    formats/dependents/meeboconnectview.cpp
+    formats/dependents/meeboconnectview.cpp \
+    formats/imo.cpp \
+    formats/meebofarewell.cpp
 
 HEADERS  += \
     log2log.h \
@@ -62,7 +64,9 @@ HEADERS  += \
     formats/dependents/meeboconnectdownloader.h \
     formats/dependents/meeboconnectkeepalive.h \
     formats/devconverter.h \
-    formats/dependents/meeboconnectview.h
+    formats/dependents/meeboconnectview.h \
+    formats/imo.h \
+    formats/meebofarewell.h
 
 FORMS    += \
     log2log.ui \

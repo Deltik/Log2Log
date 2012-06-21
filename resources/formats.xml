@@ -7,8 +7,8 @@
 		<icon>:/images/services/Log2Log.png</icon>
 		<default>~/Documents/Chat Logs/BombShed</default>
 		<support>
-			<from>true</from>
-			<to>true</to>
+			<from><!--true--></from>
+			<to><!--true--></to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>false</time>
@@ -147,25 +147,46 @@
 			<toinfo></toinfo>
 		</support>
 	</format>
+        <format id="imoconnect">
+                <name>imo.im (download)</name>
+                <client>imo instant messenger</client>
+                <class>ImoConnect</class>
+                <icon>:/images/services/imo.png</icon>
+                <default>~/Documents/Chat Logs/imo.im</default>
+                <support>
+			<from><!--true--></from>
+                        <to>false</to>
+                        <precision>0</precision>
+                        <accuracy>false</accuracy>
+                        <time>yes</time>
+                        <timezone>no</timezone>
+                        <status>false</status>
+                        <system>false</system>
+                        <aliases>true</aliases>
+                        <group>true</group>
+                        <frominfo>Sign in using your imo username. (Logging in from other linked accounts is not supported yet by Log2Log.)</frominfo>
+                        <toinfo></toinfo>
+                </support>
+        </format>
 	<format id="imo">
-		<name>imo.im (download)</name>
+                <name>imo.im (files)</name>
 		<client>imo instant messenger</client>
-		<class>IMO</class>
+                <class>Imo</class>
 		<icon>:/images/services/imo.png</icon>
 		<default>~/Documents/Chat Logs/imo.im</default>
 		<support>
 			<from><!--true--></from>
-			<to>false</to>
-			<precision>0</precision>
-			<accuracy>false</accuracy>
+			<to><!--true--></to>
+                        <precision>0</precision>
+                        <accuracy>false</accuracy>
 			<time>yes</time>
 			<timezone>no</timezone>
 			<status>false</status>
 			<system>false</system>
 			<aliases>true</aliases>
 			<group>true</group>
-			<frominfo>Sign in using your imo username. (Load from linked accounts not supported yet by Log2Log.)</frominfo>
-			<toinfo></toinfo>
+                        <frominfo>This requires raw imo.im chat log files.</frominfo>
+                        <toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw imo.im chat logs.</toinfo>
 		</support>
 	</format>
 	<format id="json">
@@ -196,7 +217,7 @@
 		<icon>:/images/services/MeeboConnect.png</icon>
 		<default>~/Documents/Chat Logs/Meebo</default>
 		<support>
-			<from>true</from>
+			<from><!--true--></from>
 			<to>false</to>
 			<precision>2</precision>
 			<accuracy>false</accuracy>
@@ -207,6 +228,27 @@
 			<aliases>true</aliases>
 			<group>false</group>
 			<frominfo>THIS CURRENTLY ONLY WORKS ON MAC AND LINUX!!! Enter your Meebo username and password.</frominfo>
+			<toinfo></toinfo>
+		</support>
+	</format>
+	<format id="meebozip">
+		<name>Meebo (farewell)</name>
+		<client>Meebo</client>
+		<class>MeeboFarewell</class>
+		<icon>:/images/services/MeeboConnect.png</icon>
+		<default>~/Documents/Chat Logs/Meebo</default>
+		<support>
+			<from>true</from>
+			<to><!--true--></to>
+			<precision>2</precision>
+			<accuracy>false</accuracy>
+			<time>yes</time>
+			<timezone>no</timezone>
+			<status>false</status>
+			<system>false</system>
+			<aliases>true</aliases>
+			<group>false</group>
+			<frominfo>&lt;br />&lt;span style="color: red;">&lt;b>&lt;big>IMPORTANT CONVERSION INFO (please read):&lt;/big>&lt;/b>&lt;/span> This is a farewell format converter from the Log2Log v1.x branch for converting Meebo chat logs (Meebo Messenger closes on 11 July 2012).  Congratulations, Log2Log v1.x, you have achieved your goal, but it's time to move on to the Log2Log v2.x series and the Loguntu project for actually good chat log conversions.&lt;ol style="font-weight: bold;">&lt;li>Download your Meebo chat logs from &lt;em>https://www.meebo.com/chatlog-download&lt;/em> .&lt;/li>&lt;li>Extract the ZIP including the "chatlogs" directory somewhere.&lt;/li>&lt;li>For the source path, select that "chatlogs" folder.&lt;/li>&lt;/ol>Now, you're ready to go.  But wait, some important warnings before you push the green arrow button:&lt;ul style="color: red;">&lt;li>Some of your Meebo Messenger conversations may have wrapped over multiple days, and the date changes were not logged by the Meebo libpurple system.  This format converter detects the change, and its expected behavior is to add one day to the day of the previous message.  This is the most intelligent solution achievable with the Log2Log v1.x series.  There is no way with this software to custom-set a reasonable date by human intervention, but a new proposed line of software called Loguntu wishes to grant the aforementioned feature.  For this inaccuracy, it is advised that you &lt;b>KEEP AND PRESERVE THE ZIP FILE YOU DOWNLOADED FROM MEEBO&lt;/b>.&lt;/li>&lt;li>This format has support for some primitive system logs, but Log2Log v1.x is unable to detect these system logs.  The anticipated behavior is that those system logs would be converted as normal messages.&lt;/li>&lt;li>I admit that Log2Log v1.x is very stupid.  No wonder it's being retired.  There are bound to be other issues in the conversion process.  For the &lt;b>safety of your destination&lt;/b> client's log folder, take the existing folder, make a backup of it, then do the conversion.  If something goes haywire, just restore the backup.&lt;/li>&lt;/ul>I'm sorry it all has to end like this, but it turns out that I'm a horrible computer programmer, and I might've had better luck if I hired somebody to make this for me in the first place.  **sighs**  Okay, here's my email address: &lt;b>deltik@gmx.com&lt;/b></frominfo>
 			<toinfo></toinfo>
 		</support>
 	</format>
@@ -227,8 +269,8 @@
 			<system>false</system>
 			<aliases>true</aliases>
 			<group>false</group>
-			<frominfo>This requires raw Meebo chat log files.</frominfo>
-			<toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw Meebo chat logs.</toinfo>
+			<frominfo>This requires raw Meebo chat log files.  These content of these types of files are no longer attainable after 11 July 2012.</frominfo>
+			<toinfo>Filenames made in this format are structured to contain metadata, but the contents are exactly like raw Meebo chat logs (from before they closed down on 11 July 2012).</toinfo>
 		</support>
 	</format>
 	<format id="minecraft">
@@ -269,8 +311,8 @@
 			<system>false</system>
 			<aliases>false</aliases>
 			<group>false</group>
-			<frominfo>Talked to strangers?</frominfo>
-			<toinfo>You want to convert to fake Omegle conversations?</toinfo>
+			<frominfo>This format converter no longer works on the new way (01 June 2012) that Omegle creates chat history because the new format is "Omegle PNG", an image, which Log2Log cannot read.  But if you've got older "Omegle HTML" files, Log2Log can read and write them.</frominfo>
+			<toinfo>This was the old way Omegle handed out chat logs, "Omegle HTML".  As of 01 June 2012, Omegle now renders PNGs in the format "Omegle PNG", which is not supported by Log2Log.</toinfo>
 		</support>
 	</format>
 	<format id="pidgin">
@@ -281,7 +323,7 @@
 		<default>~/.purple/logs</default>
 		<support>
 			<from>true</from>
-			<to>true</to>
+			<to><!--true--></to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>

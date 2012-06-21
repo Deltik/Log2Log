@@ -29,10 +29,10 @@
 #include <QtXml>
 #include <QDateTime>
 
+
 /**
  * Constructor
  */
-
 Meebo::Meebo()
 {
     final = new StdFormat();

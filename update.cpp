@@ -199,7 +199,7 @@ void Update::interpretReply(QString reply)
             ui->infoBrowser->setHtml(ui->infoBrowser->toHtml() +
                                      "<p><small><b>There is an update for Log2Log: <strong>v" +
                                      updateInfo["version-beta"].toString() +
-                                     "</strong>. This new version has been tested to work very well, and it is recommended that you update.</b> " +
+                                     "</strong>. This new version has been tested to work well, and it is recommended that you update.</b> " +
                                      "For a list of changes, see the changelog.</small></p>");
         }
         if (version_compare(VERSION, updateInfo["version-beta"].toString(), "<").toBool())

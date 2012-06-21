@@ -38,6 +38,8 @@
 #include "formats/wlm.h"
 #include "formats/aim.h"
 #include "formats/skype.h"
+#include "formats/imo.h"
+#include "formats/meebofarewell.h"
 
 /*DEV DEBUG*/
 #include "formats/devconverter.h"
@@ -136,6 +138,8 @@ void Conversion::collectData()
         $FROM = new Skype();
     if (from_name == "DevConverter")
         $FROM = new DevConverter();
+    if (from_name == "MeeboFarewell")
+        $FROM = new MeeboFarewell();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
