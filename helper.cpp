@@ -373,7 +373,8 @@ QMap<QString, QVariant> Helper::zone_search(QVariant query)
     {
         QMap<QString, QVariant> map_cur = list[i];
         if (map_cur["name"].toString().toLower()         == query.toString().toLower() ||
-            map_cur["full_tz_name"].toString().toLower() == query.toString().toLower())
+            map_cur["full_tz_name"].toString().toLower() == query.toString().toLower() ||
+            map_cur["gmtoffset"].toString().toLower()    == query.toString().toLower())
             return map_cur;
     }
 

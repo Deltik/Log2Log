@@ -115,13 +115,37 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
     QDateTime LAITY;
     LAITY.setTime(QTime($time_proc.toString("H").toInt(), $time_proc.toString("m").toInt()));
 
-    // Get crackin'.
-
     // WORK BY LINE
     $log_header_split = $log_header_proc.split("\n");
     $log_header_split.takeFirst();
     $log_header_proc = $log_header_split.join("\n");
     $log_chatrows = $log_header_proc.split("<br/>\n");
+
+    // PATCH: Factor in timezones
+    QString first_message = $log_chatrows[0];
+    first_message.replace("\n","");
+    $receiving=$sending=false;if(first_message.indexOf($rece_sep,0)==0){$receiving=true;first_message=first_message.mid($rece_sep.length());}else if(first_message.indexOf($send_sep,0)==0){$sending=true;first_message=first_message.mid($send_sep.length());}
+    QRegExp la($row_regex);
+    la.indexIn(first_message);
+    QDateTime $time_first;
+    $time_first.setTime(QTime::fromString(la.capturedTexts().takeAt(1),"HH:mm"));
+    // Do differencing in milliseconds
+    qint64 gmt_offset_ms = $time_first.toMSecsSinceEpoch() - LAITY.toMSecsSinceEpoch();
+    // FIX: Timezone bounds
+    while (gmt_offset_ms > 43200000)
+        gmt_offset_ms = gmt_offset_ms - 86400000;
+    while (gmt_offset_ms < -43200000)
+        gmt_offset_ms = gmt_offset_ms + 86400000;
+    // Now put it in PHP GMT Offset format
+    qint64 gmt_offset = gmt_offset_ms / 1000;
+    // Entry timezone set
+    final->setTimezone(QVariant(gmt_offset).toString());
+
+    qDebug()<<la.capturedTexts();
+    qDebug()<<$time_proc.toString(Qt::ISODate);
+    qDebug()<<gmt_offset;
+
+    // Get crackin'.
 
     foreach (QString $log_chatrow, $log_chatrows)
     {
@@ -147,14 +171,18 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
             continue;
 
         // Set the time of the current entry
+        QTime $time_cur_pre = QTime::fromString(re.capturedTexts().takeAt(1),"HH:mm");
+        $time_cur_pre = $time_cur_pre.addMSecs(-gmt_offset_ms);
         $time_cur = QDateTime();
-        $time_cur.setTime(QTime::fromString(re.capturedTexts().takeAt(1),"HH:mm"));
+        $time_cur.setTimeSpec(Qt::UTC);
+        $time_cur.setTime($time_cur_pre);
         // Check for time travel
         if ($time_cur.toMSecsSinceEpoch() < LAITY.toMSecsSinceEpoch())
             ADDY ++;
         LAITY = $time_cur;
 
         $time_cur.setDate(TODAY.addDays(ADDY));
+        qDebug()<<$time_cur.toString(Qt::ISODate);
 
         // Set Log2Log Timestamp Specificity Index
         $specificity = 2;
@@ -188,6 +216,8 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
         final->setPrecision($specificity);
         final->setAccuracy($accuracy);
         final->setWithAlias("with_alias");
+        // PATCH: Timezone support! :D
+        final->setTimezone(QVariant(gmt_offset).toString());
 
         $count++;
     }
