@@ -260,7 +260,7 @@
 		<default>~/Documents/Chat Logs/Meebo</default>
 		<support>
 			<from>true</from>
-			<to>true</to>
+			<to><!--true--></to>
 			<precision>2</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>
