@@ -141,10 +141,6 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
     // Entry timezone set
     final->setTimezone(QVariant(gmt_offset).toString());
 
-    qDebug()<<la.capturedTexts();
-    qDebug()<<$time_proc.toString(Qt::ISODate);
-    qDebug()<<gmt_offset;
-
     // Get crackin'.
 
     foreach (QString $log_chatrow, $log_chatrows)
@@ -182,7 +178,6 @@ void MeeboFarewell::loadHtml(QVariant $log_raw, QString protocol)
         LAITY = $time_cur;
 
         $time_cur.setDate(TODAY.addDays(ADDY));
-        qDebug()<<$time_cur.toString(Qt::ISODate);
 
         // Set Log2Log Timestamp Specificity Index
         $specificity = 2;
