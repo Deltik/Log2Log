@@ -73,6 +73,10 @@ Log2Log::Log2Log(QWidget *parent) :
     ui->actionUpdates->setIcon(QIcon::fromTheme("system-software-update"));
     ui->convertButton->setIcon(QIcon::fromTheme("process-start", QIcon(":/images/etc/Arrow.png")));
 
+    // Defaults
+    dontDefaultSrcPath = false;
+    dontDefaultDstPath = false;
+
     // Setup Convert UI
     convertMode = false;
     // Configure Conversion UI
