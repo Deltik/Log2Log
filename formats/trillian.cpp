@@ -32,13 +32,13 @@ Trillian::Trillian()
     chart["ASTRA"]    = "astra";
     chart["BONJOUR"]  = "bonjour";
     chart["FACEBOOK"] = "facebook";
-    chart["GOOGLE"]   = "jabber";
+    chart["GOOGLE"]   = "gtalk";
     chart["JABBER"]   = "jabber";
     chart["ICQ"]      = "icq";
     chart["IRC"]      = "irc";
     chart["MSN"]      = "msn";
     chart["SKYPE"]    = "skype";
-    chart["YAHOO"]    = "yim";
+    chart["YAHOO"]    = "yahoo";
 }
 
 /**
@@ -204,7 +204,7 @@ QVariant Trillian::generate(StdFormat *$log)
         QString $timezone_base = $log->getTimezone();
 
         // Trillian-ize the protocol
-        QString protocol;
+        QString protocol = $protocol;
         QMap<QString, QVariant>::const_iterator i = chart.constBegin();
         while (i != chart.constEnd())
         {
@@ -214,8 +214,18 @@ QVariant Trillian::generate(StdFormat *$log)
             }
             ++ i;
         }
-        if (protocol.isEmpty())
-            protocol = $protocol.toUpper();
+        protocol = $protocol.toUpper();
+
+        // START PATCH: Proper FACEBOOK naming
+        if (protocol.toLower() == "facebook" && QVariant($with).toLongLong() > 0 && !$with.contains("chat.facebook.com"))
+            $with = "-" + $with + "@chat.facebook.com";
+        // END PATCH
+
+        // START PATCH: Proper GOOGLE naming (not 100% accurate, but gets most people's personal GMail addresses)
+        if (protocol.toLower() == "jabber" && ($account.endsWith("@gmail.com") ||
+                                               $account.endsWith("@googlemail.com")))
+            protocol = "GOOGLE";
+        // END PATCH
 
         // Find associated individual, if existing
         $individual = $individuals[protocol + "/Query/" + $with + ".xml"].toHash();
