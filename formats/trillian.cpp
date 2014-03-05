@@ -101,8 +101,8 @@ void Trillian::load(QVariant $log_raw)
             final->setContent(attr.value("from").toString());
 
             // Inaccurately guess _self and _with (should be corrected later)
-            final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
-            final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
+            final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toUtf8()));
+            final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toUtf8()));
         }
         // If conversation close (_evt_close)
         else if (attr.value("type") == "stop")
@@ -125,14 +125,14 @@ void Trillian::load(QVariant $log_raw)
         {
             if (!selfSet)
             {
-                final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
-                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+                final->setSelf(QUrl::fromPercentEncoding(attr.value("from").toString().toUtf8()));
+                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toUtf8()));
                 selfSet = true;
             }
             if (!withSet)
             {
-                final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
-                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toAscii()));
+                final->setWith(QUrl::fromPercentEncoding(attr.value("to").toString().toUtf8()));
+                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toUtf8()));
                 selfSet = true;
             }
 
@@ -143,23 +143,23 @@ void Trillian::load(QVariant $log_raw)
             final->setCode(0);
             final->setTime(time);
             final->setPrecision(-1);
-            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
-            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
-            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toAscii()));
+            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toUtf8()));
+            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toUtf8()));
+            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toUtf8()));
         }
         // If element was sent by _with (_msg_with)
         if (attr.value("type") == "incoming_privateMessage")
         {
             if (!selfSet)
             {
-                final->setSelf(QUrl::fromPercentEncoding(attr.value("to").toString().toAscii()));
-                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toAscii()));
+                final->setSelf(QUrl::fromPercentEncoding(attr.value("to").toString().toUtf8()));
+                final->setSelfAlias(QUrl::fromPercentEncoding(attr.value("to_display").toString().toUtf8()));
                 selfSet = true;
             }
             if (!withSet)
             {
-                final->setWith(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
-                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
+                final->setWith(QUrl::fromPercentEncoding(attr.value("from").toString().toUtf8()));
+                final->setWithAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toUtf8()));
                 selfSet = true;
             }
 
@@ -170,9 +170,9 @@ void Trillian::load(QVariant $log_raw)
             final->setCode(0);
             final->setTime(time);
             final->setPrecision(-1);
-            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toAscii()));
-            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toAscii()));
-            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toAscii()));
+            final->setSender(QUrl::fromPercentEncoding(attr.value("from").toString().toUtf8()));
+            final->setAlias(QUrl::fromPercentEncoding(attr.value("from_display").toString().toUtf8()));
+            final->setContent(QUrl::fromPercentEncoding(attr.value("text").toString().toUtf8()));
         }
     }
 }

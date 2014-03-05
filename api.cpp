@@ -71,7 +71,8 @@ void Api::setURL(QString url)
 void Api::addPost(QString index, QString data)
 {
     params.addQueryItem(index, data);
-    $_POST = params.encodedQuery();
+    //$_POST = params.encodedQuery();
+    $url.setQuery(params);
 }
 
 /**
@@ -79,7 +80,7 @@ void Api::addPost(QString index, QString data)
  */
 void Api::setHeader(QString key, QString value)
 {
-    request.setRawHeader(key.toAscii(), value.toAscii());
+    request.setRawHeader(key.toUtf8(), value.toUtf8());
 }
 
 /**
@@ -90,7 +91,7 @@ void Api::getURL()
     // Consolidate cookies
     jar = new QNetworkCookieJar();
     if (this->hed.contains("Set-Cookie"))
-        jar->setCookiesFromUrl(QNetworkCookie::parseCookies(this->hed["Set-Cookie"].toAscii()), this->$url);
+        jar->setCookiesFromUrl(QNetworkCookie::parseCookies(this->hed["Set-Cookie"].toUtf8()), this->$url);
     netHandler->setCookieJar(jar);
 
     // Do either a POST or GET request

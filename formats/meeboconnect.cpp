@@ -110,7 +110,7 @@ QString MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, 
     // GET request
     else
     {
-        QUrl get;
+        QUrlQuery get;
         QHashIterator<QString, QString> i(params);
         i.toBack();
         while (i.hasPrevious())
@@ -118,7 +118,7 @@ QString MeeboConnect::accessMeebo(QString func, QHash<QString, QString> params, 
             i.previous();
             get.addQueryItem(i.key(), i.value());
         }
-        func += "?" + get.encodedQuery();
+        func += "?" + get.toString();
     }
 
     return this->accessAPI(func, https, apporter);

@@ -30,10 +30,10 @@
 #include "about.h"
 #include "formatinfo.h"
 #include "conversion.h"
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QFileDialog>
 #include <QTimer>
 #include <QMessageBox>
 

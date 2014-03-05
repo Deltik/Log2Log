@@ -82,6 +82,7 @@ signals:
     void error(QString text = "");
     void warning(QString text = "");
     void notice(QString text = "");
+    void finished();
 };
 
 #endif // STDCONVERTER_H

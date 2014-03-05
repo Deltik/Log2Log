@@ -57,6 +57,7 @@ signals:
     void requestComplete(QString);
     void progress(qint64, qint64);
     void newSession();
+    void finished();
 
 public slots:
     void getURL();
@@ -76,7 +77,7 @@ private:
     // URL (set by call to setURL())
     QUrl $url;
     // HTTP POST data
-    QUrl params;
+    QUrlQuery params;
     QByteArray $_POST;
 };
 

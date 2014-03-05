@@ -30,6 +30,9 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QProgressBar>
+#include <QLabel>
+#include <QMainWindow>
 #include "conversion.h"
 #include "formats/stdconverter.h"
 

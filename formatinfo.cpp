@@ -239,7 +239,7 @@ bool FormatInfo::dig_the_information_out(QXmlStreamReader &reader)
         {
             QString path_proc = reader.text().toString();
             path_proc = path_proc.replace("~", QDir::homePath());
-            path_proc = path_proc.replace("%APPDATA%", QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+            path_proc = path_proc.replace("%APPDATA%", QStandardPaths::displayName(QStandardPaths::DataLocation));
             path_proc = path_proc.replace("///", "/");
             path_proc = path_proc.replace("//", "/");
             fDefaultPath = QDir::toNativeSeparators(path_proc);

@@ -501,11 +501,11 @@ QVariant version_compare(QString version1, QString version2, QString operater)
     QByteArray proto_v1;
     QByteArray proto_v2;
     QByteArray proto_op;
-    proto_v1 = version1.toAscii();
+    proto_v1 = version1.toUtf8();
     v1 = proto_v1.data();
-    proto_v2 = version2.toAscii();
+    proto_v2 = version2.toUtf8();
     v2 = proto_v2.data();
-    proto_op = operater.toAscii();
+    proto_op = operater.toUtf8();
     op = proto_op.data();
     v1_len = version1.length();
     v2_len = version2.length();

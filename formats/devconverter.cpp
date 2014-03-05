@@ -43,7 +43,7 @@ StdFormat* DevConverter::from(QHash<QString, QVariant> data)
             msleep(100);
         }
     }
-    emit QThread::finished();
+    emit finished();
     return this->final;
 }
 
@@ -60,7 +60,7 @@ void DevConverter::to(StdFormat* $log)
             msleep(100);
         }
     }
-    emit QThread::finished();
+    emit finished();
 }
 
 QVariant DevConverter::guiCallback(QVariant data)

@@ -24,7 +24,7 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtCore>
 #include "log2log.h"
 #include <iostream>

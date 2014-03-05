@@ -25,7 +25,7 @@
  */
 
 #include "helper.h"
-#include <QtGui/QLayout>
+#include <QLayout>
 #include <QGridLayout>
 #include <QDirIterator>
 #include <QTextStream>
@@ -429,7 +429,7 @@ void Helper::php_stripslashes(char *str, int *len)
 QString Helper::stripslashes(QString original)
 {
     QByteArray proto;
-    proto = original.toAscii();
+    proto = original.toUtf8();
     char *str = proto.data();
     php_stripslashes(str, NULL);
     QString stripped(str);
