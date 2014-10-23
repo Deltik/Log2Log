@@ -187,11 +187,31 @@ void Helper::postprocessor(StdFormat *$log)
         QString $self_alias    = $log->getSelfAlias();
         QString $with          = $log->getWith();
         QString $with_alias    = $log->getWithAlias();
+        // For initial time storage
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
 
         while ($log->nextRow())
         {
             QString $sender      = $log->getSender();
             QString $alias       = $log->getAlias();
+            // For initial time storage
+            qlonglong $time_cur  = $log->getTime();
+            QString $timezone    = $log->getTimezone();
+
+            // DEFAULT: Entry _time
+            if (!$time_base)
+            {
+                $log->setTime($time_cur, true);
+                $time_base = $time_cur;
+            }
+
+            // DEFAULT: Entry _timezone
+            if ($timezone_base.isEmpty())
+            {
+                $log->setTimezone($timezone, true);
+                $timezone_base = $timezone;
+            }
 
             // DEFAULT: _sender
             if ($sender.left(5) == "_with" && !$with.isEmpty())
@@ -252,14 +272,6 @@ void Helper::postprocessor(StdFormat *$log)
             int     $accuracy    = $log->getAccuracy();
             int     $nice        = $log->getNice();
 
-            // DEFAULT: _time
-            if (!$time_cur)
-                $log->setTime($time_base);
-
-            // DEFAULT: _time_zone
-            if ($timezone.isEmpty())
-                $log->setTimezone($timezone_base);
-
             // DEFAULT: _code
             if (!$code)
                 $log->setCode(0);
@@ -282,6 +294,7 @@ void Helper::postprocessor(StdFormat *$log)
                 if (!people.value($alias).isNull())
                     $log->setSender(people.value($alias));
             }
+            $log->applyAuto();
         }
     }
 }

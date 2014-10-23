@@ -592,27 +592,27 @@ QVariant Pidgin::generate(StdFormat *$log)
         qlonglong $time_base   = $log->getTime();
         QString $timezone_base = $log->getTimezone();
 
+        // START PATCH: $protocol: "gtalk" => "jabber"
+        $protocol = $protocol.replace("gtalk", "jabber");
+        // END PATCH
+
         // <title> Setup
-        /** * * * * * * * * * * * * * * * * * * *
-         *   THIS IS THE VERY FIRST THING YOU   *
-         *   NEED TO WORK ON... TOP PRIORITY!   *
-         * _________ _______  ______   _______  *
-         * \__   __/(  ___  )(  __  \ (  ___  ) *
-         *    ) (   | (   ) || (  \  )| (   ) | *
-         *    | |   | |   | || |   ) || |   | | *
-         *    | |   | |   | || |   | || |   | | *
-         *    | |   | |   | || |   ) || |   | | *
-         *    | |   | (___) || (__/  )| (___) | *
-         *    )_(   (_______)(______/ (_______) *
-         *                                      *
-         * #################################### *
-         * #  SUPER-MEGA-HYPER PRIORITY TODO  # *
-         * #################################### *
-         *                                      *
-         * TODO: Get timezones to work.         *
-         ** * * * * * * * * * * * * * * * * * * */
         QMap<QString, QVariant> equizone = Helper::zone_search($timezone_base);
-        QString $timezone_abbreviation = equizone["name"].toString();
+        QString $timezone_abbreviation   = equizone["name"].toString();
+        int $timezone_offset             = equizone["gmtoffset"].toInt();
+        QTime $tz_offset                 = QTime::fromMSecsSinceStartOfDay($timezone_offset * 1000);
+        QString negative;
+        if ($timezone_offset < 0) negative = "-"; else negative = "+";
+        QString $tz_offset_string        = negative + QVariant($tz_offset.hour()).toString().rightJustified(2, '0') + QVariant($tz_offset.minute()).toString().rightJustified(2, '0');
+        QString $relname       = $protocol + "/" +
+                $account +
+                "/" +
+                $with +
+                "/" +
+                QDateTime::fromMSecsSinceEpoch($time_base).toString("yyyy-MM-dd.hhmmss") +
+                $tz_offset_string +
+                $timezone_abbreviation.toUpper() +
+                ".html";
         QLocale la; QString tmp = la.dateTimeFormat(QLocale::ShortFormat);
         QString $autoAP;
         if (tmp.toLower().contains("ap"))
@@ -723,8 +723,19 @@ QVariant Pidgin::generate(StdFormat *$log)
             // Closing
             if (!$log->hasNextRow())
                 $content += "</body></html>";
-        }qDebug() << $content;
+        }//qDebug() << $content;
+        $info["content"] = $content;
+        $info["modtime"] = $time_base / 1000;
+        //qDebug() << $relname;
+        $log_new[$relname] = $info;
+
+        // Increment the entry key.
+        $i ++;
+        // Update the progress bar.
+        updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
     }
+    $log_generated = $log_new;
+    return $log_generated;
 }
 
 /**

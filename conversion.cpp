@@ -40,6 +40,7 @@
 #include "formats/skype.h"
 #include "formats/imo.h"
 #include "formats/meebofarewell.h"
+#include "formats/digsby.h"
 
 /*DEV DEBUG*/
 #include "formats/devconverter.h"
@@ -140,6 +141,8 @@ void Conversion::collectData()
         $FROM = new DevConverter();
     if (from_name == "MeeboFarewell")
         $FROM = new MeeboFarewell();
+    if (from_name == "Digsby")
+        $FROM = new Digsby();
 
     // Load "To" converter class
     //  Unfortunately, since C++ doesn't dynamically load classes, the classes
@@ -164,6 +167,8 @@ void Conversion::collectData()
         $TO = new Aim();
     if (to_name == "Skype")
         $TO = new Skype();
+    if (to_name == "Digsby")
+        $TO = new Digsby();
     if (to_name == "DevConverter")
         $TO = new DevConverter();
 
@@ -269,7 +274,7 @@ void Conversion::save()
         file.close();
 
         // If the format wants to set the file access and/or modification time
-        // (Tested to work on Linux)
+        // (Tested to work on Windows and Linux)
         if (!info["modtime"].isNull() || !info["actime"].isNull())
         {
             struct utimbuf qtimebuf;

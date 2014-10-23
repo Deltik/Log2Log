@@ -38,7 +38,8 @@ SOURCES += main.cpp \
     formats/devconverter.cpp \
     formats/dependents/meeboconnectview.cpp \
     formats/imo.cpp \
-    formats/meebofarewell.cpp
+    formats/meebofarewell.cpp \
+    formats/digsby.cpp
 
 HEADERS  += \
     log2log.h \
@@ -66,7 +67,9 @@ HEADERS  += \
     formats/devconverter.h \
     formats/dependents/meeboconnectview.h \
     formats/imo.h \
-    formats/meebofarewell.h
+    formats/meebofarewell.h \
+    resources/timezonemap.h \
+    formats/digsby.h
 
 FORMS    += \
     log2log.ui \
@@ -81,7 +84,32 @@ TRANSLATIONS += en.ts \
     pt.ts
 
 OTHER_FILES += \
-    resources/formats.xml
+    resources/formats.xml \
+    images/etc/Arrow.png \
+    images/etc/blank.png \
+    images/etc/cancel.png \
+    images/etc/Deltik.png \
+    images/etc/Log2Log.png \
+    images/services/Adium.png \
+    images/services/AIM.png \
+    images/services/Deltik.png \
+    images/services/Digsby.png \
+    images/services/Empathy.png \
+    images/services/Facebook.png \
+    images/services/GChat.png \
+    images/services/GVoice.png \
+    images/services/imo.png \
+    images/services/JSON.png \
+    images/services/Kopete.png \
+    images/services/Log2Log.png \
+    images/services/Meebo.png \
+    images/services/MeeboConnect.png \
+    images/services/Minecraft.png \
+    images/services/Omegle.png \
+    images/services/Pidgin.png \
+    images/services/Skype.png \
+    images/services/Trillian.png \
+    images/services/WLM.png
 
 unix {
     isEmpty(PREFIX) {

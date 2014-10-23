@@ -78,8 +78,8 @@ public:
     bool setSelfAlias(QString myname);
     bool setWith(QString username);
     bool setWithAlias(QString buddyname);
-    bool setTime(qlonglong time);
-    bool setTimezone(QString timezone);
+    bool setTime(qlonglong time, bool forceBase = false);
+    bool setTimezone(QString timezone, bool forceBase = false);
     bool setSender(QString name);
     bool setAlias(QString name);
     bool setContent(QString content);

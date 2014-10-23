@@ -84,6 +84,27 @@
 			<toinfo>This is a specialized format invented by Deltik to create readable yet detailed chat logs.</toinfo>
 		</support>
 	</format>
+        <format id="digsby">
+                <name>Digsby</name>
+                <client>Digsby</client>
+                <class>Digsby</class>
+                <icon>:/images/services/Digsby.png</icon>
+                <default>~/Documents/Digsby Logs</default>
+                <support>
+                        <from>true</from>
+                        <to><!--true--></to>
+                        <precision>0</precision>
+                        <accuracy>false</accuracy>
+                        <time>yes</time>
+                        <timezone>no</timezone>
+                        <status>false</status>
+                        <system>false</system>
+                        <aliases>false</aliases>
+                        <group>true</group>
+                        <frominfo></frominfo>
+                        <toinfo></toinfo>
+                </support>
+        </format>
 	<format id="facebook">
 		<name>Facebook Messages (download)</name>
 		<client>Facebook</client>
@@ -323,7 +344,7 @@
 		<default>~/.purple/logs</default>
 		<support>
 			<from>true</from>
-			<to><!--true--></to>
+                        <to>true</to>
 			<precision>0</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>

@@ -571,12 +571,13 @@ bool StdFormat::setWithAlias(QString buddyname)
 /**
  * Setter: Set Time
  * @param qint64 time UNIX epoch of the time to set
+ * @param bool true if the entry time should be updated
  * @returns bool true on success
  */
-bool StdFormat::setTime(qlonglong time)
+bool StdFormat::setTime(qlonglong time, bool forceBase)
 {
     // Default (entry) timezone or chat row timezone? inRow decides.
-    if (!inRow)
+    if (!inRow || forceBase)
     {
         entry["time"] = time;
     }
@@ -591,12 +592,13 @@ bool StdFormat::setTime(qlonglong time)
 /**
  * Setter: Set Timezone
  * @param QString timezone Timezone identifier to accompany the UNIX time
+ * @param bool true if the entry timezone should be updated
  * @returns bool true on success
  */
-bool StdFormat::setTimezone(QString timezone)
+bool StdFormat::setTimezone(QString timezone, bool forceBase)
 {
     // Default (entry) timezone or chat row timezone? inRow decides.
-    if (!inRow)
+    if (!inRow || forceBase)
     {
         entry["timezone"] = timezone;
     }
@@ -762,6 +764,10 @@ qlonglong StdFormat::getTime()
     {
         // Extract
         extractEntry();
+        if (!entry["time"].toLongLong())
+        {
+            entry["time"] = entry["chat"].toList().at(0).toMap().value("time").toLongLong();
+        }
 
         return entry["time"].toLongLong();
     }
@@ -781,7 +787,16 @@ QString StdFormat::getTimezone()
     {
         // Extract
         extractEntry();
-
+        if (entry["timezone"].toString().isEmpty())
+        {
+            entry["timezone"] = entry["chat"].toList().at(0).toMap().value("timezone").toString();
+        }
+        /*QList<QString> tmp = entry.keys();
+        while (tmp.count() > 0)
+        {
+            QString tmp2 = tmp.takeFirst();
+            qDebug() << tmp2 << " :: " << entry[tmp2];
+        }*/
         return entry["timezone"].toString();
     }
     // Extract

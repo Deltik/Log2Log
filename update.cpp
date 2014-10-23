@@ -46,6 +46,7 @@ Update::Update(QWidget *parent) :
     connect(api, SIGNAL(requestComplete(QString)), this, SLOT(interpretReply(QString)));
 
     api->setURL((QString)DL_SOURCE);
+    api->setHeader("User-Agent", "Log2Log v" + (QString)VERSION);
     api->start();
 }
 
@@ -74,6 +75,7 @@ void Update::loadChangelog()
     connect(api, SIGNAL(requestComplete(QString)), this, SLOT(displayChangelog(QString)));
 
     api->setURL((QString)DL_SOURCE+"?action=changelog");
+    api->setHeader("User-Agent", "Log2Log v" + (QString)VERSION);
     api->start();
 }
 
