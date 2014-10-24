@@ -148,7 +148,7 @@ Here is an informational table about Log2Log's format converters:
 NAME                    FROM?   TO?     SUPPORT         INTRODUCED      RETIRED
 Adium                   no      no      planning
 AIM                     yes     no      stable          v1.0.0
-Digsby                  yes     no	    beta            v1.0.3
+Digsby                  yes     no      beta            v1.0.3
 Empathy                 no      no      planning
 Facebook (dl)           no      never   planning
 Gmail Chats (dl)        no      never   planning
