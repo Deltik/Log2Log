@@ -32,11 +32,7 @@ SOURCES += main.cpp \
     formats/wlm.cpp \
     formats/aim.cpp \
     formats/skype.cpp \
-    formats/meeboconnect.cpp \
-    formats/dependents/meeboconnectdownloader.cpp \
-    formats/dependents/meeboconnectkeepalive.cpp \
     formats/devconverter.cpp \
-    formats/dependents/meeboconnectview.cpp \
     formats/imo.cpp \
     formats/meebofarewell.cpp \
     formats/digsby.cpp
@@ -61,11 +57,7 @@ HEADERS  += \
     formats/wlm.h \
     formats/aim.h \
     formats/skype.h \
-    formats/meeboconnect.h \
-    formats/dependents/meeboconnectdownloader.h \
-    formats/dependents/meeboconnectkeepalive.h \
     formats/devconverter.h \
-    formats/dependents/meeboconnectview.h \
     formats/imo.h \
     formats/meebofarewell.h \
     resources/timezonemap.h \
@@ -74,8 +66,7 @@ HEADERS  += \
 FORMS    += \
     log2log.ui \
     about.ui \
-    update.ui \
-    formats/dependents/meeboconnectview.ui
+    update.ui
 
 RESOURCES += \
     log2log.qrc
@@ -109,7 +100,8 @@ OTHER_FILES += \
     images/services/Pidgin.png \
     images/services/Skype.png \
     images/services/Trillian.png \
-    images/services/WLM.png
+    images/services/WLM.png \
+    resources/MessageLog.xsl
 
 unix {
     isEmpty(PREFIX) {

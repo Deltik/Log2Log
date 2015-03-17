@@ -32,7 +32,6 @@
 #include "formats/omegle.h"
 #include "formats/pidgin.h"
 #include "formats/meebo.h"
-#include "formats/meeboconnect.h"
 #include "formats/stdjson.h"
 #include "formats/trillian.h"
 #include "formats/wlm.h"
@@ -125,8 +124,6 @@ void Conversion::collectData()
         $FROM = new Pidgin();
     if (from_name == "Meebo")
         $FROM = new Meebo();
-    if (from_name == "MeeboConnect")
-        $FROM = new MeeboConnect();
     if (from_name == "StdJson")
         $FROM = new StdJson();
     if (from_name == "Trillian")
@@ -155,8 +152,6 @@ void Conversion::collectData()
         $TO = new Pidgin();
     if (to_name == "Meebo")
         $TO = new Meebo();
-    if (to_name == "MeeboConnect")
-        $TO = new MeeboConnect();
     if (to_name == "StdJson")
         $TO = new StdJson();
     if (to_name == "Trillian")
@@ -191,7 +186,6 @@ void Conversion::convertFrom()
 {
     // Go!
     connect($FROM, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
-    connect($FROM, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(setDoGuiProto(QString, StdConverter*)));
     connect($FROM, SIGNAL(error(QString)), this, SLOT(error(QString)));
     $FROM->setMode("from");
     $FROM->setInput(QVariant(from));
@@ -213,7 +207,6 @@ void Conversion::convertTo()
 
     // Go!
     connect($TO, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgressProto(int, QString)));
-    connect($TO, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(setDoGuiProto(QString, StdConverter*)));
     connect($TO, SIGNAL(error(QString)), this, SLOT(error(QString)));
 
     final = $FROM->getData(new StdFormat);
@@ -366,14 +359,6 @@ QMap<QString, QVariant> Conversion::files_get_contents(QString directory_path)
 void Conversion::setProgressProto(int meter, QString description)
 {
     emit updateProgress(meter, description);
-}
-
-/**
- * Pass Do-GUI Parameters
- */
-void Conversion::setDoGuiProto(QString item, StdConverter *callback_object)
-{
-    emit updateGui(item, callback_object);
 }
 
 /**

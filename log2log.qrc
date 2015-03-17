@@ -27,5 +27,6 @@
         <file>images/services/Trillian.png</file>
         <file>images/services/WLM.png</file>
         <file>resources/formats.xml</file>
+        <file>resources/MessageLog.xsl</file>
     </qresource>
 </RCC>

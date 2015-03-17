@@ -232,7 +232,7 @@
 		</support>
 	</format>
 	<format id="meeboconnect">
-                <name>[ALPHA] Meebo (download)</name>
+                <name>Meebo (download)</name>
 		<client>Meebo</client>
 		<class>MeeboConnect</class>
 		<icon>:/images/services/MeeboConnect.png</icon>
@@ -337,7 +337,7 @@
 		</support>
 	</format>
 	<format id="pidgin">
-		<name>[ALPHA] Pidgin HTML</name>
+                <name>Pidgin HTML</name>
 		<client>Pidgin</client>
 		<class>Pidgin</class>
 		<icon>:/images/services/Pidgin.png</icon>
@@ -379,7 +379,7 @@
 		</support>
 	</format>
 	<format id="trillian">
-		<name>[BETA] Trillian</name>
+                <name>Trillian</name>
 		<client>Trillian</client>
 		<class>Trillian</class>
 		<icon>:/images/services/Trillian.png</icon>
@@ -404,10 +404,10 @@
 		<client>Windows Live Messenger</client>
 		<class>Wlm</class>
 		<icon>:/images/services/WLM.png</icon>
-		<default>~/My Received Files/YOUR_WLM_USERNAME/History</default>
+                <default>~/Documents/My Received Files</default>
 		<support>
 			<from>true</from>
-			<to><!--true--></to>
+                        <to>true</to>
 			<precision>-1</precision>
 			<accuracy>false</accuracy>
 			<time>yes</time>

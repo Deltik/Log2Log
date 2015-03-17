@@ -154,7 +154,178 @@ void Wlm::load(QVariant $log_raw)
  */
 QVariant Wlm::generate(StdFormat *$log)
 {
-    // TODO
+    updateProgress(50, "Conversion starting...");
+    // Generated Log Container
+    QVariant $log_generated;
+    QMap<QString, QVariant> $log_new;
+    QHash<QString, QVariant> $info;
+    // Counter
+    int $i = 1;
+    // Browser
+    $log->resetPointer();
+
+    while ($log->nextEntry())
+    {
+        // Put the longer variables into something more readily accessible.
+        QString $protocol      = $log->getProtocol();
+        QString $account       = $log->getSelf();
+        QString $self_alias    = $log->getSelfAlias();
+        QString $with          = $log->getWith();
+        QString $with_alias    = $log->getWithAlias();
+        qlonglong $time_base   = $log->getTime();
+        QString $timezone_base = $log->getTimezone();
+
+        // Determine file to write to
+        QString $relname       = mkWlmId($account) + "/" +
+                "History" +
+                "/" +
+                mkWlmId($with) +
+                ".xml";
+
+        QString $content;
+        if (wlm_track.contains($relname))
+        {
+            wlm_track[$relname]++;
+            // Chat log header
+            $info = $log_new[$relname].toHash();
+            $content = $info["content"].toString().replace(QRegExp("</Log>$"), "");
+        }
+        else
+        {
+            wlm_track[$relname] = 1;
+            // Chat log header
+            $content = "<?xml version=\"1.0\"?>\n<?xml-stylesheet type='text/xsl' href='MessageLog.xsl'?>\n<Log>";
+        }
+
+        // Go through each chat row.
+        while ($log->nextRow())
+        {
+            // Make array items more readily accessible.
+            qlonglong $time_cur  = $log->getTime();
+            int     $code        = $log->getCode();
+            QString $sender      = $log->getSender();
+            QString $alias       = $log->getAlias();
+            QString $message     = $log->getContent();
+            int     $precision   = $log->getPrecision();
+            int     $accuracy    = $log->getAccuracy();
+            int     $nice        = $log->getNice();
+
+            QLocale la; QString tmp = la.dateTimeFormat(QLocale::ShortFormat);
+            QString $autoAP;
+            if (tmp.toLower().contains("ap"))
+                $autoAP = " AP";
+
+            QString $recipient_alias;
+            if ($sender == "_self" ||
+                $sender == $account ||
+                $sender == $self_alias)
+            {
+                if (!$with_alias.isEmpty())
+                    $recipient_alias = $with_alias;
+                else
+                    $recipient_alias = $with;
+            }
+            else
+            {
+                if (!$self_alias.isEmpty())
+                    $recipient_alias = $self_alias;
+                else
+                    $recipient_alias = $account;
+            }
+
+            // <Message Date="3/13/2015" Time="5:09:36 PM" DateTime="2015-03-14T00:09:36.447Z" SessionID="1"><From><User FriendlyName="Tiana 禎安成"/></From><To><User FriendlyName="Mir (Adam)"/></To><Text Style="font-family:Lucida Calligraphy; color:#800080; ">test test</Text></Message>
+
+            $content += "<Message Date=\"" +
+                       QDateTime::fromMSecsSinceEpoch($time_cur).toString("M/d/yyyy") +
+                       "\" Time=\"" +
+                       QDateTime::fromMSecsSinceEpoch($time_cur).toString("h:mm:ss"+$autoAP) +
+                       "\" DateTime=\"" +
+                       QDateTime::fromMSecsSinceEpoch($time_cur).toString("yyyy-MM-ddTHH:mm:ss.zzzZ") +
+                       "\" SessionID=\"" +
+                       QVariant(wlm_track[$relname]).toString() +
+                       "\"><From><User FriendlyName=\"" +
+                       $alias.toHtmlEscaped() +
+                       "\"/></From><To><User FriendlyName=\"" +
+                       $recipient_alias.toHtmlEscaped() +
+                       "\"/></To><Text Style=\"font-family:Lucida Calligraphy; color:#800080; \">" +
+                       QTextDocument($message).toPlainText() +
+                       "</Text></Message>";
+        }
+        $content += "</Log>";
+        $info["content"] = $content;
+        $info["modtime"] = $time_base / 1000;
+        $log_new[$relname] = $info;
+
+        QString xslsrc = ":/resources/MessageLog.xsl";
+        QFile* file = new QFile(xslsrc);
+        file->open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in(file);
+        $log_new[mkWlmId($account) + "/History/MessageLog.xsl"] = in.readAll();
+
+        // Increment the entry key.
+        $i ++;
+        // Update the progress bar.
+        updateProgress((40 * $i / total) + 50, "Converted " + QVariant($i).toString() + "/" + QVariant(total).toString() + " files...");
+    }
+
+    $log_generated = $log_new;
+    return $log_generated;
+}
+
+/**
+ * Generate a Microsoft Passport Number from Windows Live ID
+ * @brief Wlm::mkPassportNumber
+ * @param input
+ * @return QString Microsoft Passport Number
+ */
+QString Wlm::mkPassportNumber(QString input)
+{
+/// Ported from decompiled .NET code
+///  Source: http://computerforensics.parsonage.co.uk/downloads/MSNFoldersSetup.zip
+///  Decompiler: http://www.jetbrains.com/decompiler/
+/*
+    private void ButtonConvertEmail_Click(object sender, EventArgs e)
+    {
+      string str1 = Strings.LCase(this.TextBoxEmailAddress.Text);
+      double num1 = 0.0;
+      string str2 = Strings.LCase(str1);
+      int num2 = 1;
+      int num3 = Strings.Len(str2);
+      int Start = num2;
+      while (Start <= num3)
+      {
+        double num4 = num1 * 101.0 + (double) Strings.Asc(Strings.Mid(str2, Start, 1));
+        num1 = num4 - Conversion.Fix(num4 / 4294967296.0) * 4294967296.0;
+        checked { ++Start; }
+      }
+      this.TextBox1.Text = Conversions.ToString(num1);
+    }
+*/
+
+    QString str1 = input.toLower();
+    double num1 = 0.0;
+    QString str2 = str1.toLower();
+    int num2 = 0;
+    int num3 = str2.length();
+    int Start = num2;
+    while (Start < num3)
+    {
+        double num4 = num1 * 101.0 + (double) str2.at(Start).toLatin1();
+        num1 = num4 - (int)(num4 / 4294967296.0) * 4294967296.0;
+        ++Start;
+    }
+    return QVariant(num1).toString();
+}
+
+/**
+ * Generate a Windows Live Messenger User ID
+ * @brief Wlm::mkWlmId
+ * @param input
+ * @return QString Unique Windows Live Messenger ID
+ */
+QString Wlm::mkWlmId(QString input)
+{
+    return input.split("@").at(0) + mkPassportNumber(input);
 }
 
 /**

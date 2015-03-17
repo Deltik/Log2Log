@@ -267,7 +267,6 @@ void Log2Log::startConversion()
     /* ### GO!!! ### */
     cvHandler = new Conversion(this);
     connect(cvHandler, SIGNAL(updateProgress(int, QString)), this, SLOT(setProgress(int, QString)), Qt::QueuedConnection);
-    connect(cvHandler, SIGNAL(updateGui(QString, StdConverter*)), this, SLOT(doGui(QString, StdConverter*)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(conversionError(QString)), this, SLOT(handleConversionError(QString)), Qt::QueuedConnection);
     connect(cvHandler, SIGNAL(finished()), this, SLOT(stopConversion()), Qt::QueuedConnection);
 
@@ -341,7 +340,7 @@ void Log2Log::whatsWrong(int srcIndex, int dstIndex)
     // Find out what's lost in this conversion:
     QString html   = "<ul>";
     QString hGo    = "<span style=\"color: green;\">";
-    QString hWarn  = "<li style=\"color: gold;\">";
+    QString hWarn  = "<li style=\"color: goldenrod;\">";
     QString hError = "<li style=\"color: darkred;\">";
     QString hEnd   = "</li>";
     int     cWarn  = 0;
@@ -531,20 +530,4 @@ void Log2Log::menuAbout()
 Ui::Log2Log* Log2Log::getUi()
 {
     return ui;
-}
-
-/**
- * Flexible GUI Control
- */
-void Log2Log::doGui(QString item, StdConverter *callback_object)
-{
-    QWidget *widget;
-
-    if (item == "MeeboConnectView")
-        widget = new MeeboConnectView();
-    else return;
-
-    QVariant result = callback_object->guiCallback(QVariant());
-
-    widget->show();
 }

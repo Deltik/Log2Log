@@ -38,6 +38,8 @@ public:
     Wlm();
     virtual void load(QVariant $log_raw);
     virtual QVariant generate(StdFormat* $log);
+    static QString mkPassportNumber(QString input);
+    static QString mkWlmId(QString input);
 
 public slots:
     virtual StdFormat* from(QHash<QString, QVariant> data);
@@ -47,6 +49,8 @@ private:
     int total;
     QString accountGuess;
     QString buddyGuess;
+    // WLM Entry Count Tracker
+    QHash<QString, int> wlm_track;
 };
 
 #endif // WLM_H

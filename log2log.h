@@ -36,8 +36,6 @@
 #include "conversion.h"
 #include "formats/stdconverter.h"
 
-#include "formats/dependents/meeboconnectview.h"
-
 // An object of each of these classes is needed in class Log2Log
 class Conversion;
 class StdConverter;
@@ -59,7 +57,6 @@ protected:
 
 public slots:
     Ui::Log2Log* getUi();
-    void doGui(QString item, StdConverter *callback_object = NULL);
 
 private slots:
     void quit();
