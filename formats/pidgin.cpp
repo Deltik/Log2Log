@@ -417,7 +417,7 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
         if (!time_proc.isValid())
             time_proc = QTime::fromString(split[timePos], "hh:mm:ss.zzz");
         // Add to the final sum
-        time_sum += -time_proc.msecsTo(QTime());
+        time_sum += -time_proc.msecsTo(QTime(0,0,0,0));
     }
 
     // DATE GUESSER
@@ -528,7 +528,7 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
     // One last check for backwards time travel...
     if (!matchedDate)
     {
-        time_sum = -time_proc.msecsTo(QTime()) +
+        time_sum = -time_proc.msecsTo(QTime(0,0,0,0)) +
                    QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base)
                                          .toString("yyyy/MM/dd"),
                                          "yyyy/MM/dd").toMSecsSinceEpoch();

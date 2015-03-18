@@ -4,7 +4,7 @@
 # !! IMPORTANT INFORMATION ! IMPORTANT INFORMATION ! IMPORTANT INFORMATION !! #
 ###############################################################################
 # The Log2Log v1.x branch has been deprecated.  This is the final release of  #
-# Log2Log v1.x (v1.0.3) as of 23 October 2014.  You may ask for a customized  #
+# Log2Log v1.x (v1.0.4) as of 17 March 2015.  You may ask for a customized    #
 # release; Deltik will help you support new format converters if you ask.     #
 #                                                                             #
 # Development is paused due to a lack of interest in the Log2Log project and  #
@@ -18,7 +18,7 @@
 # A Log2Log v2.x branch is planned, but there are not enough human resources  #
 # to make the project possible.                                               #
 #                                                                             #
-# Version 2 shall                                                             #
+# Version 2 is planned to                                                     #
 #   - improve memory management drastically,                                  #
 #   - take advantage of multiple threads (GUI, reading source data,           #
 #     converting to destination format, saving converted data),               #
@@ -32,7 +32,7 @@
 #                                                                             #
 # If you're interested in the Loguntu project or seeing the Log2Log project   #
 # go further, just let us know at <http://loguntu.com/>.                      #
-# (The link works as of 23 October 2014; I'll try to keep it up for a while.) #
+# (The link works as of 17 March 2015; I'll try to keep it up for a while.)   #
 #                                                                             #
 # And there's always <http://www.deltik.org/>. :)                             #
 ###############################################################################
@@ -40,16 +40,16 @@
 ╔═══════════════════════════════════════════╤═╤═╤═╗
 ║Information                                │-│■│X║
 ╟───────────────────────────────────────────┴─┴─┴─╢
-║Version: 1.0.3 (v1.0.3)                          ║
+║Version: 1.0.4 (v1.0.4)                          ║
 ║Website: http://www.deltik.org/                  ║
 ║Information: http://log2log.sf.net/              ║
 ║E-Mail: deltik@gmx.com                           ║
-║Release Date: 2014/10/23                         ║
+║Release Date: 2015/03/17                         ║
 ╚═════════════════════════════════════════════════╝
 
-▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
-▌ CONTENTS OF THIS FILE ▐
-▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ CONTENTS OF THIS FILE @
+@@@@@@@@@@@@@@@@@@@@@@@@@
  * About Log2Log
  * Requirements and Notes
  * Installation
@@ -59,9 +59,9 @@
  * Version History
 
 
-┏━━━━━━━━━━━━━━━┓
-┃ ABOUT LOG2LOG ┃
-┗━━━━━━━━━━━━━━━┛
++++++++++++++++++
++ ABOUT LOG2LOG +
++++++++++++++++++
 Log2Log Chat Log Converter, often simply called "Log2Log", is a desktop and
 console client that converts chat logs to another format.
 
@@ -70,9 +70,9 @@ Legal information about Log2Log:
    See LICENSE.txt in the same directory as this document.
 
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ REQUIREMENTS AND NOTES ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━┛
+++++++++++++++++++++++++++
++ REQUIREMENTS AND NOTES +
+++++++++++++++++++++++++++
 Log2Log requires:
   - Any of the following operating systems:
     - Microsoft Windows
@@ -83,11 +83,14 @@ Log2Log recommends for the best functionality:
   - A processor with multiple cores or multi-threading.  For single-core
     processors, Log2Log may decrease the performance of your computer for the
     entire duration of format conversion.
+  - At least 4GB of RAM.  This is due to a terrible code practice that causes
+    Log2Log to eat up all the RAM it can allocate.  This probably will NOT be
+    fixed in Log2Log v1.0.x due to a lack of support of Log2Log.  Sorry. :(
 
 
-┏━━━━━━━━━━━━━━┓
-┃ INSTALLATION ┃
-┗━━━━━━━━━━━━━━┛
+++++++++++++++++
++ INSTALLATION +
+++++++++++++++++
 Install Log2Log in three easy steps:
   ┌─────────┐
   │ WINDOWS │
@@ -104,39 +107,20 @@ Install Log2Log in three easy steps:
   3. There is no step 3.
 
   ┌────────────┐
-  │ UBUNTU PPA │
-  └────────────┘
-  1. sudo add-apt-repository ppa:deltik/loguntu
-  2. sudo apt-get install log2log
-  3. There is no step 3.
-
-  ┌───────────────────┐
-  │ DEBIAN/UBUNTU DEB │
-  └───────────────────┘
-  1. Open the Log2Log DEB file.
-  2. Confirm the installation.
-  3. There is no step 3.
-
-  ┌────────────────────┐
-  │ FEDORA/RED HAT RPM │
-  └────────────────────┘
-  1. Open the Log2Log RPM file.
-  2. Confirm the installation.
-  3. There is no step 3.
-
-  ┌────────────┐
   │ LINUX/UNIX │
   └────────────┘
-  If you downloaded the Log2Log executable, you have it.  To make "log2log" a
-  command, move the executable to /usr/bin .
+  If you downloaded the Log2Log executable, you can run the program.  To make
+  "log2log" a command, move the executable to "/usr/bin".  Make sure to
+  `chmod +x log2log`.
   Dependencies can be matched with the command:
     ldd log2log
+  Unfortunately, there are no packages (RPM, DEB, etc.) at this time.
 
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ CONFIGURATION AND FEATURES ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-Log2Log v1.0.3 does not have any configurable options.  Is there something you
+++++++++++++++++++++++++++++++
++ CONFIGURATION AND FEATURES +
+++++++++++++++++++++++++++++++
+Log2Log v1.0.4 does not have any configurable options.  Is there something you
 want to be configurable?  Suggest it to the project manager (email address in the
 "More Information" section)!
 
@@ -151,9 +135,9 @@ AIM                     yes     no      stable          v1.0.0
 Digsby                  yes     no      beta            v1.0.3
 Empathy                 no      no      planning
 Facebook (dl)           no      never   planning
-Gmail Chats (dl)        no      never   planning
+Google+ Hangouts (dl)   no      never   planning
 Google Voice (dl)       no      never   planning
-imo.im (dl)             no      never   planning
+imo.im                  no      never   planning
 Kopete                  no      no      considered
 Log2Log JSON            yes     yes     stable          v0.0.1a1
 Meebo (dl)              no      never   pre-alpha       v0.0.1a1        v1.0.1
@@ -164,7 +148,7 @@ Omegle HTML             yes     yes     stable          v1.0.0
 Pidgin HTML             yes     yes     alpha           v0.0.1a1
 Skype                   no      no      planning
 Trillian                yes     yes     beta            v1.0.0
-WLM                     yes     no      stable          v1.0.0
+WLM                     yes     yes     stable          v1.0.0
 
   ┌──────┐
   │ BUGS │
@@ -185,32 +169,42 @@ WLM                     yes     no      stable          v1.0.0
       but the contents are exactly like raw Meebo chat logs.
 
 
-┏━━━━━━━━━━━━━━━━┓
-┃ KNOWN PROBLEMS ┃
-┗━━━━━━━━━━━━━━━━┛
-There are no known problems in the Log2Log client, but in general, format
-converters may have issues.  For specific information about format converter
-compatibility, see the "Configuration and Features" section.
+++++++++++++++++++
++ KNOWN PROBLEMS +
+++++++++++++++++++
+Log2Log v1.x is very problematic in its implementation.  (Scroll to the
+beginning of this document for clarification.)  The biggest issue with the
+client is that it is manages memory extremely poorly. Unfortunately, this takes
+more effort to fix than the manpower we have available can offer.
+
+The Log2Log client will crash if there are too many chat logs or if too many
+conversions are made in one session of the program.  To work around this, break
+up the chat logs to convert into chunks and close and reopen Log2Log until all
+of your chat logs are converted.  We apologize for the inconvenience that this
+may cause.
+
+Format converters may also have issues.  For specific information about format
+converter compatibility, see the "Configuration and Features" section.
 
 1. Timezone compatibility is very poor, and fixes are intended to be made.
 
 2. Converting chat log formats is no easy task. Note that Log2Log converters
    might not be 100% successful at converting chat logs.
 
-3. Time zone compatibility is rough as of v1.0.3, but fixes are underway.
+3. Time zone compatibility is rough as of v1.0.4.
 
 4. Languages other than English have not been figured out for format
-   converters as of v1.0.3.  The Log2Log team would greatly appreciate it if
-   you could design a translations system for us. :)
+   converters as of v1.0.4.  The Log2Log team would greatly appreciate it if
+   you could develop a translation system for us.
 
 5. This project would like help.  If you would like to contribute to Log2Log in
    any way, we would greatly appreciate it!  Chat log donors, C++ programmers,
-   graphics designers ...
+   graphics designers, etc.
 
 
-┏━━━━━━━━━━━━━━━━━━┓
-┃ MORE INFORMATION ┃
-┗━━━━━━━━━━━━━━━━━━┛
+++++++++++++++++++++
++ MORE INFORMATION +
+++++++++++++++++++++
 For more information, updates, and just... more..., visit Deltik's Web site
 at <http://www.deltik.org/>.
 
@@ -220,9 +214,17 @@ Also, for Log2Log-specific information, you can visit Log2Log's Web site at
 You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
 
 
-┏━━━━━━━━━━━━━━━━━┓
-┃ VERSION HISTORY ┃
-┗━━━━━━━━━━━━━━━━━┛
++++++++++++++++++++
++ VERSION HISTORY +
++++++++++++++++++++
+1.0.4 (2015/03/17)
+  - NEW: WLM `To` format converter, made specially for the Messenger Revivers
+  - FIX: Pidgin `From` timestamps were always zeroed due to Qt changes.
+  - FIX: Corrected the default path to the Windows Live Messenger format converter
+  - MOD: Updated timezone maps
+  - MOD: Improved readability of the compatibility check section in the main window
+  - MOD: Removed disabled MeeboConnect code
+
 1.0.3 (2014/10/02)
   - NEW: Digsby `From` format converter
   - FIX: Update checker works again now that it sends a user agent.

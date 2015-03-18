@@ -101,7 +101,10 @@ OTHER_FILES += \
     images/services/Skype.png \
     images/services/Trillian.png \
     images/services/WLM.png \
-    resources/MessageLog.xsl
+    resources/MessageLog.xsl \
+    COPYING.txt \
+    LICENSE.txt \
+    README.txt
 
 unix {
     isEmpty(PREFIX) {
