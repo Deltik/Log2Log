@@ -82,11 +82,26 @@ void Pidgin::loadHtml(QVariant $log_raw)
     // Create the HTML reader.
     QXmlStreamReader xml($log_proc);
 
+    // 2015-03-20 :: Patch to help QXmlStreamReader go line by line
+    int line_cur = 0;
+    int line_prev = 0;
+    bool last_iteration_was_chat_row = false;
+
     // Read the HTML file.
     while (!xml.atEnd())
     {
         // Read next item
         QXmlStreamReader::TokenType token = xml.readNext();
+
+        // 2015-03-20 :: Patch to help QXmlStreamReader go line by line
+        line_cur = xml.lineNumber();
+        while (last_iteration_was_chat_row && line_cur == line_prev)
+        {
+            xml.readNext();
+            line_cur = xml.lineNumber();
+        }
+        line_prev = line_cur;
+        last_iteration_was_chat_row = false;
 
         // Just some items that might be used in this scope
         qlonglong               $time_base;
@@ -132,14 +147,18 @@ void Pidgin::loadHtml(QVariant $log_raw)
                 final->setProtocol($log_header_split.takeFirst());
 
                 QStringList $date_split = $date_proc.split(" ");
-                int $date_parts_count = $date_split.count();
                 QString $timezone = $date_split.takeLast();
                 $date_proc = $date_split.join(" ");
                 QDateTime $time_proc;
-                if ($date_parts_count == 7)
+                if ($date_proc.contains(QRegExp(" [AP]M$")))
                     $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss AP");
                 else
                     $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss");
+                if (!$time_proc.isValid())
+                {
+                    qlonglong $datetime = interpretTime($date_proc);
+                    $time_proc = QDateTime::fromMSecsSinceEpoch($datetime);
+                }
                 // CONSTRUCT: _time
                 $time_base = $time_proc.toMSecsSinceEpoch();
                 final->setTime($time_base);
@@ -150,8 +169,11 @@ void Pidgin::loadHtml(QVariant $log_raw)
             }
 
             // If token is a chat row
-            if (xml.qualifiedName().toString() == "font")
+            else if (xml.qualifiedName().toString() == "font")
             {
+                // 2015-03-20 :: Patch to help QXmlStreamReader go line by line
+                last_iteration_was_chat_row = true;
+
                 // Create new chat row
                 final->newRow();
                 // CONSTRUCT: _timezone
@@ -340,8 +362,6 @@ void Pidgin::loadHtml(QVariant $log_raw)
             }
         }
     }
-
-    //qDebug()<<final->final;
 }
 
 /**
@@ -376,11 +396,11 @@ void Pidgin::loadSystemPlainText(QVariant $log_raw)
  */
 qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
 {
-    // Trim input of parentheses
-    if (input.left(1) == "(")
-        input = input.mid(1);
-    if (input.right(1) == ")")
-        input = input.mid(0, input.length() - 1);
+    // Remove parentheses and brackets
+    input = input.replace("(", "")
+            .replace(")", "")
+            .replace("[", "")
+            .replace("]", "");
 
     // There are about zero programming languages that have good timestamp
     // parsing capabilities. The Qt Framework on C++ is no exception.
@@ -419,6 +439,15 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
         // Add to the final sum
         time_sum += -time_proc.msecsTo(QTime(0,0,0,0));
     }
+
+    // MERIDIEM ADDER
+    // Try to match for "post meridiem"
+    // If matches, add 12 hours (43200000 milliseconds) to the final sum
+    if (input.toLower().contains("pm") ||
+        input.toLower().contains("p.m") ||
+        input.toLower().contains("p m") ||
+        input.toLower().contains("post"))
+        time_sum += 43200000;
 
     // DATE GUESSER
     // Try to match for "/"
@@ -520,18 +549,19 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
                 date_proc = comparer;
         }
         // Add to the final sum
-        time_sum += QDateTime(date_proc).toMSecsSinceEpoch();
         if (date_proc.isValid())
+        {
+            time_sum += QDateTime(date_proc).toMSecsSinceEpoch();
             matchedDate = true;
+        }
     }
 
     // One last check for backwards time travel...
     if (!matchedDate)
     {
-        time_sum = -time_proc.msecsTo(QTime(0,0,0,0)) +
-                   QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base)
-                                         .toString("yyyy/MM/dd"),
-                                         "yyyy/MM/dd").toMSecsSinceEpoch();
+        time_sum += QDateTime::fromString(QDateTime::fromMSecsSinceEpoch($time_base)
+                                          .toString("yyyy/MM/dd"),
+                                          "yyyy/MM/dd").toMSecsSinceEpoch();
         QDateTime comparer = QDateTime::fromMSecsSinceEpoch($time_base);
         // If the new time is before $time_base, advance to the next day
         // (+86400000 milliseconds) (24 hours).
@@ -540,15 +570,6 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
             time_sum += 86400000;
         }
     }
-
-    // MERIDIEM ADDER
-    // Try to match for "post meridiem"
-    // If matches, add 12 hours (43200000 milliseconds) to the final sum
-    if (input.toLower().contains("pm") ||
-        input.toLower().contains("p.m") ||
-        input.toLower().contains("p m") ||
-        input.toLower().contains("post"))
-        time_sum += 43200000;
 
     // After MUCH exhaustive work, we FINALLY return the interpreted time!
     return time_sum;
