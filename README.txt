@@ -4,7 +4,7 @@
 # !! IMPORTANT INFORMATION ! IMPORTANT INFORMATION ! IMPORTANT INFORMATION !! #
 ###############################################################################
 # The Log2Log v1.x branch has been deprecated.  This is the final release of  #
-# Log2Log v1.x (v1.0.4) as of 17 March 2015.  You may ask for a customized    #
+# Log2Log v1.x (v1.0.5) as of 20 March 2015.  You may ask for a customized    #
 # release; Deltik will help you support new format converters if you ask.     #
 #                                                                             #
 # Development is paused due to a lack of interest in the Log2Log project and  #
@@ -32,7 +32,7 @@
 #                                                                             #
 # If you're interested in the Loguntu project or seeing the Log2Log project   #
 # go further, just let us know at <http://loguntu.com/>.                      #
-# (The link works as of 17 March 2015; I'll try to keep it up for a while.)   #
+# (The link works as of 20 March 2015; I'll try to keep it up for a while.)   #
 #                                                                             #
 # And there's always <http://www.deltik.org/>. :)                             #
 ###############################################################################
@@ -40,11 +40,11 @@
 ╔═══════════════════════════════════════════╤═╤═╤═╗
 ║Information                                │-│■│X║
 ╟───────────────────────────────────────────┴─┴─┴─╢
-║Version: 1.0.4 (v1.0.4)                          ║
+║Version: 1.0.5 (v1.0.5)                          ║
 ║Website: http://www.deltik.org/                  ║
 ║Information: http://log2log.sf.net/              ║
 ║E-Mail: deltik@gmx.com                           ║
-║Release Date: 2015/03/17                         ║
+║Release Date: 2015/03/20                         ║
 ╚═════════════════════════════════════════════════╝
 
 @@@@@@@@@@@@@@@@@@@@@@@@@
@@ -191,10 +191,10 @@ converter compatibility, see the "Configuration and Features" section.
 2. Converting chat log formats is no easy task. Note that Log2Log converters
    might not be 100% successful at converting chat logs.
 
-3. Time zone compatibility is rough as of v1.0.4.
+3. Time zone compatibility is rough as of v1.0.5.
 
 4. Languages other than English have not been figured out for format
-   converters as of v1.0.4.  The Log2Log team would greatly appreciate it if
+   converters as of v1.0.5.  The Log2Log team would greatly appreciate it if
    you could develop a translation system for us.
 
 5. This project would like help.  If you would like to contribute to Log2Log in
@@ -217,6 +217,10 @@ You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
 +++++++++++++++++++
 + VERSION HISTORY +
 +++++++++++++++++++
+1.0.5 (2015/03/20)
+  - FIX: Significant improvements in Pidgin `From` format converter robustness
+  - FIX: Made Pidgin `From` format converter datetimestamps less buggy
+
 1.0.4 (2015/03/17)
   - NEW: WLM `To` format converter, made specially for the Messenger Revivers
   - FIX: Pidgin `From` timestamps were always zeroed due to Qt changes.
