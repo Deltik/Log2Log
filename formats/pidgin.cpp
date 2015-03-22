@@ -99,6 +99,8 @@ void Pidgin::loadHtml(QVariant $log_raw)
         {
             xml.readNext();
             line_cur = xml.lineNumber();
+            if (xml.atEnd())
+                break;
         }
         line_prev = line_cur;
         last_iteration_was_chat_row = false;
