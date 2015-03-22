@@ -38,7 +38,7 @@
 			<system>false</system>
 			<aliases>true</aliases>
 			<group>true</group>
-			<frominfo>Did you shoot Adiumy, the Adium duck?</frominfo>
+                        <frominfo>Did you shoot Adiumy, the Adium duck?</frominfo>
 			<toinfo></toinfo>
 		</support>
 	</format>
@@ -337,7 +337,7 @@
 		</support>
 	</format>
 	<format id="pidgin">
-                <name>Pidgin HTML</name>
+                <name>Pidgin</name>
 		<client>Pidgin</client>
 		<class>Pidgin</class>
 		<icon>:/images/services/Pidgin.png</icon>

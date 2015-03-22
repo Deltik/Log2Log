@@ -1,7 +1,7 @@
 /**
  * Log2Log
  *  Formats
- *   Pidgin HTML
+ *   Pidgin
  *
  * @author Deltik
  *
@@ -371,7 +371,133 @@ void Pidgin::loadHtml(QVariant $log_raw)
  */
 void Pidgin::loadPlainText(QVariant $log_raw)
 {
-    // TODO
+    // Import the chat log.
+    QString $log_proc = $log_raw.toString();
+
+    // Assume that the inputted log is in Pidgin TXT. Create new entry.
+    final->newEntry();
+
+    // 2015-03-22 :: Hopefully Deltik is a little smarter now when reading chat logs…
+    qlonglong               $time_base;
+    qlonglong               initial_time;
+    QMap<QString, QVariant> $equizone;
+    QString                 $sender_alias;
+    QTextStream log_stream(&$log_proc);
+    int linenum = 0;
+    QRegExp msgstart_match("^[\\(\\[]\\d{1,2}:\\d{2}[:]{0,1}\\d{0,2}([ ]{0,1}[AP]M){0,2}[\\)\\]] ",
+                           Qt::CaseInsensitive,
+                           QRegExp::RegExp);
+    QString msg_buffer = "";
+    while (!log_stream.atEnd())
+    {
+        QString line = log_stream.readLine();
+        linenum ++;
+
+        if (linenum == 1)
+        {
+            // Unfortunately, RegExp can't help with this tricky next part.
+            // Here, we look at Pidgin's chat log or system log header:
+            //  - "Conversation with _WITH at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION on _SELF (_PROTOCOL)"
+            //  - "System log for account _SELF (_PROTOCOL) connected at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION"
+            QString $log_header = line;
+            // If this is a system log, forward to the proper method.
+            if ($log_header.left(6) == "System")
+                return loadSystemPlainText($log_raw);
+
+            QString $log_header_proc = $log_header.mid(18);
+            QStringList $log_header_split = $log_header_proc.split(" at ");
+            // CONSTRUCT: _with
+            final->setWith($log_header_split.takeFirst());
+            $log_header_proc = $log_header_split.join(" at ");
+            $log_header_split = $log_header_proc.split(" on ");
+            QString $date_proc = $log_header_split.takeFirst();
+            $log_header_proc = $log_header_split.join(" on ");
+            $log_header_split = $log_header_proc.split(" (");
+            // CONSTRUCT: _self
+            final->setSelf($log_header_split.takeFirst());
+            $log_header_proc = $log_header_split.join(" (");
+            $log_header_split = $log_header_proc.split(")");
+            // CONSTRUCT: _protocol
+            final->setProtocol($log_header_split.takeFirst());
+
+            QStringList $date_split = $date_proc.split(" ");
+            QString $timezone = $date_split.takeLast();
+            $date_proc = $date_split.join(" ");
+            QDateTime $time_proc;
+            if ($date_proc.contains(QRegExp(" [AP]M$")))
+                $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss AP");
+            else
+                $time_proc = QDateTime::fromString($date_proc, "ddd dd MMM yyyy hh:mm:ss");
+            if (!$time_proc.isValid())
+            {
+                qlonglong $datetime = interpretTime($date_proc);
+                $time_proc = QDateTime::fromMSecsSinceEpoch($datetime);
+            }
+            // CONSTRUCT: _time
+            $time_base = $time_proc.toMSecsSinceEpoch();
+            initial_time = $time_base;
+            final->setTime($time_base);
+
+            $equizone = Helper::zone_search($timezone);
+            // CONSTRUCT: _timezone
+            final->setTimezone($equizone["full_tz_name"].toString());
+        }
+
+        // If token is a new chat row
+        else if (msgstart_match.indexIn(line) > -1)
+        {
+            if (!msg_buffer.isEmpty())
+            {
+                // CONSTRUCT: _time
+                final->setTime($time_base);
+                // CONSTRUCT: _time_precision
+                final->setPrecision(0);
+                // CONSTRUCT: _sender
+                final->setSender($sender_alias);
+                // CONSTRUCT: _message
+                final->setContent(msg_buffer);
+
+                msg_buffer = "";
+            }
+
+            // Create new chat row
+            final->newRow();
+            // CONSTRUCT: _timezone
+            final->setTimezone($equizone["full_tz_name"].toString());
+
+            $time_base = interpretTime(msgstart_match.cap(0).trimmed(), $time_base);
+            line = line.mid(msgstart_match.cap(0).length());
+            QStringList line_split = line.split(": ");
+            $sender_alias = line_split.takeFirst();
+
+            /*// A probably not reliable way to guess the self alias
+            if (linenum == 2 && $time_base == initial_time)
+            {
+                final->setSelfAlias($sender_alias);
+            }
+            if ($sender_alias != final->getSelfAlias() && final->getWithAlias().isEmpty())
+            {
+                final->setWithAlias($sender_alias);
+            }*/
+
+            msg_buffer += line_split.join(": ");
+        }
+        else
+        {
+            msg_buffer += "\n" + line;
+        }
+    }
+    if (!msg_buffer.isEmpty())
+    {
+        // CONSTRUCT: _time
+        final->setTime($time_base);
+        // CONSTRUCT: _time_precision
+        final->setPrecision(0);
+        // CONSTRUCT: _sender
+        final->setSender($sender_alias);
+        // CONSTRUCT: _message
+        final->setContent(msg_buffer);
+    }
 }
 
 /**

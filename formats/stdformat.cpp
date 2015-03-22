@@ -787,9 +787,13 @@ QString StdFormat::getTimezone()
     {
         // Extract
         extractEntry();
-        if (entry["timezone"].toString().isEmpty())
+        if (entry["timezone"].toString().isEmpty() && entry["chat"].toList().count() > 0)
         {
             entry["timezone"] = entry["chat"].toList().at(0).toMap().value("timezone").toString();
+        }
+        else
+        {
+            entry["timezone"] = QDateTime::currentDateTime().timeZoneAbbreviation();
         }
         /*QList<QString> tmp = entry.keys();
         while (tmp.count() > 0)

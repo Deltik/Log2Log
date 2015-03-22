@@ -215,7 +215,13 @@ QVariant Wlm::generate(StdFormat *$log)
             if (tmp.toLower().contains("ap"))
                 $autoAP = " AP";
 
-            QString $recipient_alias;
+            // 2015-03-22 :: Patch for blank "From" sender fields
+            if ($alias.isEmpty() && !$sender.isEmpty())
+            {
+                $alias = $sender;
+            }
+
+            QString $recipient_alias = "";
             if ($sender == "_self" ||
                 $sender == $account ||
                 $sender == $self_alias)
@@ -225,7 +231,9 @@ QVariant Wlm::generate(StdFormat *$log)
                 else
                     $recipient_alias = $with;
             }
-            else
+            else if ($sender == "_with" ||
+                     $sender == $with ||
+                     $sender == $with_alias)
             {
                 if (!$self_alias.isEmpty())
                     $recipient_alias = $self_alias;
@@ -248,7 +256,7 @@ QVariant Wlm::generate(StdFormat *$log)
                        "\"/></From><To><User FriendlyName=\"" +
                        $recipient_alias.toHtmlEscaped() +
                        "\"/></To><Text Style=\"font-family:Lucida Calligraphy; color:#800080; \">" +
-                       QTextDocument($message).toPlainText() +
+                       QTextDocument($message).toPlainText().toHtmlEscaped().replace("\n", "&#xD;") +
                        "</Text></Message>";
         }
         $content += "</Log>";

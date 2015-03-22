@@ -30,6 +30,7 @@
 #define STDFORMAT_H
 
 #include <QVariant>
+#include <QDateTime>
 
 class StdFormat
 {
