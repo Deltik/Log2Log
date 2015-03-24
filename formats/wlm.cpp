@@ -243,6 +243,9 @@ QVariant Wlm::generate(StdFormat *$log)
 
             // <Message Date="3/13/2015" Time="5:09:36 PM" DateTime="2015-03-14T00:09:36.447Z" SessionID="1"><From><User FriendlyName="Tiana 禎安成"/></From><To><User FriendlyName="Mir (Adam)"/></To><Text Style="font-family:Lucida Calligraphy; color:#800080; ">test test</Text></Message>
 
+            QTextDocument *stripper = new QTextDocument();
+            stripper->setHtml($message);
+            QString stripped = stripper->toPlainText();
             $content += "<Message Date=\"" +
                        QDateTime::fromMSecsSinceEpoch($time_cur).toString("M/d/yyyy") +
                        "\" Time=\"" +
@@ -256,8 +259,10 @@ QVariant Wlm::generate(StdFormat *$log)
                        "\"/></From><To><User FriendlyName=\"" +
                        $recipient_alias.toHtmlEscaped() +
                        "\"/></To><Text Style=\"font-family:Lucida Calligraphy; color:#800080; \">" +
-                       QTextDocument($message).toPlainText().toHtmlEscaped().replace("\n", "&#xD;") +
+                       stripped.toHtmlEscaped().replace("\n", "&#xD;") +
                        "</Text></Message>";
+            delete stripper;
+            stripper = NULL;
         }
         $content += "</Log>";
         $info["content"] = $content;
@@ -269,6 +274,8 @@ QVariant Wlm::generate(StdFormat *$log)
         file->open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream in(file);
         $log_new[mkWlmId($account) + "/History/MessageLog.xsl"] = in.readAll();
+        delete file;
+        file = NULL;
 
         // Increment the entry key.
         $i ++;
