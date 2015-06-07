@@ -31,6 +31,8 @@
 
 #include <QVariant>
 #include <QDateTime>
+#include <QTemporaryFile>
+#include <QtSql/QSqlDatabase>
 
 class StdFormat
 {
@@ -109,30 +111,20 @@ public:
 /* VARIABLES */
 public:
     // Final Construction
-    //  You may argue that I should be using QHash instead of QMap to store the
-    //  log data, and you might point to this source:
-    //  <http://doc.qt.nokia.com/latest/containers.html#algorithmic-complexity>
-    //
-    //  I say: No. Here is my source:
-    //  <http://thesmithfam.org/blog/2011/02/12/when-faster-is-actually-slower>
-    //
-    //  Furthermore, I did my own testing to confirm.
-    //  Pidgin to Omegle with QMap as StdFormat internals:
-    //   124478 ms for 10584 arbitrary files with 6309 real chat logs.
-    //  Pidgin to Omegle with QHash as StdFormat internals:
-    //   135343 ms for 10584 arbitrary files with 6309 real chat logs.
-    //
-    //  That's 2 minutes 4.478 seconds vs. 2 minutes 15.34 seconds.
-    //  You SAVE 10.87 seconds by using QMap, which Qt stated would be slower.
-    //
-    //  Not convinced? Here is the deciding factor for using QMap:
-    //   - StdFormat will be compatible with the StdJson format converter if I
-    //     use QMap. The JSON class supports QMap, and not QHash.
-    //
-    //  It's a win-win for us:
-    //   - Time-saving
-    //   - Prettier
-    //   - Compatible
+
+    /* On 07 June 2015, Deltik made the decision to replace the old QMap
+    in-memory database with an in-disk SQLite 3 temporary database. This is
+    much smarter than whatever Deltik was thinking way back in 2011 because
+    chat logs are mappable to databases, and accessing databases is much more
+    memory-friendly and probably faster than trying to write a QMap in-memory
+    database system that could only seek forward and backward like a tape.
+
+    The old format converter code is stuck with the tape concept, so there is
+    an emulation layer in StdFormat now that makes the reader code compatible
+    with a proper database. No more reinventing the wheel for Deltik... */
+
+    QTemporaryFile db_file;
+    QSqlDatabase db;
     QMap<QString, QVariant> log;
     QList<QVariant> data;
     QMap<QString, QVariant> entry;

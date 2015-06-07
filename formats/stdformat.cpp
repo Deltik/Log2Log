@@ -57,8 +57,24 @@
  */
 StdFormat::StdFormat()
 {
-    // Version 1.2! Whoo! :D
-    log["version"] = "1.2";
+    // Initialize database
+    db_file.setFileTemplate("log2log-");
+    db_file.open();
+    db_file.close();
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(db_file.fileName());
+    if (!db.open())
+    {
+        // Error handling sucks in Log2Log. :(
+    }
+
+    // StdFormat version changelog:
+    //  2.0 (2015/06/07)
+    //    - Remapped to SQLite
+    //    - Add "read" time for each chat
+    //  1.2 (2011/08/11)
+    //    - Original version with QMap that was written for Log2Log v1.0.0
+    log["version"] = "2.0";
 
     // Give an empty client string to final["client"]
     log["client"] = "";
@@ -70,6 +86,8 @@ StdFormat::StdFormat()
  */
 StdFormat::~StdFormat()
 {
+    db.close();
+    db_file.~QTemporaryFile();
     QMap<QString, QVariant> empty;
     log = empty;
 }

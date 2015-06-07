@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui declarative xml network
+QT       += core gui declarative xml network sql
 
 TARGET = log2log
 TEMPLATE = app
