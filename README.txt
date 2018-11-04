@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FDeltik%2FLog2Log.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FDeltik%2FLog2Log?ref=badge_shield)
+
 [Log2Log Chat Log Converter]
 
 ###############################################################################
@@ -292,3 +294,6 @@ You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
 
 0.0.1pre (2011/01/01)
   - Log2Log Project Founded
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FDeltik%2FLog2Log.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FDeltik%2FLog2Log?ref=badge_large)
