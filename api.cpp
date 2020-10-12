@@ -56,6 +56,7 @@ void Api::setURL(QUrl url)
 {
     $url = url;
     request = QNetworkRequest($url);
+    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 }
 /// Alias
 void Api::setURL(QString url)

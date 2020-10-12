@@ -1,5 +1,5 @@
 #define VERSION "1.0.7"
-#define DL_SOURCE "http://log2log.sourceforge.net/update/"
+#define DL_SOURCE "https://log2log.sourceforge.io/update/"
 
 /**
  * Log2Log Chat Log Converter
