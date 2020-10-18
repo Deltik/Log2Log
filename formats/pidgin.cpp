@@ -794,6 +794,9 @@ QVariant Pidgin::generate(StdFormat *$log)
             int     $accuracy    = $log->getAccuracy();
             int     $nice        = $log->getNice();
 
+            // Use sender as alias if alias is empty
+            if ($alias.isEmpty()) $alias = $sender;
+
             // Color Legend:
             //  #16569E : _self
             //  #A82F2F : _with
