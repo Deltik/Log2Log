@@ -4,7 +4,7 @@
 # !! IMPORTANT INFORMATION ! IMPORTANT INFORMATION ! IMPORTANT INFORMATION !! #
 ###############################################################################
 # The Log2Log v1.x branch has been deprecated.  This is the final release of  #
-# Log2Log v1.x (v1.0.7) as of 23 March 2015.  You may ask for a customized    #
+# Log2Log v1.x (v1.0.8) as of 04 November 2020.  You may ask for a customized #
 # release; Deltik will help you support new format converters if you ask.     #
 #                                                                             #
 # Development is paused due to a lack of interest in the Log2Log project and  #
@@ -24,27 +24,16 @@
 #     converting to destination format, saving converted data),               #
 #   - have multilingual support,                                              #
 #   - and have format converters in a modular plug-in design.                 #
-#                                                                             #
-# The Loguntu project might also be started along with Log2Log v2.x.  Loguntu #
-# is planned to be the ultimate digital life interface for all personal data. #
-# It looks really awesome on paper, but this readme isn't the place to        #
-# describe it.                                                                #
-#                                                                             #
-# If you're interested in the Loguntu project or seeing the Log2Log project   #
-# go further, just let us know at <http://loguntu.com/>.                      #
-# (The link works as of 23 March 2015; I'll try to keep it up for a while.)   #
-#                                                                             #
-# And there's always <http://www.deltik.org/>. :)                             #
 ###############################################################################
 
 ╔═══════════════════════════════════════════╤═╤═╤═╗
 ║Information                                │-│■│X║
 ╟───────────────────────────────────────────┴─┴─┴─╢
-║Version: 1.0.7 (v1.0.7)                          ║
-║Website: http://www.deltik.org/                  ║
-║Information: http://log2log.sf.net/              ║
+║Version: 1.0.8 (v1.0.8)                          ║
+║Website: https://www.deltik.org/                 ║
+║Information: https://log2log.sourceforge.io/     ║
 ║E-Mail: deltik@gmx.com                           ║
-║Release Date: 2015/03/23                         ║
+║Release Date: UNRELEASED                         ║
 ╚═════════════════════════════════════════════════╝
 
 @@@@@@@@@@@@@@@@@@@@@@@@@
@@ -120,7 +109,7 @@ Install Log2Log in three easy steps:
 ++++++++++++++++++++++++++++++
 + CONFIGURATION AND FEATURES +
 ++++++++++++++++++++++++++++++
-Log2Log v1.0.7 does not have any configurable options.  Is there something you
+Log2Log v1.0.8 does not have any configurable options.  Is there something you
 want to be configurable?  Suggest it to the project manager (email address in the
 "More Information" section)!
 
@@ -191,10 +180,10 @@ converter compatibility, see the "Configuration and Features" section.
 2. Converting chat log formats is no easy task. Note that Log2Log converters
    might not be 100% successful at converting chat logs.
 
-3. Time zone compatibility is rough as of v1.0.7.
+3. Time zone compatibility is rough as of v1.0.8.
 
 4. Languages other than English have not been figured out for format
-   converters as of v1.0.7.  The Log2Log team would greatly appreciate it if
+   converters as of v1.0.8.  The Log2Log team would greatly appreciate it if
    you could develop a translation system for us.
 
 5. This project would like help.  If you would like to contribute to Log2Log in
@@ -206,32 +195,38 @@ converter compatibility, see the "Configuration and Features" section.
 + MORE INFORMATION +
 ++++++++++++++++++++
 For more information, updates, and just... more..., visit Deltik's Web site
-at <http://www.deltik.org/>.
+at <https://www.deltik.org/>.
 
 Also, for Log2Log-specific information, you can visit Log2Log's Web site at
-<http://log2log.sourceforge.net/>.
+<https://log2log.sourceforge.io/>.
 
-You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
+You can contact the developer, too: <deltik@gmx.com>
 
 
 +++++++++++++++++++
 + VERSION HISTORY +
 +++++++++++++++++++
-1.0.7 (2015/03/23)
+1.0.8 (2020-11-04)
+  - FIX: Pidgin `From` format converter did not handle 12:00:00 PM to 12:59:59 PM correctly
+  - FIX: Pidgin `To` format converter now presents the sender ID in each line if the provided alias is empty
+  - FIX: Update checker URL
+  - FIX: Update checker redirect support
+
+1.0.7 (2015-03-23)
   - FIX: HTML tag stripping in Windows Live Messenger `To` format converter
 
-1.0.6 (2015/03/22)
+1.0.6 (2015-03-22)
   - NEW: Experimental Pidgin plaintext `From` format converter
   - FIX: Program crash due to the way StdFormat tried to access timezone information
   - FIX: Possible Pidgin HTML `From` format converter infinite loop
   - FIX: Improved sender handling in Windows Live Messenger `To` format converter
   - FIX: XML integrity with "<" and ">" symbols in Windows Live Messenger `To` format converter
 
-1.0.5 (2015/03/20)
+1.0.5 (2015-03-20)
   - FIX: Significant improvements in Pidgin `From` format converter robustness
   - FIX: Made Pidgin `From` format converter datetimestamps less buggy
 
-1.0.4 (2015/03/17)
+1.0.4 (2015-03-17)
   - NEW: WLM `To` format converter, made specially for the Messenger Revivers
   - FIX: Pidgin `From` timestamps were always zeroed due to Qt changes.
   - FIX: Corrected the default path to the Windows Live Messenger format converter
@@ -239,32 +234,32 @@ You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
   - MOD: Improved readability of the compatibility check section in the main window
   - MOD: Removed disabled MeeboConnect code
 
-1.0.3 (2014/10/02)
+1.0.3 (2014-10-02)
   - NEW: Digsby `From` format converter
   - FIX: Update checker works again now that it sends a user agent.
 
-1.0.2 (2012/07/03)
+1.0.2 (2012-07-03)
   - INF: The Log2Log v1.x branch is deprecated.
   - FIX: Improved Trillian `To` format converter protocol conversions, especially for Facebook and Google Talk
 
-1.0.1 (2012/06/23)
+1.0.1 (2012-06-23)
   - INF: The Log2Log v1.x branch is being discontinued.
   - NEW: Meebo (farewell) format converter
   - NEW: You can now use the [Enter] key in a text field to start the conversion.
   - FIX: Default paths work now.
   - MOD: Cleaned up the user interface
 
-1.0.0 (2011/10/01)
+1.0.0 (2011-10-01)
   - NEW: Initial Release
   - NEW: Omegle format converter
   - NEW: Trillian format converter
   - NEW: WLM `From` format converter
   - NEW: AIM `From` format converter
 
-1.0.0dev (2011/06/23)
+1.0.0dev (2011-06-23)
   - Log2Log as a desktop application: Development planning
 
-0.0.1a4 (2011/06/23)
+0.0.1a4 (2011-06-23)
   - INF: The Log2Log PHP project is being discontinued.
   - FIX: Fixed form security issue of the MeeboConnect interface by switching to POST
   - MOD: MeeboConnect interface allows for capture threshold setting
@@ -272,23 +267,23 @@ You can contact the project manager, Nick Liu, too: <deltik@gmx.com>
   - DEV: Added debug information for importing chat log structure
   - PRE: Google Talk is now under consideration.
 
-0.0.1a3 (2011/03/28)
+0.0.1a3 (2011-03-28)
   - NEW: Option to include conversion debug logs in the generated archive
   - FIX: Pidgin.php: Improved support for conversation events
   - FIX: For chat log developers, the template file had a function correction.
   - MOD: Log2Log Standard Chat Log Format now stores timezone definitions.
 
-0.0.1a2 (2011/03/27)
+0.0.1a2 (2011-03-27)
   - NEW: JSON.php: Direct export of the Log2Log Standard Chat Log Format in JSON
   - NEW: Debug error handler
   - FIX: Pidgin.php: Prevented processing chat log entry if corrupt
   - MOD: core.php: Incompatible archive types now pass warnings instead of errors.
 
-0.0.1a1 (2011/03/19)
+0.0.1a1 (2011-03-19)
   - Initial Release
 
-0.0.1dev (2011/01/07)
+0.0.1dev (2011-01-07)
   - Development Layout
 
-0.0.1pre (2011/01/01)
+0.0.1pre (2011-01-01)
   - Log2Log Project Founded
