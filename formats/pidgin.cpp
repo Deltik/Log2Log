@@ -564,6 +564,16 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
             time_proc = QTime::fromString(split[timePos], "h:mm");
         if (!time_proc.isValid())
             time_proc = QTime::fromString(split[timePos], "hh:mm:ss.zzz");
+        // Ridiculous hotfix for handling 12:00:00 PM to 12:59:59 PM
+        if (timePos + 1 < split.size() && time_proc.hour() == 12 &&
+                (
+                    split[timePos+1].toLower().contains("pm") ||
+                    split[timePos+1].toLower().contains("p.m") ||
+                    split[timePos+1].toLower().contains("p m") ||
+                    split[timePos+1].toLower().contains("post")
+                )
+           )
+            time_proc = time_proc.addSecs(-43200);
         // Add to the final sum
         time_sum += -time_proc.msecsTo(QTime(0,0,0,0));
     }
