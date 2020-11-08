@@ -567,10 +567,10 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
         // Ridiculous hotfix for handling 12:00:00 PM to 12:59:59 PM
         if (timePos + 1 < split.size() && time_proc.hour() == 12 &&
                 (
-                    split[timePos+1].toLower().contains("pm") ||
-                    split[timePos+1].toLower().contains("p.m") ||
-                    split[timePos+1].toLower().contains("p m") ||
-                    split[timePos+1].toLower().contains("post")
+                    split[timePos+1].toLower().contains("am") ||
+                    split[timePos+1].toLower().contains("a.m") ||
+                    split[timePos+1].toLower().contains("a m") ||
+                    split[timePos+1].toLower().contains("ante")
                 )
            )
             time_proc = time_proc.addSecs(-43200);
@@ -581,10 +581,14 @@ qlonglong Pidgin::interpretTime(QString input, qlonglong $time_base)
     // MERIDIEM ADDER
     // Try to match for "post meridiem"
     // If matches, add 12 hours (43200000 milliseconds) to the final sum
-    if (input.toLower().contains("pm") ||
-        input.toLower().contains("p.m") ||
-        input.toLower().contains("p m") ||
-        input.toLower().contains("post"))
+    if (time_proc.hour() != 12 &&
+            (
+                input.toLower().contains("pm") ||
+                input.toLower().contains("p.m") ||
+                input.toLower().contains("p m") ||
+                input.toLower().contains("post")
+            )
+        )
         time_sum += 43200000;
 
     // DATE GUESSER

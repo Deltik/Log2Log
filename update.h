@@ -1,4 +1,4 @@
-#define VERSION "1.0.8"
+#define VERSION "1.0.9"
 #define DL_SOURCE "https://log2log.sourceforge.io/update/"
 
 /**
