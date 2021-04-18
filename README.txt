@@ -4,7 +4,7 @@
 # !! IMPORTANT INFORMATION ! IMPORTANT INFORMATION ! IMPORTANT INFORMATION !! #
 ###############################################################################
 # The Log2Log v1.x branch has been deprecated.  This is the final release of  #
-# Log2Log v1.x (v1.0.10) as of 17 April 2021.  You may ask for a customized   #
+# Log2Log v1.x (v1.0.11) as of 18 April 2021.  You may ask for a customized   #
 # release; Deltik will help you support new format converters if you ask.     #
 #                                                                             #
 # Development is paused due to a lack of interest in the Log2Log project and  #
@@ -29,11 +29,11 @@
 ╔═══════════════════════════════════════════╤═╤═╤═╗
 ║Information                                │-│■│X║
 ╟───────────────────────────────────────────┴─┴─┴─╢
-║Version: 1.0.10 (v1.0.10)                        ║
+║Version: 1.0.11 (v1.0.11)                        ║
 ║Website: https://www.deltik.org/                 ║
 ║Information: https://log2log.sourceforge.io/     ║
 ║E-Mail: deltik@gmx.com                           ║
-║Release Date: 2021-04-17                         ║
+║Release Date: 2021-04-18                         ║
 ╚═════════════════════════════════════════════════╝
 
 @@@@@@@@@@@@@@@@@@@@@@@@@
@@ -109,7 +109,7 @@ Install Log2Log in three easy steps:
 ++++++++++++++++++++++++++++++
 + CONFIGURATION AND FEATURES +
 ++++++++++++++++++++++++++++++
-Log2Log v1.0.10 does not have any configurable options.  Is there something you
+Log2Log v1.0.11 does not have any configurable options.  Is there something you
 want to be configurable?  Suggest it to the project manager (email address in the
 "More Information" section)!
 
@@ -180,10 +180,10 @@ converter compatibility, see the "Configuration and Features" section.
 2. Converting chat log formats is no easy task. Note that Log2Log converters
    might not be 100% successful at converting chat logs.
 
-3. Time zone compatibility is rough as of v1.0.10.
+3. Time zone compatibility is rough as of v1.0.11.
 
 4. Languages other than English have not been figured out for format
-   converters as of v1.0.10.  The Log2Log team would greatly appreciate it if
+   converters as of v1.0.11.  The Log2Log team would greatly appreciate it if
    you could develop a translation system for us.
 
 5. This project would like help.  If you would like to contribute to Log2Log in
@@ -206,6 +206,11 @@ You can contact the developer, too: <deltik@gmx.com>
 +++++++++++++++++++
 + VERSION HISTORY +
 +++++++++++++++++++
+1.0.11 (2021-04-18)
+  - NEW: Pidgin `From` format converter now supports the Pidgin 2.14.0 HTML log format
+  - MOD: Pidgin `To` format converter now outputs in the Pidgin 2.14.0 HTML log format
+  - MOD: Updated timelib to 2020.01 (in line with PHP 8.0.3)
+
 1.0.10 (2021-04-17)
   - FIX: Pidgin `To` format converter might skip some chat rows sent from the other party
 
