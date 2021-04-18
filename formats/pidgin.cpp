@@ -868,9 +868,7 @@ QVariant Pidgin::generate(StdFormat *$log)
                 $sender == $self_alias)
                 $sender_color = "#16569E";
             // Color: Sent by _self
-            if ($sender == "_with" ||
-                $sender == $with ||
-                $sender == $with_alias)
+            else if (!$sender.contains(QRegExp("^_(evt_|group_|error)")))
                 $sender_color = "#A82F2F";
 
             if (!$sender_color.isEmpty())
