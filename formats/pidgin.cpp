@@ -56,7 +56,8 @@ void Pidgin::load(QVariant $log_raw)
     //  - HTML
     //  - Plain text
     // Which is it gonna be?
-    if ($log_raw.toString().left(6) == "<html>")
+    QString log_raw = $log_raw.toString();
+    if (log_raw.left(6) == "<html>" || log_raw.startsWith("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><html>"))
         loadHtml($log_raw);
     else
         loadPlainText($log_raw);
@@ -76,8 +77,11 @@ void Pidgin::loadHtml(QVariant $log_raw)
     // Remove cruft that will interfere with QXmlStreamReader.
     QStringList $log_split = $log_proc.split("</head>");
     $log_split.pop_front();
-    $log_proc = $log_split.join("</head>");
-    $log_proc.replace("</body></html>", "</body>");
+    $log_proc = $log_split.join("</head>").trimmed();
+    if ($log_proc.endsWith("</html>"))
+    {
+        $log_proc.chop(sizeof("</html>"));
+    }
 
     // Create the HTML reader.
     QXmlStreamReader xml($log_proc);
@@ -117,39 +121,34 @@ void Pidgin::loadHtml(QVariant $log_raw)
         // Looking at element beginnings...
         if (token == QXmlStreamReader::StartElement)
         {
+            QString qualifiedName = xml.qualifiedName().toString();
             // If token is the log meta indicator...
-            if (xml.qualifiedName().toString() == "h3")
+            if (qualifiedName.contains(QRegExp("^h[1-6]$")) == true)
             {
                 // Point to the data.
                 xml.readNext();
 
-                // Unfortunately, RegExp can't help with this tricky next part.
                 // Here, we look at Pidgin's chat log or system log header:
                 //  - "Conversation with _WITH at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION on _SELF (_PROTOCOL)"
+                //  - "Conversation with _WITH at 4/13/2021 12:24:19 PM on _SELF (_PROTOCOL)"
                 //  - "System log for account _SELF (_PROTOCOL) connected at _DAY_OFWEEK_3LETTERS _DAY_2DIGITS _MONTH_3LETTERS _YEAR_4DIGITS _TIME_BASE _TIMEZONE_ABBREVIATION"
                 QString $log_header = xml.text().toString();
                 // If this is a system log, forward to the proper method.
                 if ($log_header.left(6) == "System")
                     return loadSystemHtml($log_raw);
 
-                QString $log_header_proc = $log_header.mid(18);
-                QStringList $log_header_split = $log_header_proc.split(" at ");
-                // CONSTRUCT: _with
-                final->setWith($log_header_split.takeFirst());
-                $log_header_proc = $log_header_split.join(" at ");
-                $log_header_split = $log_header_proc.split(" on ");
-                QString $date_proc = $log_header_split.takeFirst();
-                $log_header_proc = $log_header_split.join(" on ");
-                $log_header_split = $log_header_proc.split(" (");
-                // CONSTRUCT: _self
-                final->setSelf($log_header_split.takeFirst());
-                $log_header_proc = $log_header_split.join(" (");
-                $log_header_split = $log_header_proc.split(")");
-                // CONSTRUCT: _protocol
-                final->setProtocol($log_header_split.takeFirst());
+                QRegExp headerMatcher("Conversation with (.*) at (.*) on (.*) \\(([^\\)]+)\\)");
+                headerMatcher.indexIn($log_header);
+                final->setWith(headerMatcher.cap(1));
+                QString $date_proc = headerMatcher.cap(2);
+                final->setSelf(headerMatcher.cap(3));
+                final->setProtocol(headerMatcher.cap(4));
 
+                QDateTime test = QLocale::system().toDateTime($date_proc, QLocale::ShortFormat);
                 QStringList $date_split = $date_proc.split(" ");
                 QString $timezone = $date_split.takeLast();
+                if ($timezone.toLower().contains(QRegExp("^[ap]m$")))
+                    $date_split.append($timezone);
                 $date_proc = $date_split.join(" ");
                 QDateTime $time_proc;
                 if ($date_proc.contains(QRegExp(" [AP]M$")))
@@ -167,11 +166,16 @@ void Pidgin::loadHtml(QVariant $log_raw)
 
                 $equizone = Helper::zone_search($timezone);
                 // CONSTRUCT: _timezone
+                if ($equizone.empty())
+                {
+                    $timezone = QTimeZone::systemTimeZone().abbreviation($time_proc);
+                    $equizone = Helper::zone_search($timezone);
+                }
                 final->setTimezone($equizone["full_tz_name"].toString());
             }
 
             // If token is a chat row
-            else if (xml.qualifiedName().toString() == "font")
+            else if (qualifiedName == "font" || qualifiedName == "span")
             {
                 // 2015-03-20 :: Patch to help QXmlStreamReader go line by line
                 last_iteration_was_chat_row = true;
@@ -187,7 +191,16 @@ void Pidgin::loadHtml(QVariant $log_raw)
                 //  #FF0000 : _evt_error
                 //  #6C2585 : Whisper (not supported yet)
                 //  #062585 : /me
-                QString $sender_color = xml.attributes().value("color").toString();
+                QXmlStreamAttributes attributes = xml.attributes();
+                QString $sender_color;
+                if (attributes.hasAttribute("color"))
+                    $sender_color = attributes.value("color").toString();
+                else if (attributes.hasAttribute("style"))
+                {
+                    QRegExp match("(#[0-9a-fA-F]{6})");
+                    match.indexIn(attributes.value("style").toString());
+                    $sender_color = match.cap(1);
+                }
 
                 // If element is an unhandled message type (_evt)
                 if ($sender_color.isEmpty())
@@ -265,9 +278,26 @@ void Pidgin::loadHtml(QVariant $log_raw)
                 // processing the rest of the chat row. We must now rely on
                 // good ol' explode()ions and implode()ions...
                 QString $line = readLine($log_proc, xml.lineNumber());
-                QStringList $line_split = $line.split(")</font>");
+                QStringList $line_split;
+                bool oldPidgin = false;
+                if ($line.startsWith("<font"))
+                {
+                    oldPidgin = true;
+                    $line_split = $line.split(")</font>");
+                }
+                else
+                {
+                    $line_split = $line.split(")</span>");
+                }
                 $line_split.pop_front();
-                $line = $line_split.join(")</font>").trimmed();
+                if (oldPidgin)
+                {
+                    $line = $line_split.join(")</font>").trimmed();
+                }
+                else
+                {
+                    $line = $line_split.join(")</span>").trimmed();
+                }
 
                 // If there is a _sender identifier
                 if ($line.left(3) == "<b>")
@@ -354,7 +384,7 @@ void Pidgin::loadHtml(QVariant $log_raw)
                     if ($line.right(5) == "<br/>")
                         $line.chop(5);
                     $line = $line.trimmed();
-                    if ($line.left(7) == "</font>")
+                    if ($line.startsWith("</font>") || $line.startsWith("</span>"))
                         $line = $line.mid(7).trimmed();
                     $line = $line.replace("&quot;", "\"");
                     $line = $line.replace("&amp;", "&");
