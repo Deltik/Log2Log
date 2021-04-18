@@ -381,8 +381,10 @@ void Pidgin::loadHtml(QVariant $log_raw)
                 if (final->getCode() != 1 && final->getContent().isEmpty())
                 {
                     // Cleanup
-                    if ($line.right(5) == "<br/>")
+                    if ($line.endsWith("<br/>"))
                         $line.chop(5);
+                    if ($line.endsWith("<br>"))
+                        $line.chop(4);
                     $line = $line.trimmed();
                     if ($line.startsWith("</font>") || $line.startsWith("</span>"))
                         $line = $line.mid(7).trimmed();
@@ -774,7 +776,7 @@ QVariant Pidgin::generate(StdFormat *$log)
     while ($log->nextEntry())
     {
         // Chat log header
-        QString $content = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><title>";
+        QString $content = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>";
 
         // Put the longer variables into something more readily accessible.
         QString $protocol      = $log->getProtocol();
@@ -823,7 +825,7 @@ QVariant Pidgin::generate(StdFormat *$log)
                         ")";
 
         // <title>
-        $content += title + "</title></head><body><h3>" + title + "</h3>\n";
+        $content += title + "</title></head><body><h1>" + title + "</h1><p>\n";
 
         // Go through each chat row.
         while ($log->nextRow())
@@ -878,19 +880,19 @@ QVariant Pidgin::generate(StdFormat *$log)
                     $message = $alias + " has signed on.";
 
                 if ($sender_color.isEmpty())
-                    $content += "<font size=\"2\">(" +
+                    $content += "<span style=\"font-size: smaller\">(" +
                                 $timestamp +
-                                ")</font><b> " +
+                                ")</span><b> " +
                                 $message +
-                                "</b><br/>\n";
+                                "</b><br>\n";
                 else
-                    $content += "<font color=\"" +
+                    $content += "<span style=\"color: " +
                                 $sender_color +
-                                "\"><font size=\"2\">(" +
+                                "\"><span style=\"font-size: smaller\">(" +
                                 $timestamp +
-                                ")</font><b> " +
+                                ")</span><b> " +
                                 $message +
-                                "</b><br/>\n";
+                                "</b><br>\n";
             }
             // Color: Sent by _self
             if ($sender == "_self" ||
@@ -903,20 +905,20 @@ QVariant Pidgin::generate(StdFormat *$log)
 
             if (!$sender_color.isEmpty())
             {
-                $content += "<font color=\"" +
+                $content += "<span style=\"color: " +
                             $sender_color +
-                            "\"><font size=\"2\">(" +
+                            "\"><span style=\"font-size: smaller\">(" +
                             $timestamp +
-                            ")</font> <b>" +
+                            ")</span> <b>" +
                             $alias +
-                            ":</b></font> " +
+                            ":</b></span> " +
                             $message +
-                            "<br/>\n";
+                            "<br>\n";
             }
 
             // Closing
             if (!$log->hasNextRow())
-                $content += "</body></html>";
+                $content += "</p>\n</body>\n</html>\n";
         }//qDebug() << $content;
         $info["content"] = $content;
         $info["modtime"] = $time_base / 1000;
